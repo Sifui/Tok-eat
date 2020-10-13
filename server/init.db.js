@@ -3,6 +3,9 @@ const Schedule = require('./Model/schedule.model')
 const Restaurant = require('./Model/restaurant.model')
 const Client_Restaurant = require('./Model/client_restaurant.model')
 const Promo = require('./Model/promo.model')
+const Basket = require('./Model/basket.model')
+const Offer = require('./Model/offer.model')
+const Ordered_Product = require('./Model/ordered_product.model')
 
 const PostgresStore = require('./PostgresStore')
 
@@ -32,7 +35,10 @@ async function createEverything () {
         Schedule,
         Restaurant,
         Client_Restaurant,
-        Promo
+        Promo,
+        Basket,
+        Offer,
+        Ordered_Product
     ]
 
     for (const model of models) {
