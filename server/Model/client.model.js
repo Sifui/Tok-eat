@@ -11,6 +11,7 @@ class Client {
                 phone_number TEXT,
                 adress TEXT,
                 image BYTEA,
+                is_admin BOOLEAN,
                 password TEXT
             )
         `
