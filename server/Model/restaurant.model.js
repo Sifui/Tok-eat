@@ -9,7 +9,7 @@ class Restaurant {
                 name TEXT,
                 email TEXT,
                 phone_number TEXT,
-                adress TEXT,
+                address TEXT,
                 description TEXT,
                 image BYTEA,
                 password TEXT,
