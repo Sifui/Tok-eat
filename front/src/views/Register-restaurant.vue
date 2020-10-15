@@ -9,30 +9,26 @@
 
       <div class="form">
         <md-field>
-          <label>Name</label>
-          <md-input v-model="register.name"></md-input>
-        </md-field>
-        <md-field>
-          <label>Firstname</label>
-          <md-input v-model="register.firstname"></md-input>
+          <label>Your restaurant name</label>
+          <md-input v-model="registerRestaurant.name"></md-input>
         </md-field>
         <md-field>
           <label>E-mail</label>
-          <md-input v-model="register.email"></md-input>
+          <md-input v-model="registerRestaurant.email"></md-input>
         </md-field>
 
         <md-field md-has-password>
           <label>Password</label>
-          <md-input v-model="register.password" type="password"></md-input>
+          <md-input v-model="registerRestaurant.password" type="password"></md-input>
         </md-field>
         <md-field md-has-password>
           <label>Confirm your password</label>
-          <md-input v-model="register.repassword" type="password"></md-input>
+          <md-input v-model="registerRestaurant.repassword" type="password"></md-input>
         </md-field>
       </div>
 
       <div class="actions md-layout md-alignment-center-space-between">
-        <router-link to="/register-restaurant">Register as restaurant</router-link>
+        <router-link to="/register">Register as client</router-link>
         <md-button class="md-raised md-primary" @click="auth">
           Sign in</md-button
         >
@@ -65,9 +61,8 @@ export default {
     return {
       loading: false,
       errorLog: false,
-      register: {
+      registerRestaurant: {
         name: "",
-        firstname: "",
         email: "",
         password: "",
         repassword: "",
