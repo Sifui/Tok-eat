@@ -1,12 +1,13 @@
 const PostgresStore = require("../PostgresStore")
+const bcrypt = require('bcrypt')
 
 class Client {
     static toSQLTable () {
         return `
             CREATE TABLE ${Client.tableName} (
                 id SERIAL PRIMARY KEY,
-                name TEXT,
-                full_name TEXT,
+                first_name TEXT,
+                last_name TEXT,
                 email TEXT,
                 phone_number TEXT,
                 address TEXT,
@@ -15,6 +16,21 @@ class Client {
                 password TEXT
             )
         `
+    }
+
+    static async create (client) {
+
+        const hashedPw = await bcrypt.hash(client.password,10)
+
+        await PostgresStore.client.query({
+            text: `INSERT INTO ${Client.tableName}
+                    (first_name, last_name, email, phone_number, address, image, is_admin, password)
+                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+                    values : [
+                        client.first_name, client.last_name, client.email, client.phone_number,
+                        client.address, client.image, client.isAdmin,hashedPw
+                    ]
+        })
     }
 }
 
