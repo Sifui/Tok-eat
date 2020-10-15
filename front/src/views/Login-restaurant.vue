@@ -2,36 +2,27 @@
   <div class="centered-container">
     <md-content class="md-elevation-3">
       <div class="title">
-        <img class="logo" src="../assets/register-restaurant-logo.png" />
+        <img class="logo" src="../assets/login-restaurant-logo.png" />
         <!-- <div class="md-title font-title">Tok' eat</div> -->
         <div class="md-body-1"></div>
       </div>
 
       <div class="form">
         <md-field>
-          <label>Your restaurant name</label>
-          <md-input v-model="registerRestaurant.name"></md-input>
-        </md-field>
-        <md-field>
           <label>E-mail</label>
-          <md-input v-model="registerRestaurant.email"></md-input>
+          <md-input v-model="loginRestaurant.email" autofocus></md-input>
         </md-field>
 
         <md-field md-has-password>
           <label>Password</label>
-          <md-input v-model="registerRestaurant.password" type="password"></md-input>
-        </md-field>
-        <md-field md-has-password>
-          <label>Confirm your password</label>
-          <md-input v-model="registerRestaurant.repassword" type="password"></md-input>
+          <md-input v-model="loginRestaurant.password" type="password"></md-input>
         </md-field>
       </div>
 
       <div class="actions md-layout md-alignment-center-space-between">
-        <router-link to="/register">Register as client</router-link>
-        <md-button class="md-raised md-primary" @click="auth">
-          Sign in</md-button
-        >
+        <!-- <a href="#">Reset password</a> -->
+        <router-link to="/">Login as client</router-link>
+        <md-button class="md-raised md-primary" @click="auth">Log in</md-button>
       </div>
 
       <div class="loading-overlay" v-if="loading">
@@ -61,11 +52,9 @@ export default {
     return {
       loading: false,
       errorLog: false,
-      registerRestaurant: {
-        name: "",
+      loginRestaurant: {
         email: "",
         password: "",
-        repassword: "",
       },
       person: [],
     };
@@ -87,7 +76,6 @@ md-input {
   margin: auto;
   padding: 6px 12px 6px 12px;
 }
-
 .centered-container {
   display: flex;
   align-items: center;

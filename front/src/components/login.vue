@@ -20,8 +20,9 @@
       </div>
 
       <div class="actions md-layout md-alignment-center-space-between">
-        <a href="#">Reset password</a>
-        <md-button class="md-raised md-primary" @click="auth">Log in</md-button>
+        <!-- <a href="#">Reset password</a> -->
+        <router-link to="/login-restaurant">Login as restaurant</router-link>
+        <md-button class="md-raised md-primary"  @click="auth">Log in</md-button>
       </div>
 
       <div class="loading-overlay" v-if="loading">
