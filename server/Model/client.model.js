@@ -32,6 +32,17 @@ class Client {
                     ]
         })
     }
+
+    static async findByEmail(email) {
+
+        const result = await PostgresStore.client.query({
+            text: `SELECT * FROM ${Client.tableName}
+            WHERE email=$1`,
+            values : [email]
+        })
+        return result.rows[0]
+    }
+
 }
 
 /** @type {String} */

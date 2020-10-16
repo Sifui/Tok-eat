@@ -31,7 +31,7 @@ exports.generatePassword = function generatePassword () {
 }
 
 exports.generateEmail = function generateEmail (name) {
-    return `${name}@example.com`
+    return `${name.replace(/\s/g,'')}@example.com`
 }
 
 exports.generatePhoneNumber = function generatePhoneNumber () {
