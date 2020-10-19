@@ -22,15 +22,16 @@ class Client {
 
         const hashedPw = await bcrypt.hash(client.password,10)
 
-        await PostgresStore.client.query({
+        const result = await PostgresStore.client.query({
             text: `INSERT INTO ${Client.tableName}
                     (first_name, last_name, email, phone_number, address, image, is_admin, password)
-                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
                     values : [
-                        client.first_name, client.last_name, client.email, client.phone_number,
-                        client.address, client.image, client.isAdmin,hashedPw
+                        client.firstName, client.lastName, client.email, client.phoneNumber,
+                        client.address, client.image, false,hashedPw
                     ]
         })
+        return result.rows[0]
     }
 
     static async findByEmail(email) {
@@ -42,7 +43,6 @@ class Client {
         })
         return result.rows[0]
     }
-
 }
 
 /** @type {String} */

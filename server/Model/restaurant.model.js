@@ -23,15 +23,16 @@ class Restaurant {
 
         const hashedPw = await bcrypt.hash(restaurant.password,10)
 
-        await PostgresStore.client.query({
+        const result = await PostgresStore.client.query({
             text: `INSERT INTO ${Restaurant.tableName}
                     (name, email, phone_number, address, description, image, password, schedule)
-                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
                     values : [
-                        restaurant.name, restaurant.email, restaurant.phone_number,
+                        restaurant.name, restaurant.email, restaurant.phoneNumber,
                         restaurant.address, restaurant.description, restaurant.image, hashedPw, restaurant.schedule
                     ]
         })
+        return result.rows[0]
     }
 
     static async findByEmail(email) {

@@ -9,7 +9,7 @@ function generateRestaurant() {
     const client = name.map(item => ({
         name : item,
         email : generateEmail (item),
-        phone_number: generatePhoneNumber(),
+        phoneNumber: generatePhoneNumber(),
         address: generateAddress(),
         description:generateDescription(),
         image: null,

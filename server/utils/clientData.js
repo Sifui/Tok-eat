@@ -7,10 +7,10 @@ function generateClient() {
     firstLast = generateName()
 
     const client = firstLast.map(item => ({
-        first_name : item[0],
-        last_name : item [1],
+        firstName : item[0],
+        lastName : item [1],
         email : generateEmail (item[0]),
-        phone_number: generatePhoneNumber(),
+        phoneNumber: generatePhoneNumber(),
         address: generateAddress(),
         image:null,
         isAdmin: false,
