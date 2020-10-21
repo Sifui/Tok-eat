@@ -8,6 +8,11 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
+    name: 'Index',
+    component: () =>  import(/* webpackChunkName: "about" */ '../views/Index.vue')
+  },
+  {
+    path: '/login',
     name: 'Login',
     component: Login
   },
