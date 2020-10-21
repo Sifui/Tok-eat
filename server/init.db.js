@@ -9,8 +9,7 @@ const Ordered_Product = require('./model/ordered_product.model')
 
 const clientData = require('./utils/generateData/clientData')
 const restaurantData = require('./utils/generateData/restaurantData')
-const offerData = require('./utils/generateData/offerData')
-const generateOffer = offerData.generateOffer
+const generateOffer = require('./utils/generateData/offerData').generateOffer
 
 const PostgresStore = require('./PostgresStore')
 
