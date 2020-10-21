@@ -20,6 +20,14 @@
           <label>E-mail</label>
           <md-input v-model="register.email"></md-input>
         </md-field>
+        <md-field>
+          <label>Phone number</label>
+          <md-input v-model="register.phone_number"></md-input>
+        </md-field>
+        <md-field>
+          <label>Address</label>
+          <md-input v-model="register.address"></md-input>
+        </md-field>
 
         <md-field md-has-password>
           <label>Password</label>
@@ -32,8 +40,14 @@
       </div>
 
       <div class="actions md-layout md-alignment-center-space-between">
-        <router-link to="/register-restaurant">Register as restaurant</router-link>
-        <md-button class="md-raised md-primary" @click="auth">
+        <router-link to="/register-restaurant"
+          >Register as restaurant</router-link
+        >
+        <md-button
+          class="md-raised md-primary"
+          :disabled="isDisabled"
+          @click="registration"
+        >
           Sign in</md-button
         >
       </div>
@@ -69,11 +83,23 @@ export default {
         name: "",
         firstname: "",
         email: "",
+        phone_number:"",
+        address:"",
         password: "",
         repassword: "",
       },
       person: [],
     };
+  },
+  computed: {
+    isDisabled() {
+      return !this.register.name || !this.register.firstname ? true : false;
+    },
+  },
+  methods: {
+    registration() {
+      this.$router.push({ path: "home" });
+    },
   },
 };
 </script>

@@ -4,7 +4,7 @@ const Client = require("../model/client.model")
 const Restaurant = require("../model/restaurant.model")
 
 router.post('/login', async (req, res) => {
-    
+    console.log('HERE ===> '+req.body);
     const client = await Client.findByEmail(req.body.email)
 
     const restaurant = await Restaurant.findByEmail(req.body.email)

@@ -60,6 +60,7 @@
 </template>
 
 <script>
+import DataServices from "../services/data_services";
 export default {
   name: "Login",
   props: {
@@ -87,12 +88,26 @@ export default {
   },
   methods: {
     auth() {
-        // const emailRegex = /^([A-Za-z0-9_\-.])+@([A-Za-z0-9_\-.])+\.([A-Za-z]{2,4})$/;
-        // if(emailRegex.test(this.login.email)){
-        //   this.emailError = true;
-        // }
-        
-
+      this.loading = true;
+      DataServices.findByEmail(this.login)
+        .then((response) => {
+          this.person = response.data;
+          console.log(this.person.user);
+          if (this.person.user===false) {
+            setTimeout(() => {
+              this.loading = false;
+            }, 1000);
+            this.errorLog = true;
+          } else {
+            setTimeout(() => {
+              this.loading = false;
+            }, 1000);
+            this.$router.push({ path: "home" });
+          }
+        })
+        .catch(() => {
+          console.log("error");
+        });
     },
   },
 };
