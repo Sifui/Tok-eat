@@ -1,4 +1,4 @@
-const dataFunctions = require('./dataFunctions')
+const dataFunctions = require('../dataFunction/userDataFunction')
 
 const generateName = dataFunctions.generateName, generatePassword = dataFunctions.generatePassword, generateEmail = dataFunctions.generateEmail,
 generatePhoneNumber = dataFunctions.generatePhoneNumber, generateAddress = dataFunctions.generateAddress

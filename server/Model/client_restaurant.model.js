@@ -9,6 +9,7 @@ class Client_Restaurant {
                 id SERIAL PRIMARY KEY,
                 favorite BOOLEAN,
                 grade INTEGER,
+                grade_date TIMESTAMP,
                 token INTEGER,
                 id_client INTEGER REFERENCES ${Client.tableName}(id),
                 id_restaurant INTEGER REFERENCES ${Restaurant.tableName}(id)

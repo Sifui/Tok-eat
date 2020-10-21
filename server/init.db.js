@@ -7,8 +7,10 @@ const Basket = require('./model/basket.model')
 const Offer = require('./model/offer.model')
 const Ordered_Product = require('./model/ordered_product.model')
 
-const clientData = require('./utils/clientData')
-const restaurantData = require('./utils/restaurantData')
+const clientData = require('./utils/generateData/clientData')
+const restaurantData = require('./utils/generateData/restaurantData')
+const offerData = require('./utils/generateData/offerData')
+const generateOffer = offerData.generateOffer
 
 const PostgresStore = require('./PostgresStore')
 
@@ -57,10 +59,20 @@ async function createFakeData () {
     }
     console.log('Clients generated')
 
+    let offerSample = {}
+    let restaurantInDb = {}
+
     for(const restaurant of restaurantData) {
-        await Restaurant.create(restaurant)
+        restaurantInDb = await Restaurant.create(restaurant)
+        //console.log(restaurantInDb)
+        offerSample = generateOffer(restaurantInDb.id,3)
+        //console.log(offerSample)
+        for(let offer of offerSample)
+        {
+            await Offer.create(offer)
+        }
     }
-    console.log('Restaurants generated')
+    console.log('Restaurants and offers generated')
 }
 
 async function run () {
