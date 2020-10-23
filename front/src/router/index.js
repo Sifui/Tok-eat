@@ -9,7 +9,19 @@ const routes = [
   {
     path: '/',
     name: 'Index',
-    component: () =>  import(/* webpackChunkName: "about" */ '../views/Index.vue')
+    component: () =>  import(/* webpackChunkName: "about" */ '../views/Index.vue'),
+    children:[
+      {
+        path:'',
+        name:'display-restaurants',
+        component:()=> import('../components/Display-restaurants')
+      },
+      {
+        path:'restaurant',
+        name:'restaurant',
+        component:()=> import('../components/Restaurant'),
+      }
+    ]
   },
   {
     path: '/login',
