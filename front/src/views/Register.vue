@@ -36,7 +36,6 @@
             <label>Address</label>
             <md-input v-model="client.address"></md-input>
           </md-field>
-
           <md-field md-has-password>
             <label>Password</label>
             <md-input v-model="client.password" type="password"></md-input>
