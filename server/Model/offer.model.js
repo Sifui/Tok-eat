@@ -16,6 +16,19 @@ class Offer {
             )
         `
     }
+
+    static async create (offer) {
+
+        const result = await PostgresStore.client.query({
+            text: `INSERT INTO ${Offer.tableName}
+                    (name, price, description, image, id_restaurant, id_promo)
+                    VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
+                    values : [
+                        offer.name, offer.price, offer.description, offer.image, offer.idRestaurant, offer.idPromo
+                    ]
+        })
+        return result.rows[0]
+    }
 }
 
 /** @type {String} */
