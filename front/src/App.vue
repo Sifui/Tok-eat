@@ -1,21 +1,11 @@
 <template>
   <div id="app">
-    <Index> </Index>
+  
+    <router-view />
   </div>
 </template>
 
-<script>
-import Index from './components/Index.vue'
-
-export default {
-  name: 'App',
-  components: {
-    Index
-  }
-}
-</script>
-
-<style>
+<style lang="scss">
 #app {
   font-family:'Lato', 'Open Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -23,8 +13,17 @@ export default {
   text-align: center;
   color: #2c3e50;
 }
-html,body,#app{
-  height:100%;
-  margin:0
+
+#nav {
+  padding: 30px;
+
+  a {
+    font-weight: bold;
+    color: #2c3e50;
+
+    &.router-link-exact-active {
+      color: #42b983;
+    }
+  }
 }
 </style>

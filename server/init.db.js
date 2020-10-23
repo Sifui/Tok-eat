@@ -1,11 +1,14 @@
-const Client = require('./Model/client.model')
-const Schedule = require('./Model/schedule.model')
-const Restaurant = require('./Model/restaurant.model')
-const Client_Restaurant = require('./Model/client_restaurant.model')
-const Promo = require('./Model/promo.model')
-const Basket = require('./Model/basket.model')
-const Offer = require('./Model/offer.model')
-const Ordered_Product = require('./Model/ordered_product.model')
+const Client = require('./model/client.model')
+const Schedule = require('./model/schedule.model')
+const Restaurant = require('./model/restaurant.model')
+const Client_Restaurant = require('./model/client_restaurant.model')
+const Promo = require('./model/promo.model')
+const Basket = require('./model/basket.model')
+const Offer = require('./model/offer.model')
+const Ordered_Product = require('./model/ordered_product.model')
+
+const clientData = require('./utils/clientData')
+const restaurantData = require('./utils/restaurantData')
 
 const PostgresStore = require('./PostgresStore')
 
@@ -47,12 +50,25 @@ async function createEverything () {
     }
 }
 
+async function createFakeData () {
+
+    for(const client of clientData) {
+        await Client.create(client)
+    }
+    console.log('Clients generated')
+
+    for(const restaurant of restaurantData) {
+        await Restaurant.create(restaurant)
+    }
+    console.log('Restaurants generated')
+}
+
 async function run () {
     await PostgresStore.init()
 
     await dropEverything()
     await createEverything()
-    //await createFakeData()
+    await createFakeData()
  
     console.log('terminé')
 }
