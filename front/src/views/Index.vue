@@ -33,9 +33,9 @@
           </md-field>
         </div>
         <div class="md-layout-item">
-         <md-button class="nav-button" v-on:click="$router.push('/register') ">Connexion</md-button>
+         <md-button class="nav-button" v-on:click="$router.push('/login')">Connexion</md-button>
          
-          <md-button class="nav-button">Inscription</md-button>
+          <md-button class="nav-button" v-on:click="$router.push('/register')">Inscription</md-button>
         </div>
       </div>
     </md-toolbar>
@@ -126,6 +126,9 @@ export default {
     };
   },
   created() {
+   /* window.addEventListener("wheel",function(){
+    console.log(window.scrollY)      
+})*/
     axios
       .get("http://localhost:8081/restaurants")
       .then((response) => {
@@ -145,13 +148,13 @@ export default {
       let cloneRestaurants = [...this.restaurants];
       cloneRestaurants = cloneRestaurants.map((e) => ({
         ...e,
-        name: e.name.trim().toLowerCase(),
+        name: e.name.trim()
       }));
       console.log(cloneRestaurants);
-      const exp = `^${this.query.toLowerCase().trim()}`;
+      const exp = `^${this.query.trim().toLowerCase()}`;
       const regex = new RegExp(exp);
       this.suggestions = cloneRestaurants.filter((element) =>
-        regex.test(element.name)
+        regex.test(element.name.toLowerCase())
       );
       console.log(this.suggestions);
     },
@@ -161,6 +164,8 @@ export default {
     },
   },
 };
+
+
 </script>
 
 <style lang="scss" scoped>
