@@ -2,6 +2,7 @@ const router = require("express").Router()
 const bcrypt = require('bcrypt')
 const Client = require("../model/client.model")
 const Restaurant = require("../model/restaurant.model")
+const hasToBeAuthenticated = require('../middlewares/has-to-be-authenticated.middleware')
 
 router.post('/login', async (req, res) => {
     console.log('HERE ===> '+req.body);
@@ -11,7 +12,8 @@ router.post('/login', async (req, res) => {
 
     if(client && (await bcrypt.compare(req.body.password, client.password)))
     {
-        req.session.userId = client.userId
+        req.session.userId = client.id
+        req.session.type = "client"
         client.password = null
         res.json({user: client})
 
@@ -19,6 +21,7 @@ router.post('/login', async (req, res) => {
     else if(restaurant && (await bcrypt.compare(req.body.password, restaurant.password)))
     {
         req.session.userId = restaurant.userId
+        req.session.type = "restaurant"
         restaurant.password = null
         res.json({user: restaurant})
     }
@@ -26,6 +29,28 @@ router.post('/login', async (req, res) => {
     {
         res.json({user: false})
     }
+})
+
+router.get('/me', hasToBeAuthenticated, async (req, res) => {
+    
+    let user = {}
+
+    if(req.session.type === "client")
+    {
+        user = await Client.getById(req.session.userId)
+    }
+    else if(req.session.type === "restaurant")
+    {
+        user = await Client.getById(req.session.userId)
+    }
+
+    user.password = null // NE JAMAIS ENVOYER SON MDP À L'UTILISATEUR
+    res.json(user)
+})
+
+router.post('/logout', hasToBeAuthenticated, (req, res) => {
+    req.session.destroy(() => {})
+    res.json({ message: 'disconnected' })
 })
 
 router.post('/register', async (req, res) => {

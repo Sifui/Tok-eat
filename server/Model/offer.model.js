@@ -29,6 +29,15 @@ class Offer {
         })
         return result.rows[0]
     }
+
+    static async getByIdRestaurant (restaurantId) {
+        const result = await PostgresStore.client.query({
+            text: `SELECT * FROM ${Offer.tableName}
+            WHERE id_restaurant=$1`,
+            values: [restaurantId]
+        })
+        return result.rows
+    }
 }
 
 /** @type {String} */

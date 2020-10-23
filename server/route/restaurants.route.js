@@ -8,4 +8,10 @@ router.get('/restaurants', async (req,res)=>{
     res.json(result)
 })
 
+router.get('/restaurants/:id', async (req,res)=>{
+
+    const result = await Restaurant.getById(req.params.id)
+    res.json(result)
+})
+
 module.exports = router

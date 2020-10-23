@@ -43,6 +43,15 @@ class Client {
         })
         return result.rows[0]
     }
+
+    static async getById (clientId) {
+        const result = await PostgresStore.client.query({
+            text: `SELECT * FROM ${Client.tableName}
+            WHERE id=$1`,
+            values: [clientId]
+        })
+        return result.rows[0]
+    }
 }
 
 /** @type {String} */

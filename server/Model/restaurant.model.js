@@ -44,21 +44,24 @@ class Restaurant {
         })
         return result.rows[0]
     }
-    static async findByEmail(email) {
 
-        const result = await PostgresStore.client.query({
-            text: `SELECT * FROM ${Restaurant.tableName}
-            WHERE email=$1`,
-            values : [email]
-        })
-        return result.rows[0]
-    }
     static async getAll(){
         const result = await PostgresStore.client.query({
             text:`SELECT * from ${Restaurant.tableName}`
         })
         return result.rows
     }
+
+    static async getById (restaurantId) {
+        const result = await PostgresStore.client.query({
+            text: `SELECT * FROM ${Restaurant.tableName}
+            WHERE id=$1`,
+            values: [restaurantId]
+        })
+        return result.rows[0]
+    }
+
+    
 }
 
 /** @type {String} */

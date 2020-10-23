@@ -11,8 +11,9 @@ var cors = require("cors")
 var app = express()
 var port = 8081
 
-var userRouter = require('./routes/user.routes')
-var restaurantsRouter = require('./routes/restaurants.routes')
+var userRouter = require('./route/user.route')
+var restaurantsRouter = require('./route/restaurants.route')
+var offerRouter = require('./route/offer.route')
 
 var app = express()
 app.use(session({
@@ -33,3 +34,4 @@ app.listen(port, () => {
 
 app.use('/', userRouter);
 app.use('/', restaurantsRouter);
+app.use('/', offerRouter);
