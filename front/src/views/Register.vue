@@ -9,44 +9,94 @@
 
       <div class="form">
         <md-field>
-          <label>Name</label>
-          <md-input v-model="register.name"></md-input>
+          <label for="type">Register as</label>
+          <md-select v-model="register.type" name="type" id="type">
+            <md-option value="client">Client</md-option>
+            <md-option value="restaurant">Restaurant</md-option>
+          </md-select>
         </md-field>
-        <md-field>
-          <label>Firstname</label>
-          <md-input v-model="register.firstname"></md-input>
-        </md-field>
-        <md-field>
-          <label>E-mail</label>
-          <md-input v-model="register.email"></md-input>
-        </md-field>
-        <md-field>
-          <label>Phone number</label>
-          <md-input v-model="register.phone_number"></md-input>
-        </md-field>
-        <md-field>
-          <label>Address</label>
-          <md-input v-model="register.address"></md-input>
-        </md-field>
+        <div v-if="this.register.type === 'client'">
+          <md-field>
+            <label>Name</label>
+            <md-input v-model="client.lastName"></md-input>
+          </md-field>
+          <md-field>
+            <label>Firstname</label>
+            <md-input v-model="client.firstName"></md-input>
+          </md-field>
+          <md-field>
+            <label>E-mail</label>
+            <md-input v-model="client.email"></md-input>
+          </md-field>
+          <md-field>
+            <label>Phone number</label>
+            <md-input v-model="client.phoneNumber"></md-input>
+          </md-field>
+          <md-field>
+            <label>Address</label>
+            <md-input v-model="client.address"></md-input>
+          </md-field>
 
-        <md-field md-has-password>
-          <label>Password</label>
-          <md-input v-model="register.password" type="password"></md-input>
-        </md-field>
-        <md-field md-has-password>
-          <label>Confirm your password</label>
-          <md-input v-model="register.repassword" type="password"></md-input>
-        </md-field>
+          <md-field md-has-password>
+            <label>Password</label>
+            <md-input v-model="client.password" type="password"></md-input>
+          </md-field>
+          <md-field md-has-password>
+            <label>Confirm your password</label>
+            <md-input v-model="client.repassword" type="password"></md-input>
+          </md-field>
+        </div>
+        <div v-if="this.register.type === 'restaurant'">
+          <md-field>
+            <label>Name</label>
+            <md-input v-model="restaurant.name"></md-input>
+          </md-field>
+          <md-field>
+            <label>E-mail</label>
+            <md-input v-model="restaurant.email"></md-input>
+          </md-field>
+          <md-field>
+            <label>Phone number</label>
+            <md-input v-model="restaurant.phoneNumber"></md-input>
+          </md-field>
+          <md-field>
+            <label>Address</label>
+            <md-input v-model="restaurant.address"></md-input>
+          </md-field>
+          <md-field>
+            <label>Description</label>
+            <md-textarea v-model="restaurant.description"></md-textarea>
+          </md-field>
+          <md-field md-has-password>
+            <label>Password</label>
+            <md-input v-model="restaurant.password" type="password"></md-input>
+          </md-field>
+        </div>
       </div>
 
-      <div class="actions md-layout md-alignment-center-space-between">
-        <router-link to="/register-restaurant"
-          >Register as restaurant</router-link
-        >
+      <div
+        v-if="this.register.type === 'client'"
+        class="actions md-layout md-alignment-center-space-between"
+      >
+        <router-link to="/register">Forget your password?</router-link>
         <md-button
           class="md-raised md-primary"
-          :disabled="isDisabled"
-          @click="registration"
+          :disabled="isDisabledClient"
+          @click="clientRegistration"
+        >
+          Sign in</md-button
+        >
+      </div>
+
+      <div
+        v-if="this.register.type === 'restaurant'"
+        class="actions md-layout md-alignment-center-space-between"
+      >
+        <router-link to="/register">Forget your password?</router-link>
+        <md-button
+          class="md-raised md-primary"
+          :disabled="isDisabledRestaurant"
+          @click="restaurantRegistration"
         >
           Sign in</md-button
         >
@@ -61,8 +111,8 @@
 
       <md-dialog-alert
         :md-active.sync="errorLog"
-        md-title="LOGIN ERROR"
-        md-content="wrong <strong>email</strong> or <strong>password</strong>"
+        md-title="ERROR"
+        md-content="this.message"
       />
     </md-content>
     <div class="background" />
@@ -70,6 +120,7 @@
 </template>
 
 <script>
+import DataServices from "../services/data_services";
 export default {
   name: "Login",
   props: {
@@ -79,26 +130,62 @@ export default {
     return {
       loading: false,
       errorLog: false,
+      message: "",
       register: {
-        name: "",
-        firstname: "",
+        type: "",
+      },
+      client: {
+        type: "client",
+        lastName: "",
+        firstName: "",
         email: "",
-        phone_number:"",
-        address:"",
+        phoneNumber: "",
+        address: "",
         password: "",
         repassword: "",
       },
-      person: [],
+      restaurant: {
+        type: "restaurant",
+      },
+      entity: [],
     };
   },
   computed: {
-    isDisabled() {
-      return !this.register.name || !this.register.firstname ? true : false;
+    isDisabledClient() {
+      return !this.client.lastName ||
+        !this.client.firstName ||
+        !this.client.email ||
+        !this.client.phoneNumber ||
+        !this.client.address ||
+        !this.client.password
+        ? true
+        : false;
     },
   },
   methods: {
-    registration() {
-      this.$router.push({ path: "home" });
+    clientRegistration() {
+      // this.$router.push({ path: "home" });
+      this.loading = true;
+      DataServices.register(this.client)
+        .then((response) => {
+          this.entity = response.data;
+          console.log(this.entity.user);
+          if (this.entity.message) {
+            setTimeout(() => {
+              this.loading = false;
+            }, 1000);
+            this.message = this.entity.message;
+            this.errorLog = true;
+          } else {
+            setTimeout(() => {
+              this.loading = false;
+            }, 1000);
+            this.$router.push({ path: "home" });
+          }
+        })
+        .catch(() => {
+          console.log("error");
+        });
     },
   },
 };

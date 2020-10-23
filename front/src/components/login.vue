@@ -27,7 +27,7 @@
 
       <div class="actions md-layout md-alignment-center-space-between">
         <!-- <a href="#">Reset password</a> -->
-        <router-link to="/login-restaurant">Login as restaurant</router-link>
+        <router-link to="/">Forget your password?</router-link>
         <md-button
           class="md-raised md-primary"
           type="submit"
