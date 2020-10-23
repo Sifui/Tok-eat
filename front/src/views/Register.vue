@@ -67,6 +67,10 @@
             <label>Description</label>
             <md-textarea v-model="restaurant.description"></md-textarea>
           </md-field>
+          <md-field>
+            <label>Restaurant Logo image</label>
+            <md-file v-model="restaurant.image" />
+          </md-field>
           <md-field md-has-password>
             <label>Password</label>
             <md-input v-model="restaurant.password" type="password"></md-input>
@@ -141,11 +145,18 @@ export default {
         email: "",
         phoneNumber: "",
         address: "",
+        image:null,
         password: "",
         repassword: "",
       },
       restaurant: {
         type: "restaurant",
+        name: "",
+        email: "",
+        phoneNumber: "",
+        address: "",
+        description: "",
+        password: "",
       },
       entity: [],
     };
@@ -161,12 +172,45 @@ export default {
         ? true
         : false;
     },
+    isDisabledRestaurant() {
+      return !this.restaurant.name ||
+        !this.restaurant.email ||
+        !this.restaurant.phoneNumber ||
+        !this.restaurant.address ||
+        !this.restaurant.description ||
+        !this.restaurant.password
+        ? true
+        : false;
+    },
   },
   methods: {
     clientRegistration() {
       // this.$router.push({ path: "home" });
       this.loading = true;
       DataServices.register(this.client)
+        .then((response) => {
+          this.entity = response.data;
+          console.log(this.entity.user);
+          if (this.entity.message) {
+            setTimeout(() => {
+              this.loading = false;
+            }, 1000);
+            this.message = this.entity.message;
+            this.errorLog = true;
+          } else {
+            setTimeout(() => {
+              this.loading = false;
+            }, 1000);
+            this.$router.push({ path: "home" });
+          }
+        })
+        .catch(() => {
+          console.log("error");
+        });
+    },
+    restaurantRegistration() {
+      this.loading = true;
+      DataServices.register(this.restaurant)
         .then((response) => {
           this.entity = response.data;
           console.log(this.entity.user);
