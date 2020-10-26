@@ -14,6 +14,7 @@ var port = 8081
 var userRouter = require('./route/user.route')
 var restaurantsRouter = require('./route/restaurants.route')
 var offerRouter = require('./route/offer.route')
+var clientRestaurantRouter = require('./route/client-restaurant.route')
 
 var app = express()
 app.use(session({
@@ -35,3 +36,4 @@ app.listen(port, () => {
 app.use('/', userRouter);
 app.use('/', restaurantsRouter);
 app.use('/', offerRouter);
+app.use('/',clientRestaurantRouter)

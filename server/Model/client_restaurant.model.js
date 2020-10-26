@@ -16,6 +16,16 @@ class Client_Restaurant {
             )
         `
     }
+    static async create(feedback){
+        console.log(feedback)
+        const result = await PostgresStore.client.query({
+            text:`INSERT INTO ${Client_Restaurant.tableName}
+                    (id_client,id_restaurant,grade,grade_date)
+                    VALUES($1,$2,$3,current_timestamp)
+            `,
+            values:[feedback.Client_id,feedback.Restaurant_id,feedback.grade]
+        })
+    }
 }
 
 /** @type {String} */

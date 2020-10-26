@@ -16,7 +16,6 @@ router.post('/login', async (req, res) => {
         req.session.type = "client"
         client.password = null
         res.json({user: client})
-
     }
     else if(restaurant && (await bcrypt.compare(req.body.password, restaurant.password)))
     {
