@@ -60,7 +60,7 @@
 </template>
 
 <script>
-import DataServices from "../services/data_services";
+import DataServices from "../services/userServices";
 export default {
   name: "Login",
   props: {
@@ -87,12 +87,11 @@ export default {
     },
   },
   methods: {
-    auth() {
-      this.loading = true;
+    async auth() {  
+      this.loading = true;      
       DataServices.findByEmail(this.login)
-        .then((response) => {
+        .then(async(response) => {
           this.person = response.data;
-          console.log(this.person.user);
           if (this.person.user===false) {
             setTimeout(() => {
               this.loading = false;
@@ -102,7 +101,15 @@ export default {
             setTimeout(() => {
               this.loading = false;
             }, 1000);
-            this.$router.push({ path: "home" });
+            const user = await DataServices.me()
+            if(user.data.type === "client")
+            {
+              this.$router.push({ path: "/home" });
+            }
+            else if(user.data.type === "restaurant")
+            {
+              this.$router.push({ path: "/RestaurantDashBoard" });
+            }
           }
         })
         .catch(() => {

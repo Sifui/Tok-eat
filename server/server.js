@@ -25,7 +25,10 @@ app.use(session({
 
 
 app.use(bodyParser.json())
-app.use(cors())
+app.use(cors({
+    credentials: true,
+    origin: 'http://localhost:8080' // si votre port est différent, changez cette valeur !
+}))
 app.use(express.urlencoded({ extended: true }))
 app.use(logger('dev'))
 

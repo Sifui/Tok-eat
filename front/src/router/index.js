@@ -28,6 +28,11 @@ const routes = [
     component:()=> import('../views/Login.vue'),
   },
   {
+    path: '/RestaurantDashBoard',
+    name: 'RestaurantDashBoard',
+    component:()=> import('../views/RestaurantDashBoard.vue'),
+  },
+  {
     path: '/register',
     name: 'Register',
     // route level code-splitting
@@ -39,7 +44,12 @@ const routes = [
     path: '/home',
     name: 'Home',
     component: () => import(/* webpackChunkName: "about" */ '../views/Home.vue')
-  }
+  },
+  {
+    path: '*',
+    name: 'Error404',
+    component: () => import(/* webpackChunkName: "about" */ '../views/Error404.vue')
+  },
 ]
 
 const router = new VueRouter({
