@@ -1,7 +1,7 @@
 <template>
   <div class="index" md-theme="black">
     <md-toolbar md-elevation="4">
-      <img id="logo" src="../assets/logo.png" width="100" />
+      <img id="logo" src="../assets/logo.png" width="100" v-on:click="$router.push('/')" />
       <div class="nav-elements md-layout md-gutter">
         <div class="md-layout-item">
           <md-field>
@@ -133,6 +133,9 @@ export default {
   padding-top: 10px;
 }
 
+#logo:hover{
+  cursor:pointer
+}
 .sidebar {
   height: 100%;
   border-right: 1px solid silver;

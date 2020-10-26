@@ -10,6 +10,7 @@ class Client_Restaurant {
                 favorite BOOLEAN,
                 grade INTEGER,
                 grade_date TIMESTAMP,
+                feedback TEXT,
                 token INTEGER,
                 id_client INTEGER REFERENCES ${Client.tableName}(id),
                 id_restaurant INTEGER REFERENCES ${Restaurant.tableName}(id)
@@ -17,15 +18,17 @@ class Client_Restaurant {
         `
     }
     static async create(feedback){
-        console.log(feedback)
+        console.log(feedback.Client_id)
+        console.log(feedback.Restaurant_id)
         const result = await PostgresStore.client.query({
             text:`INSERT INTO ${Client_Restaurant.tableName}
-                    (id_client,id_restaurant,grade,grade_date)
-                    VALUES($1,$2,$3,current_timestamp)
+                    (id_client,id_restaurant,grade,grade_date,feedback)
+                    VALUES($1,$2,$3,current_timestamp,$4)
             `,
-            values:[feedback.Client_id,feedback.Restaurant_id,feedback.grade]
+            values:[feedback.id_client,feedback.id_restaurant,feedback.grade,feedback.feedback]
         })
     }
+    static async 
 }
 
 /** @type {String} */

@@ -25,6 +25,12 @@
           <button type="button" v-on:click="sendFeedback">Envoyer</button>
         </md-card-header>
       </md-card>
+      <div class="display-feedbacks">
+
+          <div v-for="(item,index) in feedbacks" v-bind:key="index"></div>
+
+  
+      </div>
   </div>
 </template>
 
@@ -38,7 +44,8 @@ export default {
     data(){
         return {
           grade:1,
-          feedback:''
+          feedback:'',
+          feedbacks : []
         }
     },
     methods:{
@@ -49,12 +56,12 @@ export default {
               const idRestaurant = this.$route.query.id
               console.log(idRestaurant)
               axios.post('http://localhost:8081/client-restaurant/feedback',{
-                body:{
-                  'Client_id': 1,
-                  'Restaurant_id': idRestaurant,
+                
+                  'id_client': 1,
+                  'id_restaurant': idRestaurant,
                   'grade':this.grade,
                   'feedback': this.feedback
-                }
+                
               })
             }
         }
@@ -73,6 +80,7 @@ export default {
       })
       .catch(() => {
       });
+      
     }
 }
 </script>
