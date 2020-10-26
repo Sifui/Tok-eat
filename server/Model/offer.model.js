@@ -36,7 +36,7 @@ class Offer {
             WHERE id_restaurant=$1`,
             values: [restaurantId]
         })
-        return result.rows
+        return result.rows[0]
     }
 
     static async delete(offerD){
@@ -45,7 +45,7 @@ class Offer {
             WHERE id=$1`,
             values: [Number(offerD)]
         })
-        return result.rows
+        return result.rows[0]
     }
 
     static async modifName(offerM){
@@ -55,7 +55,7 @@ class Offer {
             WHERE id=$2`,
             values : [offerM.name, Number(offerM.id)]
         })
-        return result.rows
+        return result.rows[0]
     }
 
     static async modifPrice(offerP){
@@ -65,7 +65,7 @@ class Offer {
             WHERE id=$2`,
             values : [offerP.price, Number(offerP.id)]
         })
-        return result.rows
+        return result.rows[0]
     }
 
     static async modifDes(offerD){
@@ -75,7 +75,18 @@ class Offer {
             WHERE id=$2`,
             values : [offerD.description, Number(offerD.id)]
         })
-        return result.rows
+        return result.rows[0]
+    }
+
+    static async modif(offer){
+        const result = await PostgresStore.client.query({
+            text:`UPDATE ${Offer.tableName}
+            SET name=$1, price=$2, description=$3
+            WHERE id=$4
+            RETURNING *`,
+            values : [offer.name, Number(offer.price), offer.description, Number(offer.id)]
+        })
+        return result.rows[0]
     }
 }
 

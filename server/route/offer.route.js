@@ -19,20 +19,12 @@ router.delete('/offer', hasToBeAuthenticated, async (req,res)=>{
     res.json(result)
 })
 
-router.put('/offer/modifN', hasToBeAuthenticated, async (req,res)=>{
-    const result = await Offer.modifName(req.body)
+router.put('/offer', hasToBeAuthenticated, async (req,res)=>{
+    const result = await Offer.modif(req.body)
     res.json(result)
 })
 
-router.put('/offer/modifP', hasToBeAuthenticated, async (req,res)=>{
-    const result = await Offer.modifPrice(req.body)
-    res.json(result)
-})
 
-router.put('/offer/modifD', hasToBeAuthenticated, async (req,res)=>{
-    const result = await Offer.modifDes(req.body)
-    res.json(result)
-})
 
 module.exports = router
 
