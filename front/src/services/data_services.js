@@ -10,8 +10,8 @@ class TutorialDataService {
     // return http.post(`/login/${email}`);
   }
 
-  create(data) {
-    return http.post("/users", data);
+  register(data) {
+    return http.post("/register", data);
   }
 
   // update(id, data) {

@@ -33,7 +33,7 @@
           </md-field>
         </div>
         <div class="md-layout-item">
-         <md-button class="nav-button" v-on:click="$router.push('/restaurant')">Connexion</md-button>
+         <md-button class="nav-button" v-on:click="$router.push('/login')">Connexion</md-button>
          
           <md-button class="nav-button" v-on:click="$router.push('/register')">Inscription</md-button>
         </div>
