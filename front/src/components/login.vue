@@ -1,5 +1,5 @@
 <template>
-  <div class="centered-container">
+  <div class="centered-container" v-on:keyup.enter="onEnter">
     <md-content class="md-elevation-3">
       <div class="title">
         <img class="logo" src="../assets/logo.png" />
@@ -93,7 +93,29 @@ export default {
         .then((response) => {
           this.person = response.data;
           console.log(this.person.user);
-          if (this.person.user===false) {
+          if (this.person.user === false) {
+            setTimeout(() => {
+              this.loading = false;
+            }, 1000);
+            this.errorLog = true;
+          } else {
+            setTimeout(() => {
+              this.loading = false;
+            }, 1000);
+            this.$router.push({ path: "home" });
+          }
+        })
+        .catch(() => {
+          console.log("error");
+        });
+    },
+    onEnter:  function () {
+      this.loading = true;
+      DataServices.findByEmail(this.login)
+        .then((response) => {
+          this.person = response.data;
+          console.log(this.person.user);
+          if (this.person.user === false) {
             setTimeout(() => {
               this.loading = false;
             }, 1000);
