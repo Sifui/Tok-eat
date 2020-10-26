@@ -19,7 +19,7 @@ const routes = [
       {
         path:'restaurant',
         name:'restaurant',
-        component:()=> import('../components/Restaurant'),
+        component:()=> import('../components/View-restaurant'),
       }
     ]
   },

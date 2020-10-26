@@ -28,7 +28,18 @@ class Client_Restaurant {
             values:[feedback.id_client,feedback.id_restaurant,feedback.grade,feedback.feedback]
         })
     }
-    static async 
+    static async get(restaurant_id)
+    {
+        const result = await PostgresStore.client.query({
+            text:`select first_name,last_name,feedback,grade,grade_date  from ${Client_Restaurant.tableName} as cl,restaurant as r,client as c  
+                where r.id = cl.id_restaurant
+                and cl.id_client = c.id
+                and r.id = $1
+                `,
+            values: [restaurant_id]
+        })
+        return result.rows
+    }
 }
 
 /** @type {String} */
