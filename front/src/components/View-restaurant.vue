@@ -1,17 +1,20 @@
 <template>
 <div class="conteneur">
-  <div class="preview">
-    <md-card>
-      <md-card-media>
+  <div id="preview">
+    <h1 class="title" id="name"></h1>
+  <div class="subheading"  id="address"></div>
+   <div class="subheading" id="phone"></div>
+       
+    
+    <div id="restaurant-image">
         <img
           src="https://breathe-restaurant.com/wp-content/uploads/2019/12/brEAThe-archi-1.jpeg"
           alt="People"
         />
-      </md-card-media>
-      <md-card-header>
-        <div class="md-title name" id="name"></div>
-        <div class="md-subhead address" id="address"></div>
-        <div class="md-subhead phone" id="phone"></div>
+
+    </div>
+
+        
         <select
           name="notes"
           id="selection-note"
@@ -28,8 +31,6 @@
         <textarea id="avis" v-model="feedback"> </textarea>
         <br />
         <button type="button" v-on:click="sendFeedback">Envoyer</button>
-      </md-card-header>
-    </md-card>
     <div class="display-feedbacks">   
       <div
         v-for="(item, index) in feedbacks"
@@ -55,7 +56,7 @@
     </div>
     
   </div>
-  <div>
+  <div id="description">
 
       <div>labels</div>
       <div style="display:flex;justify-content:space-between">
@@ -91,6 +92,10 @@ export default {
           grade: this.grade,
           feedback: this.feedback,
         });
+        this.feedbacks.push({  id_client: 1,
+          id_restaurant: idRestaurant,
+          grade: this.grade,
+          feedback: this.feedback,})
       }
     },
   },
@@ -121,37 +126,43 @@ export default {
 <style scoped>
 .conteneur {
   display: flex;
-  max-width: 1200px;
+  max-width: 1100px;
   padding-top: 11%;
   margin: auto;
 }
-.conteneur div {
-  flex:1
+.conteneur > div {
 }
 .feedback-container {
   border: 1px solid silver;
   padding: 30px;
+   font-style: italic;
+  padding-top: 20px;
 }
-.container div {
-  text-align: left;
-}
+
 .header {
   display: flex;
   flex-direction: row;
 }
-.metadata {
-  display: flex;
-  flex-direction: column;
-}
-.feedback-container {
-  font-style: italic;
-  padding-top: 20px;
-}
+
 .grade {
   text-align: right !important;
+    flex:1
+
 }
 .metadata-wrapper{
   display: flex;
   margin-left: 10px;
+  flex:1;
+  
+}
+#restaurant-image{
+  margin-top:30px ;
+}
+
+#preview{
+  flex:60%
+}
+#description{
+  flex:40%
 }
 </style>

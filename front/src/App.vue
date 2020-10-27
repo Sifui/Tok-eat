@@ -7,10 +7,9 @@
 
 <style lang="scss">
 #app {
-  font-family:'Lato', 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-family:arial,sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
 }
 
@@ -25,5 +24,17 @@
       color: #42b983;
     }
   }
+}
+
+.title{
+  font-weight:400;
+  
+}
+.subheading{
+    font-size: 1rem;
+    font-weight: 300;
+    font-style: normal;
+    line-height: 1.375;
+    margin-top:10px
 }
 </style>
