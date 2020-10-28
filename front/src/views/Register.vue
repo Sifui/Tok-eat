@@ -340,7 +340,7 @@ export default {
       }
     },
     isClientAdressValid() {
-      if (regPhoneNumber.test(this.client.address)) {
+      if (regName.test(this.client.address)) {
         this.errorClientAddress = false;
       } else {
         this.errorClientAddress = true;
