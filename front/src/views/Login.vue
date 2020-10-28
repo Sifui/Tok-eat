@@ -69,7 +69,7 @@
 </template>
 
 <script>
-import DataServices from "../services/data_services";
+import DataServices from "../services/userServices";
 const reg = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,24}))$/
 export default {
   name: "Login",
@@ -97,13 +97,12 @@ export default {
     },
   },
   methods: {
-    auth() {
-      this.loading = true;
+    async auth() {  
+      this.loading = true;      
       DataServices.findByEmail(this.login)
-        .then((response) => {
+        .then(async(response) => {
           this.person = response.data;
-          console.log(this.person.user);
-          if (this.person.user === false) {
+          if (this.person.user===false) {
             setTimeout(() => {
               this.loading = false;
             }, 1000);
@@ -112,7 +111,15 @@ export default {
             setTimeout(() => {
               this.loading = false;
             }, 1000);
-            this.$router.push({ path: "home" });
+            const user = await DataServices.me()
+            if(user.data.type === "client")
+            {
+              this.$router.push({ path: "/home" });
+            }
+            else if(user.data.type === "restaurant")
+            {
+              this.$router.push({ path: "/RestaurantDashBoard" });
+            }
           }
         })
         .catch(() => {

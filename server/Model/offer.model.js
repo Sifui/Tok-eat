@@ -18,13 +18,13 @@ class Offer {
     }
 
     static async create (offer) {
-
+        console.log(offer)
         const result = await PostgresStore.client.query({
             text: `INSERT INTO ${Offer.tableName}
                     (name, price, description, image, id_restaurant, id_promo)
                     VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
                     values : [
-                        offer.name, offer.price, offer.description, offer.image, offer.idRestaurant, offer.idPromo
+                        offer.name, Number(offer.price), offer.description, offer.image, offer.idRestaurant, offer.idPromo
                     ]
         })
         return result.rows[0]
@@ -36,7 +36,57 @@ class Offer {
             WHERE id_restaurant=$1`,
             values: [restaurantId]
         })
-        return result.rows
+        return result.rows[0]
+    }
+
+    static async delete(offerD){
+        const result = await PostgresStore.client.query({
+            text: `DELETE FROM ${Offer.tableName}
+            WHERE id=$1`,
+            values: [Number(offerD)]
+        })
+        return result.rows[0]
+    }
+
+    static async modifName(offerM){
+        const result = await PostgresStore.client.query({
+            text: `UPDATE ${Offer.tableName}
+            SET name=$1
+            WHERE id=$2`,
+            values : [offerM.name, Number(offerM.id)]
+        })
+        return result.rows[0]
+    }
+
+    static async modifPrice(offerP){
+        const result = await PostgresStore.client.query({
+            text: `UPDATE ${Offer.tableName}
+            SET price=$1
+            WHERE id=$2`,
+            values : [offerP.price, Number(offerP.id)]
+        })
+        return result.rows[0]
+    }
+
+    static async modifDes(offerD){
+        const result = await PostgresStore.client.query({
+            text: `UPDATE ${Offer.tableName}
+            SET description=$1
+            WHERE id=$2`,
+            values : [offerD.description, Number(offerD.id)]
+        })
+        return result.rows[0]
+    }
+
+    static async modif(offer){
+        const result = await PostgresStore.client.query({
+            text:`UPDATE ${Offer.tableName}
+            SET name=$1, price=$2, description=$3
+            WHERE id=$4
+            RETURNING *`,
+            values : [offer.name, Number(offer.price), offer.description, Number(offer.id)]
+        })
+        return result.rows[0]
     }
 }
 
