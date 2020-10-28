@@ -14,5 +14,3 @@ export default {
     return http.get("/me");
   }
 }
-
-//export default new TutorialDataService();
