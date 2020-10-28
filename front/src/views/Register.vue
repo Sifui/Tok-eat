@@ -9,7 +9,7 @@
 
       <div class="form">
         <md-field>
-          <label for="type">Register as</label>
+          <label for="type">S' inscrire en tant que</label>
           <md-select v-model="register.type" name="type" id="type">
             <md-option value="client">Client</md-option>
             <md-option value="restaurant">Restaurant</md-option>
@@ -17,11 +17,11 @@
         </md-field>
         <div v-if="this.register.type === 'client'">
           <md-field>
-            <label>Name</label>
+            <label>Nom</label>
             <md-input v-model="client.lastName"></md-input>
           </md-field>
           <md-field>
-            <label>Firstname</label>
+            <label>Prénom</label>
             <md-input v-model="client.firstName"></md-input>
           </md-field>
           <md-field>
@@ -29,25 +29,25 @@
             <md-input v-model="client.email"></md-input>
           </md-field>
           <md-field>
-            <label>Phone number</label>
+            <label>Téléphone</label>
             <md-input v-model="client.phoneNumber"></md-input>
           </md-field>
           <md-field>
-            <label>Address</label>
+            <label>Adresse</label>
             <md-input v-model="client.address"></md-input>
           </md-field>
           <md-field md-has-password>
-            <label>Password</label>
+            <label>Mot de passe</label>
             <md-input v-model="client.password" type="password"></md-input>
           </md-field>
           <md-field md-has-password>
-            <label>Confirm your password</label>
+            <label>Confirmez votre mot de passe</label>
             <md-input v-model="client.repassword" type="password"></md-input>
           </md-field>
         </div>
-        <div v-if="this.register.type === 'restaurant'">
+        <div v-show="this.register.type === 'restaurant'">
           <md-field>
-            <label>Name</label>
+            <label>Nom </label>
             <md-input v-model="restaurant.name"></md-input>
           </md-field>
           <md-field>
@@ -55,11 +55,11 @@
             <md-input v-model="restaurant.email"></md-input>
           </md-field>
           <md-field>
-            <label>Phone number</label>
+            <label>Numéro</label>
             <md-input v-model="restaurant.phoneNumber"></md-input>
           </md-field>
           <md-field>
-            <label>Address</label>
+            <label>Adresse</label>
             <md-input v-model="restaurant.address"></md-input>
           </md-field>
           <md-field>
@@ -67,11 +67,11 @@
             <md-textarea v-model="restaurant.description"></md-textarea>
           </md-field>
           <md-field>
-            <label>Restaurant Logo image</label>
+            <label>Logo du Restaurant</label>
             <md-file v-model="restaurant.image" />
           </md-field>
           <md-field md-has-password>
-            <label>Password</label>
+            <label>Mot de passe</label>
             <md-input v-model="restaurant.password" type="password"></md-input>
           </md-field>
         </div>
@@ -81,13 +81,13 @@
         v-if="this.register.type === 'client'"
         class="actions md-layout md-alignment-center-space-between"
       >
-        <router-link to="/register">Forget your password?</router-link>
+        <router-link to="/register">Mot de passe oublié?</router-link>
         <md-button
           class="md-raised md-primary"
           :disabled="isDisabledClient"
           @click="clientRegistration"
         >
-          Sign in</md-button
+          S' INSCRIRE</md-button
         >
       </div>
 
@@ -95,15 +95,22 @@
         v-if="this.register.type === 'restaurant'"
         class="actions md-layout md-alignment-center-space-between"
       >
-        <router-link to="/register">Forget your password?</router-link>
+        <router-link to="/register">Mot de passe oublié?</router-link>
         <md-button
           class="md-raised md-primary"
           :disabled="isDisabledRestaurant"
           @click="restaurantRegistration"
         >
-          Sign in</md-button
+          S' INSCRIRE</md-button
         >
       </div>
+
+      <!-- <md-button
+          class="md-raised md-primary"
+          type="submit"
+          to='/'
+          >Home page</md-button
+      > -->
 
       <div class="loading-overlay" v-if="loading">
         <md-progress-spinner
@@ -112,11 +119,11 @@
         ></md-progress-spinner>
       </div>
 
-      <md-dialog-alert
+      <!-- <md-dialog-alert
         :md-active.sync="errorLog"
         md-title="ERROR"
         md-content="this.message"
-      />
+      /> -->
     </md-content>
     <div class="background" />
   </div>

@@ -1,6 +1,6 @@
 import http from "./http-com";
 
-class TutorialDataService {
+class DataService {
   getAll() {
     return http.get("/users");
   }
@@ -13,14 +13,7 @@ class TutorialDataService {
   register(data) {
     return http.post("/register", data);
   }
-
-  // update(id, data) {
-  //   return http.put(`/tutorials/${id}`, data);
-  // }
-
-  delete(id) {
-    return http.delete(`/users/${id}`);
-  }
+  
 }
 
-export default new TutorialDataService();
+export default new DataService();

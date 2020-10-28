@@ -9,32 +9,41 @@
 
       <div class="form">
         <md-field>
-          <label>E-mail</label>
-          <md-input v-model="login.email" autofocus></md-input>
-          <!-- <span class="error" v-if="this.emailError === true"
-            >Email is required</span
+          <label for="LogEmail">E-mail</label>
+          <md-input id="LogEmail" name="LogEmail" type="email" v-model="login.email" @change="isEmailValid" autofocus></md-input>
+          <!-- <span class="error" v-show="this.emailError"
+            >Invalid email</span
           > -->
         </md-field>
 
         <md-field md-has-password>
-          <label>Password</label>
+          <label>Mot de Passe</label>
           <md-input v-model="login.password" type="password"></md-input>
-          <!-- <span class="error" v-if="this.passwordError === true">
-            Password is required
-          </span> -->
         </md-field>
+        <span class="error" v-if="this.errorLog || this.emailError">
+            Email ou mot de passe incorrecte
+          </span>
       </div>
 
       <div class="actions md-layout md-alignment-center-space-between">
         <!-- <a href="#">Reset password</a> -->
-        <router-link to="/">Forget your password?</router-link>
+        <!-- <router-link to="/">Forget your password?</router-link> -->
+
+        <md-button
+          class="md-raised md-primary"
+          type="submit"
+          to='/'
+          >ACCUEIL</md-button
+        >
+
         <md-button
           class="md-raised md-primary"
           type="submit"
           :disabled="isDisabled"
           @click="auth"
-          >Log in</md-button
+          >CONNEXION</md-button
         >
+        
       </div>
 
       <div class="loading-overlay" v-if="loading">
@@ -44,23 +53,24 @@
         ></md-progress-spinner>
       </div>
 
-      <md-dialog-alert
+      <!-- <md-dialog-alert
         :md-active.sync="errorLog"
         md-title="LOGIN ERROR"
         md-content="wrong <strong>email</strong> or <strong>password</strong>"
-      />
+      /> -->
     </md-content>
     <div class="background" />
-    <md-dialog-alert
+    <!-- <md-dialog-alert
       :md-active.sync="emailError"
       md-title="    INPUT ERROR!"
       md-content="Your <strong>EMAIL</strong> is required."
-    />
+    /> -->
   </div>
 </template>
 
 <script>
 import DataServices from "../services/data_services";
+const reg = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,24}))$/
 export default {
   name: "Login",
   props: {
@@ -72,7 +82,7 @@ export default {
       errorLog: false,
       emailError: false,
       passwordError: null,
-      // reg : /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,24}))$/,
+      
       // authButtonDisable : true,
       login: {
         email: "",
@@ -131,6 +141,15 @@ export default {
           console.log("error");
         });
     },
+    isEmailValid() {
+      if (reg.test(this.login.email)) {
+        // this.emailError = false;
+        this.errorLog = false;
+      } else {
+        // this.emailError = true;
+        this.errorLog = true;
+      }
+    }
   },
 };
 </script>
