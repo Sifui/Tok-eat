@@ -30,6 +30,9 @@
   font-weight:400;
   
 }
+.centered{
+  text-align: center;
+}
 .subheading{
     font-size: 1rem;
     font-weight: 300;

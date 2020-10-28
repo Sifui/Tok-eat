@@ -1,20 +1,27 @@
 <template>
-<div class="conteneur">
-  <div id="preview">
-    <h1 class="title" id="name"></h1>
-  <div class="subheading"  id="address"></div>
-   <div class="subheading" id="phone"></div>
-       
-    
-    <div id="restaurant-image">
+  <div class="conteneur">
+    <div id="preview">
+      <h1 class="title" id="name"></h1>
+      <div class="subheading" id="address"></div>
+      <div class="subheading" id="phone"></div>
+
+      <br />
+      <label for="favorite">
+        Ajouter à vos favoris
+        <input
+          v-model="favorite"
+          type="checkbox"
+          id="favorite"
+          v-on:change="setFavorite()"
+        />
+      </label>
+      <div id="restaurant-image">
         <img
           src="https://breathe-restaurant.com/wp-content/uploads/2019/12/brEAThe-archi-1.jpeg"
           alt="People"
         />
-
-    </div>
-
-        
+      </div>
+      <div id="form">
         <select
           name="notes"
           id="selection-note"
@@ -27,46 +34,48 @@
           <option value="4">4</option>
           <option value="5">5</option>
         </select>
+
         <br />
         <textarea id="avis" v-model="feedback"> </textarea>
         <br />
         <button type="button" v-on:click="sendFeedback">Envoyer</button>
-    <div class="display-feedbacks">   
-      <div
-        v-for="(item, index) in feedbacks"
-        v-bind:key="index"
-        class="feedback-container"
-      >
-        <div class="header">
-          <div><img width="40" src="../assets/profil.jpg" alt="" /></div>
-          <div class="metadata-wrapper">
-            <div class="metadata">
-              <div class="author">
-                {{ item.first_name }} {{ item.last_name }}
+      </div>
+      <div class="display-feedbacks">
+        <div
+          v-for="(item, index) in feedbacks"
+          v-bind:key="index"
+          class="feedback-container"
+        >
+          <div v-if="item.feedback">
+            <div class="header">
+              <div><img width="40" src="../assets/profil.jpg" alt="" /></div>
+              <div class="metadata-wrapper">
+                <div class="metadata">
+                  <div class="author">
+                    {{ item.first_name }} {{ item.last_name }}
+                  </div>
+                  <div class="date">{{ item.grade_date }}</div>
+                </div>
+                <div class="grade">{{ item.grade }}/5</div>
               </div>
-              <div class="date">{{ item.grade_date }}</div>
             </div>
-            <div class="grade">{{ item.grade }}/5</div>
+            <div class="feedback-content">
+              <div>{{ item.feedback }}</div>
+            </div>
           </div>
         </div>
-        <div class="feedback-content">
-          <div>{{ item.feedback }}</div>
-        </div>
       </div>
     </div>
-    
-  </div>
-  <div id="description">
-
+    <div id="description">
       <div>labels</div>
-      <div style="display:flex;justify-content:space-between">
-        <div> titre </div>
-        <div> prix</div>
+      <div style="display: flex; justify-content: space-between">
+        <div>titre</div>
+        <div>prix</div>
       </div>
       <div></div>
       <div></div>
     </div>
-</div>
+  </div>
 </template>
 
 <script>
@@ -80,22 +89,79 @@ export default {
       grade: 1,
       feedback: "",
       feedbacks: [],
+      favorite: false,
+      hasAlreadyFeedBack: false,
     };
   },
   methods: {
     sendFeedback() {
       if (this.grade && this.feedback.length > 0) {
         const idRestaurant = this.$route.query.id;
+        if (this.hasAlreadyFeedBack) {
+          axios
+            .put(
+              `http://localhost:8081/client-restaurant/${this.$route.query.id}`,
+              {
+                clientId: 1,
+                restaurantId: idRestaurant,
+                grade: this.grade,
+                feedback: this.feedback,
+                favorite: this.favorite,
+              }
+            )
+            .then((response) => {
+              console.log(response);
+              this.feedbacks.unshift({
+                clientId: 1,
+                restaurantId: idRestaurant,
+                grade: response.data.grade,
+                grade_date: response.data.grade_date,
+                feedback: response.data.feedback,
+                favorite: response.data.favorite,
+              });
+            });
+          document.getElementById("form").style.display = "none";
+          console.log(idRestaurant);
+
+          return;
+        }
+        document.getElementById("form").style.display = "none";
+        console.log(idRestaurant);
+        axios
+          .post("http://localhost:8081/client-restaurant", {
+            clientId: 1,
+            restaurantId: idRestaurant,
+            grade: this.grade,
+            feedback: this.feedback,
+            favorite: this.favorite,
+          })
+          .then((response) => {
+            console.log(response);
+            this.feedbacks.unshift(response.data);
+          });
+        this.hasAlreadyFeedBack = true;
+      }
+    },
+    setFavorite() {
+      const idRestaurant = this.$route.query.id;
+
+      if (this.hasAlreadyFeedBack) {
+        console.log("deja noté");
+        axios.put(
+          `http://localhost:8081/client-restaurant/${this.$route.query.id}`,
+          {
+            favorite: this.favorite,
+            clientId: 1,
+            restaurantId: idRestaurant,
+          }
+        );
+      } else {
         axios.post("http://localhost:8081/client-restaurant", {
-          id_client: 1,
-          id_restaurant: idRestaurant,
-          grade: this.grade,
-          feedback: this.feedback,
+          clientId: 1,
+          restaurantId: idRestaurant,
+          favorite: this.favorite,
         });
-        this.feedbacks.push({  id_client: 1,
-          id_restaurant: idRestaurant,
-          grade: this.grade,
-          feedback: this.feedback,})
+        this.hasAlreadyFeedBack = true;
       }
     },
   },
@@ -113,10 +179,14 @@ export default {
     axios
       .get(`http://localhost:8081/client-restaurant/${this.$route.query.id}`)
       .then((response) => {
-        console.log(response);
-
         this.feedbacks = [...response.data];
-        console.log(this.feedbacks);
+
+        if (this.feedbacks.length > 0) {
+          this.hasAlreadyFeedBack = true;
+          if (this.feedbacks[0].feedback)
+            document.getElementById("form").style.display = "none";
+        }
+        this.feedbacks = this.feedbacks.filter((el) => el.feedback);
       })
       .catch(() => {});
   },
@@ -135,7 +205,7 @@ export default {
 .feedback-container {
   border: 1px solid silver;
   padding: 30px;
-   font-style: italic;
+  font-style: italic;
   padding-top: 20px;
 }
 
@@ -146,23 +216,21 @@ export default {
 
 .grade {
   text-align: right !important;
-    flex:1
-
+  flex: 1;
 }
-.metadata-wrapper{
+.metadata-wrapper {
   display: flex;
   margin-left: 10px;
-  flex:1;
-  
+  flex: 1;
 }
-#restaurant-image{
-  margin-top:30px ;
+#restaurant-image {
+  margin-top: 30px;
 }
 
-#preview{
-  flex:60%
+#preview {
+  flex: 60%;
 }
-#description{
-  flex:40%
+#description {
+  flex: 40%;
 }
 </style>
