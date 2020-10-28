@@ -129,7 +129,7 @@ export default {
     },
     onEnter: function () {
       this.loading = true;
-      DataServices.findByEmail(this.login)
+      userServices.findByEmail(this.login)
         .then((response) => {
           this.person = response.data;
           console.log(this.person.user);
