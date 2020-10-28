@@ -123,7 +123,7 @@
 </template>
 
 <script>
-import DataServices from "../services/data_services";
+import DataServices from "../services/userServices";
 export default {
   name: "Login",
   props: {

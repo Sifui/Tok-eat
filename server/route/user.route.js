@@ -15,14 +15,17 @@ router.post('/login', async (req, res) => {
         req.session.userId = client.id
         req.session.type = "client"
         client.password = null
+        client.type = "client"
         res.json({user: client})
     }
     else if(restaurant && (await bcrypt.compare(req.body.password, restaurant.password)))
     {
-        req.session.userId = restaurant.userId
+        req.session.userId = restaurant.id
         req.session.type = "restaurant"
         restaurant.password = null
+        restaurant.type = "restaurant"
         res.json({user: restaurant})
+
     }
     else
     {
@@ -37,10 +40,12 @@ router.get('/me', hasToBeAuthenticated, async (req, res) => {
     if(req.session.type === "client")
     {
         user = await Client.getById(req.session.userId)
+        user.type = "client"
     }
     else if(req.session.type === "restaurant")
     {
         user = await Client.getById(req.session.userId)
+        user.type = "restaurant"
     }
 
     user.password = null // NE JAMAIS ENVOYER SON MDP À L'UTILISATEUR

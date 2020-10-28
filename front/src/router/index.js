@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 // import Home from '../views/Home.vue'
-import Login from '../components/login.vue'
 
 Vue.use(VueRouter)
 
@@ -26,7 +25,12 @@ const routes = [
   {
     path: '/login',
     name: 'Login',
-    component: Login
+    component:()=> import('../views/Login.vue'),
+  },
+  {
+    path: '/RestaurantDashBoard',
+    name: 'RestaurantDashBoard',
+    component:()=> import('../views/RestaurantDashBoard.vue'),
   },
   {
     path: '/register',
@@ -37,20 +41,15 @@ const routes = [
     component: () => import(/* webpackChunkName: "about" */ '../views/Register.vue')
   },
   {
-    path: '/register-restaurant',
-    name: 'Register-restaurant',
-    component: () => import(/* webpackChunkName: "about" */ '../views/Register-restaurant.vue')
-  },
-  {
-    path: '/login-restaurant',
-    name: 'Login-restaurant',
-    component: () => import(/* webpackChunkName: "about" */ '../views/Login-restaurant.vue')
-  },
-  {
     path: '/home',
     name: 'Home',
     component: () => import(/* webpackChunkName: "about" */ '../views/Home.vue')
-  }
+  },
+  {
+    path: '*',
+    name: 'Error404',
+    component: () => import(/* webpackChunkName: "about" */ '../views/Error404.vue')
+  },
 ]
 
 const router = new VueRouter({

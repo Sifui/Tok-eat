@@ -2,35 +2,38 @@
   <div class="centered-container">
     <md-content class="md-elevation-3">
       <div class="title">
-        <img class="logo" src="../assets/register-restaurant-logo.png" />
+        <img class="logo" src="../assets/logo.png" />
         <!-- <div class="md-title font-title">Tok' eat</div> -->
         <div class="md-body-1"></div>
       </div>
 
       <div class="form">
         <md-field>
-          <label>Your restaurant name</label>
-          <md-input v-model="registerRestaurant.name"></md-input>
-        </md-field>
-        <md-field>
           <label>E-mail</label>
-          <md-input v-model="registerRestaurant.email"></md-input>
+          <md-input v-model="login.email" autofocus></md-input>
+          <!-- <span class="error" v-if="this.emailError === true"
+            >Email is required</span
+          > -->
         </md-field>
 
         <md-field md-has-password>
           <label>Password</label>
-          <md-input v-model="registerRestaurant.password" type="password"></md-input>
-        </md-field>
-        <md-field md-has-password>
-          <label>Confirm your password</label>
-          <md-input v-model="registerRestaurant.repassword" type="password"></md-input>
+          <md-input v-model="login.password" type="password"></md-input>
+          <!-- <span class="error" v-if="this.passwordError === true">
+            Password is required
+          </span> -->
         </md-field>
       </div>
 
       <div class="actions md-layout md-alignment-center-space-between">
-        <router-link to="/register">Register as client</router-link>
-        <md-button class="md-raised md-primary" @click="auth">
-          Sign in</md-button
+        <!-- <a href="#">Reset password</a> -->
+        <router-link to="/">Forget your password?</router-link>
+        <md-button
+          class="md-raised md-primary"
+          type="submit"
+          :disabled="isDisabled"
+          @click="auth"
+          >Log in</md-button
         >
       </div>
 
@@ -48,10 +51,16 @@
       />
     </md-content>
     <div class="background" />
+    <md-dialog-alert
+      :md-active.sync="emailError"
+      md-title="    INPUT ERROR!"
+      md-content="Your <strong>EMAIL</strong> is required."
+    />
   </div>
 </template>
 
 <script>
+import DataServices from "../services/userServices";
 export default {
   name: "Login",
   props: {
@@ -61,14 +70,52 @@ export default {
     return {
       loading: false,
       errorLog: false,
-      registerRestaurant: {
-        name: "",
+      emailError: false,
+      passwordError: null,
+      // reg : /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,24}))$/,
+      // authButtonDisable : true,
+      login: {
         email: "",
         password: "",
-        repassword: "",
       },
       person: [],
     };
+  },
+  computed: {
+    isDisabled() {
+      return !this.login.email || !this.login.password ? true : false;
+    },
+  },
+  methods: {
+    async auth() {  
+      this.loading = true;      
+      DataServices.findByEmail(this.login)
+        .then(async(response) => {
+          this.person = response.data;
+          if (this.person.user===false) {
+            setTimeout(() => {
+              this.loading = false;
+            }, 1000);
+            this.errorLog = true;
+          } else {
+            setTimeout(() => {
+              this.loading = false;
+            }, 1000);
+            const user = await DataServices.me()
+            if(user.data.type === "client")
+            {
+              this.$router.push({ path: "/home" });
+            }
+            else if(user.data.type === "restaurant")
+            {
+              this.$router.push({ path: "/RestaurantDashBoard" });
+            }
+          }
+        })
+        .catch(() => {
+          console.log("error");
+        });
+    },
   },
 };
 </script>
@@ -87,7 +134,9 @@ md-input {
   margin: auto;
   padding: 6px 12px 6px 12px;
 }
-
+.error {
+  color: red;
+}
 .centered-container {
   display: flex;
   align-items: center;
