@@ -15,4 +15,3 @@ export default {
   }
 }
 
-//export default new TutorialDataService();
