@@ -60,7 +60,7 @@
 </template>
 
 <script>
-import DataServices from "../services/userServices";
+import userServices from "../services/userServices";
 export default {
   name: "Login",
   props: {
@@ -89,7 +89,7 @@ export default {
   methods: {
     async auth() {  
       this.loading = true;      
-      DataServices.findByEmail(this.login)
+      userServices.findByEmail(this.login)
         .then(async(response) => {
           this.person = response.data;
           if (this.person.user===false) {
@@ -101,7 +101,7 @@ export default {
             setTimeout(() => {
               this.loading = false;
             }, 1000);
-            const user = await DataServices.me()
+            const user = await userServices.me()
             if(user.data.type === "client")
             {
               this.$router.push({ path: "/home" });

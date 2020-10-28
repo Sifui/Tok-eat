@@ -4,7 +4,6 @@ const PostgresStore = require("../PostgresStore")
 const hasToBeAuthenticated = require('../middlewares/has-to-be-authenticated.middleware')
 
 router.get('/offer/:id', async (req,res)=>{
-
     const result = await Offer.getByIdRestaurant(req.params.id)
     res.json(result)
 })
@@ -15,6 +14,7 @@ router.post('/offer', hasToBeAuthenticated, async (req,res)=>{
 })
 
 router.delete('/offer', hasToBeAuthenticated, async (req,res)=>{
+    console.log(req.body)
     const result = await Offer.delete(req.body.id)
     res.json(result)
 })

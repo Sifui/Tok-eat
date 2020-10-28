@@ -123,7 +123,7 @@
 </template>
 
 <script>
-import DataServices from "../services/userServices";
+import userServices from "../services/userServices";
 export default {
   name: "Login",
   props: {
@@ -186,7 +186,7 @@ export default {
     clientRegistration() {
       // this.$router.push({ path: "home" });
       this.loading = true;
-      DataServices.register(this.client)
+      userServices.register(this.client)
         .then((response) => {
           this.entity = response.data;
           console.log(this.entity.user);
@@ -209,7 +209,7 @@ export default {
     },
     restaurantRegistration() {
       this.loading = true;
-      DataServices.register(this.restaurant)
+      userServices.register(this.restaurant)
         .then((response) => {
           this.entity = response.data;
           console.log(this.entity.user);

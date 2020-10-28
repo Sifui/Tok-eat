@@ -63,9 +63,7 @@ async function createFakeData () {
 
     for(const restaurant of restaurantData) {
         restaurantInDb = await Restaurant.create(restaurant)
-        //console.log(restaurantInDb)
         offerSample = generateOffer(restaurantInDb.id,3)
-        //console.log(offerSample)
         for(let offer of offerSample)
         {
             await Offer.create(offer)
