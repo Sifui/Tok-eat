@@ -362,7 +362,6 @@ export default {
 md-input {
   border: none;
   background: #fff;
-  font-family: "Lato";
   font-weight: 700;
   display: block;
   height: 40px;
@@ -396,7 +395,6 @@ md-input {
   }
   .font-title {
     color: #606d70;
-    font-family: "Lato";
     font-size: 275%;
     // font-weight: 300;
     // line-height: 58px;

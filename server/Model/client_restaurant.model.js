@@ -83,6 +83,16 @@ class Client_Restaurant {
         })
         return result.rows[0]
     }
+    static async getAverage (restaurantId) {
+        const result = await PostgresStore.client.query({
+            text: `SELECT avg(cl.grade) 
+            FROM ${Client_Restaurant.tableName} as cl,restaurant as r
+            WHERE r.id = cl.id_restaurant
+            AND r.id = $1`,
+            values: [restaurantId]
+        })
+        return result.rows[0]
+    }
 }
 
 /** @type {String} */

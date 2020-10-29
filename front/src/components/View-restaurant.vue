@@ -1,25 +1,25 @@
 <template>
   <div class="conteneur">
     <div id="preview">
-      <h1 class="title" id="name"></h1>
-      <div class="subheading" id="address"></div>
-      <div class="subheading" id="phone"></div>
-
-      <br />
-      <label for="favorite">
-        Ajouter à vos favoris
-        <input
-          v-model="favorite"
-          type="checkbox"
-          id="favorite"
-          v-on:change="setFavorite()"
-        />
-      </label>
       <div id="restaurant-image">
         <img
           src="https://breathe-restaurant.com/wp-content/uploads/2019/12/brEAThe-archi-1.jpeg"
           alt="People"
         />
+      </div>
+      <div id="reviewSection">
+        <a href="#menus">Menus</a>
+        <a href="#promos">Promos</a>
+        <a herf="#feedbacks">Avis</a>
+        <a href="#infos">Infos</a>
+      </div>
+      <div id="description">
+        <h2>Carte du restaurant</h2>
+        <p class="bold" id="description-content">
+          Chef Valentin Thompson. Tutiac, les premiers vignerons en France à
+          ouvrir leur bistro ! épicuriens venez profiter de la cuisine gourmande
+          du Chef et laissez vous guider par notre Chef Sommelier
+        </p>
       </div>
       <div id="form">
         <select
@@ -27,7 +27,7 @@
           id="selection-note"
           v-on:change="grade = $event.target.value"
         >
-          <option value="">--Choisir une note</option>
+          <option value="">Choisir une note</option>
           <option value="1">1</option>
           <option value="2">2</option>
           <option value="3">3</option>
@@ -36,9 +36,18 @@
         </select>
 
         <br />
-        <textarea id="avis" v-model="feedback"> </textarea>
+        <md-field>
+          <label>Commentaire</label>
+          <md-textarea v-model="feedback"></md-textarea>
+        </md-field>
+
         <br />
-        <button type="button" v-on:click="sendFeedback">Envoyer</button>
+        <md-button
+          class="md-raised"
+          :md-ripple="false"
+          v-on:click="sendFeedback"
+          >Envoyer</md-button
+        >
       </div>
       <div class="display-feedbacks">
         <div
@@ -66,14 +75,28 @@
         </div>
       </div>
     </div>
-    <div id="description">
-      <div>labels</div>
-      <div style="display: flex; justify-content: space-between">
-        <div>titre</div>
-        <div>prix</div>
-      </div>
-      <div></div>
-      <div></div>
+    <div id="side-description">
+      <md-card>
+        <md-card-header style="display:flex;justify-content:space-between">
+          <h1 class="title" id="name" ></h1>
+          <h2 id="grade" ></h2>
+        </md-card-header>
+
+        <md-card-content>
+          <div class="subheading" id="address"></div>
+          <div class="subheading" id="phone"></div>
+          <br />
+          <label for="favorite">
+            Ajouter à vos favoris
+            <input
+              v-model="favorite"
+              type="checkbox"
+              id="favorite"
+              v-on:change="setFavorite()"
+            />
+          </label>
+        </md-card-content>
+      </md-card>
     </div>
   </div>
 </template>
@@ -91,6 +114,7 @@ export default {
       feedbacks: [],
       favorite: false,
       hasAlreadyFeedBack: false,
+      average: 0
     };
   },
   methods: {
@@ -137,7 +161,11 @@ export default {
           })
           .then((response) => {
             console.log(response);
-            this.feedbacks.unshift(response.data);
+            this.feedbacks.unshift({
+              ...response.data,
+              first_name: "Louanne",
+              last_name: "Havens",
+            });
           });
         this.hasAlreadyFeedBack = true;
       }
@@ -165,30 +193,33 @@ export default {
       }
     },
   },
-  created() {
-    axios
-      .get(`http://localhost:8081/restaurants/${this.$route.query.id}`)
-      .then((response) => {
-        const { data } = response;
-        document.getElementById("name").innerText = data.name;
+  async created() {
+    let response = await axios.get(
+      `http://localhost:8081/restaurants/${this.$route.query.id}`
+    );
 
-        document.getElementById("address").innerText = data.address;
-        document.getElementById("phone").innerText = data.phone_number;
-      })
-      .catch(() => {});
-    axios
-      .get(`http://localhost:8081/client-restaurant/${this.$route.query.id}`)
-      .then((response) => {
-        this.feedbacks = [...response.data];
+    document.getElementById("name").innerText = response.data.name;
+    document.getElementById("description-content").innerText = response.data.description;
+    document.getElementById("address").innerText = response.data.address;
+    document.getElementById("phone").innerText = response.data.phone_number;
 
-        if (this.feedbacks.length > 0) {
-          this.hasAlreadyFeedBack = true;
-          if (this.feedbacks[0].feedback)
-            document.getElementById("form").style.display = "none";
-        }
-        this.feedbacks = this.feedbacks.filter((el) => el.feedback);
-      })
-      .catch(() => {});
+    response = await axios.get(
+      `http://localhost:8081/client-restaurant/${this.$route.query.id}`
+    );
+    this.feedbacks = [...response.data];
+
+    if (this.feedbacks.length > 0) {
+      this.hasAlreadyFeedBack = true;
+      if (this.feedbacks[0].feedback)
+        document.getElementById("form").style.display = "none";
+    }
+    this.feedbacks = this.feedbacks.filter((el) => el.feedback);
+
+    response = await axios.get(
+      `http://localhost:8081/client-restaurant/average/${this.$route.query.id}`
+    );
+    this.average = Math.round(response.data.average.avg)
+  document.getElementById('grade').innerHTML = `${this.average}/<span style="font-size:16px">5</span>`
   },
 };
 </script>
@@ -196,7 +227,7 @@ export default {
 <style scoped>
 .conteneur {
   display: flex;
-  max-width: 1100px;
+  max-width: 950px;
   padding-top: 11%;
   margin: auto;
 }
@@ -224,13 +255,22 @@ export default {
   flex: 1;
 }
 #restaurant-image {
-  margin-top: 30px;
 }
 
 #preview {
   flex: 60%;
 }
-#description {
+#side-description {
   flex: 40%;
+  margin-left: 50px;
+}
+#reviewSection {
+  font-weight: 500;
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+}
+#reviewSection a {
+  color: inherit;
 }
 </style>

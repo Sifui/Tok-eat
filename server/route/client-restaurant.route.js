@@ -24,4 +24,10 @@ router.put('/client-restaurant/:id',async(req,res)=>{
     
     res.json(result)
 })
+
+router.get('/client-restaurant/average/:id', async (req,res)=>{
+
+    const result = await ClientRestaurant.getAverage(req.params.id)
+    res.json({average:result})
+})
 module.exports = router

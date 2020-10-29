@@ -24,7 +24,7 @@
               width: 100%;
             "
           >
-            <p
+            <p class="search-result"
               v-on:click="updateInput(suggestion.name)"
               style="padding: 10px; margin: 0"
               align="left"
@@ -113,7 +113,7 @@ export default {
   text-align: right;
   margin-left: 10%;
 }
-p:hover {
+p.search-result:hover {
   background-color: lightgrey;
   color: white;
   cursor: pointer;
