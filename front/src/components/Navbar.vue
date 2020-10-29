@@ -4,7 +4,7 @@
       id="logo"
       src="../assets/logo.png"
       width="100"
-      v-on:click="$router.push('/')"
+      v-on:click="$router.push('/').catch(()=>{})"
     />
     <div class="nav-elements md-layout md-gutter">
       <div class="md-layout-item">
@@ -15,7 +15,7 @@
             id="search"
             v-on:keyup="fetchRestaurants"
           ></md-input>
-          <md-button>Rechercher</md-button>
+          <md-button v-on:click="redirectToRestaurant()">Rechercher</md-button>
           <div
             style="
               position: absolute;
@@ -71,19 +71,26 @@ export default {
         ...e,
         name: e.name.trim(),
       }));
-      console.log(cloneRestaurants);
       const exp = `^${this.query.trim().toLowerCase()}`;
       const regex = new RegExp(exp);
       this.suggestions = cloneRestaurants.filter((element) =>
         regex.test(element.name.toLowerCase())
       );
-      console.log(this.suggestions);
     },
     updateInput(text) {
       this.query = text;
       this.suggestions = [];
+    },
+    redirectToRestaurant(){
+      const search = this.restaurants.find((e) => e.name.toLowerCase() === this.query.toLowerCase())
+      if (search){
+        this.$router.push(/*`/restaurant?id=${search.id}` */{path:'restaurant',query:{id:search.id}})
+        this.query = ''
+        this.suggestions = []
+      }
     }
   },
+  
 };
 </script>
 
