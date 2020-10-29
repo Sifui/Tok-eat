@@ -24,8 +24,7 @@ router.put('/offer', hasToBeAuthenticated, async (req,res)=>{
 
     if(!req.body.name ||
         !req.body.price ||
-        !Req.body.description
-    )
+        !Req.body.description)
     {
         res.status(400)
         res.json({message: "missimg form"})
@@ -33,7 +32,6 @@ router.put('/offer', hasToBeAuthenticated, async (req,res)=>{
     else {
         res.json(result)
     }
-
 })
 
 module.exports = router
