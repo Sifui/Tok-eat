@@ -61,6 +61,15 @@ class Restaurant {
         return result.rows[0]
     }
 
+    static async delete(restaurantId){
+        const result = await PostgresStore.client.query({
+            text: `DELETE FROM ${Restaurant.tableName}
+            WHERE id=$1`,
+            values: [restaurantId]
+        })
+        return result.rows[0]
+    }
+
     
 }
 

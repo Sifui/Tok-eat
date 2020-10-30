@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt')
 const Client = require("../model/client.model")
 const Restaurant = require("../model/restaurant.model")
 const hasToBeAuthenticated = require('../middlewares/has-to-be-authenticated.middleware')
+const { client } = require("../PostgresStore")
 
 router.post('/login', async (req, res) => {
     console.log('HERE ===> '+req.body);
@@ -123,6 +124,20 @@ router.post('/register', async (req, res) => {
     {
         res.status(401)
         res.json({message: "This kind of user doesn't exist"})
+    }
+})
+
+router.post('/unregister', hasToBeAuthenticated, async (req, res) => {
+    if(req.session.type == "client"){
+        const result = await Client.delete(req.session.userId)
+        res.json(result)
+        res.json({message: "unregistered"})
+    }
+
+    if(req.session.type == "restaurant"){
+        const result = await Restaurant.delete(req.session.userId)
+        res.json(result)
+        res.json({message: "unregistered"})
     }
 })
 

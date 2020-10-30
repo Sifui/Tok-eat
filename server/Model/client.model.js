@@ -1,5 +1,6 @@
 const PostgresStore = require("../PostgresStore")
 const bcrypt = require('bcrypt')
+const { postgres } = require("../server.config")
 
 class Client {
     static toSQLTable () {
@@ -48,7 +49,16 @@ class Client {
         const result = await PostgresStore.client.query({
             text: `SELECT * FROM ${Client.tableName}
             WHERE id=$1`,
-            values: [clientId]
+            values: [Number(clientId)]
+        })
+        return result.rows[0]
+    }
+
+    static async delete(clientId){
+        const result = await PostgresStore.client.query({
+            text: `DELETE FROM ${Client.tableName}
+            WHERE id=$1`,
+            values: [Number(clientId)]
         })
         return result.rows[0]
     }
