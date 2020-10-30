@@ -78,7 +78,8 @@ export default {
       this.suggestions = cloneRestaurants.filter((element) =>
         regex.test(element.name.toLowerCase())
       );*/
-
+    if ( this.query.trim().length === 0)
+      return
       axios
       .get(`http://localhost:8081/restaurants/trends/${this.query}`)
       .then((response) => {
@@ -92,6 +93,9 @@ export default {
       this.suggestions = [];
     },
     redirectToRestaurant(){
+      this.query = this.query.trim()
+       if ( this.query.length === 0)
+      return
       const search = this.restaurants.find((e) => e.name.toLowerCase() === this.query.toLowerCase())
       if (search){
         this.$router.push({path:'restaurant',query:{id:search.id}})
@@ -99,9 +103,10 @@ export default {
         this.suggestions = []
       }
       else{
-        this.$router.push({path:'search',query:{slug:this.query}})
+        this.$router.push({path:'search',query:{slug:this.query}}).catch(()=>{})
 
       }
+      this.suggestions = []
     }
   },
   

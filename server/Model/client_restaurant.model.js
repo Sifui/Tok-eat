@@ -101,7 +101,6 @@ class Client_Restaurant {
            limit 3`,
 
         })
-        console.log(result)
         return result.rows
     }
 }
