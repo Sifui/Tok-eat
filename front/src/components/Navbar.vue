@@ -13,7 +13,7 @@
           <md-input
             v-model="query"
             id="search"
-            v-on:keyup="fetchRestaurants"
+            v-on:keyup='fetchRestaurants'
           ></md-input>
           <md-button v-on:click="redirectToRestaurant()">Rechercher</md-button>
           <div
@@ -50,6 +50,8 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   name: "Navbar",
   props: {
@@ -66,7 +68,7 @@ export default {
   },
   methods: {
     fetchRestaurants() {
-      let cloneRestaurants = [...this.restaurants];
+      /*let cloneRestaurants = [...this.restaurants];
       cloneRestaurants = cloneRestaurants.map((e) => ({
         ...e,
         name: e.name.trim(),
@@ -75,7 +77,15 @@ export default {
       const regex = new RegExp(exp);
       this.suggestions = cloneRestaurants.filter((element) =>
         regex.test(element.name.toLowerCase())
-      );
+      );*/
+
+      axios
+      .get(`http://localhost:8081/restaurants/trends/${this.query}`)
+      .then((response) => {
+        this.results = response.data;
+        this.suggestions = this.results
+        console.log(this.results);
+      });
     },
     updateInput(text) {
       this.query = text;
@@ -84,9 +94,13 @@ export default {
     redirectToRestaurant(){
       const search = this.restaurants.find((e) => e.name.toLowerCase() === this.query.toLowerCase())
       if (search){
-        this.$router.push(/*`/restaurant?id=${search.id}` */{path:'restaurant',query:{id:search.id}})
+        this.$router.push({path:'restaurant',query:{id:search.id}})
         this.query = ''
         this.suggestions = []
+      }
+      else{
+        this.$router.push({path:'search',query:{slug:this.query}})
+
       }
     }
   },

@@ -11,9 +11,11 @@
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
   font-family: 'Roboto' ;
+  height:100%
 }
 body,html{
   background-color: white !important;
+  height:100%
 
 }
 #nav {
@@ -46,5 +48,19 @@ body,html{
 }
 .bold{
   font-weight: bold;
+}
+.flex-container
+{
+  display:flex;
+}
+.label{
+  display:inline-block;
+  padding:4px;
+  font-size:12px;
+  margin-bottom:10px;
+
+}
+.yellow{
+  background-color: rgb(185, 248, 143);
 }
 </style>
