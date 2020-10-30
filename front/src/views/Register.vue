@@ -22,6 +22,7 @@
               type="text"
               name="clientName"
               id="clientName"
+              minlength="3"
               maxlength="30"
               v-model="client.lastName"
               @change="isClientNameValid"
@@ -101,29 +102,82 @@
         </div>
         <div v-show="this.register.type === 'restaurant'">
           <md-field>
-            <label>Nom </label>
-            <md-input v-model="restaurant.name"></md-input>
+            <label for="restaurantName">Nom </label>
+            <md-input
+              id="restaurantName"
+              name="restaurantName"
+              type="text"
+              minlength="3"
+              maxlength="30"
+              v-model="restaurant.name"
+              @change="isRestaurantNameValid"
+            ></md-input>
+            <span class="error" v-show="this.errorRestaurantName"
+              >Caractères invalide</span
+            >
           </md-field>
           <md-field>
-            <label>E-mail</label>
-            <md-input v-model="restaurant.email"></md-input>
+            <label for="restaurantEmail">E-mail</label>
+            <md-input
+              id="restaurantEmail"
+              name="restaurantEmail"
+              type="email"
+              @change="isRestaurantMailValid"
+              v-model="restaurant.email"
+            ></md-input>
+            <span class="error" v-show="this.errorRestaurantEmail"
+              >email invalide</span
+            >
           </md-field>
           <md-field>
-            <label>Numéro</label>
-            <md-input v-model="restaurant.phoneNumber"></md-input>
+            <label for="restaurantPhoneNumber">Numéro</label>
+            <md-input
+              id="restaurantPhoneNumber"
+              name="restaurantPhoneNumber"
+              @change="isRestaurantPhoneNumberValid"
+              v-model="restaurant.phoneNumber"
+            ></md-input>
+            <span class="error" v-show="this.errorRestaurantPhoneNumber"
+              >numéro invalide</span
+            >
           </md-field>
           <md-field>
-            <label>Adresse</label>
-            <md-input v-model="restaurant.address"></md-input>
+            <label for="restaurantAddress">Adresse</label>
+            <md-input
+              id="restaurantAddress"
+              name="restaurantAddress"
+              type="text"
+              @change="isRestaurantAddressValid"
+              v-model="restaurant.address"
+            ></md-input>
+            <span class="error" v-show="this.errorRestaurantAddress"
+              >Adresse invalide</span
+            >
           </md-field>
           <md-field>
-            <label>Description</label>
-            <md-textarea v-model="restaurant.description"></md-textarea>
+            <label for="restaurantDescription">Description</label>
+            <md-textarea
+              id="restaurantDescription"
+              name="restaurantDescription"
+              maxlength="200"
+              minlength="5"
+              v-model="restaurant.description"
+            ></md-textarea>
           </md-field>
           <md-field>
-            <label>Logo du Restaurant</label>
-            <md-file v-model="restaurant.image" />
+            <label for="restaurantImage">Logo du Restaurant</label>
+            <md-file
+              type="file"
+              id="restaurantImage"
+              name="restaurantImage"
+              accept="image/x-png,image/gif,image/jpeg,image/tiff"
+              v-model="restaurant.image"
+              @change="isRestaurantImageValid"
+            />
           </md-field>
+           <span class="error" v-show="this.errorRestaurantImage"
+              >Format de fichier invalide</span
+            >
           <md-field md-has-password>
             <label>Mot de passe</label>
             <md-input v-model="restaurant.password" type="password"></md-input>
@@ -190,8 +244,10 @@
 <script>
 import DataServices from "../services/userServices";
 const regName = /^[^~"#{([|`^\])}=+-/*$£¤%µ!:;,?.§]*$/;
+const regAddress = /^[^~"#{([`^\])}=+-/*$£¤%µ!:;,?.§]*$/;
 const regMail = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,24}))$/;
 const regPhoneNumber = /^(\+33|0|\+33 )[1-9]([-. ]?[0-9]{2}){4}( )*$/;
+const regImage = /^[a-zA-Z0-9 -_]+\.(png|jpeg|jpg|gif|tiff)$/gm
 export default {
   name: "Login",
   props: {
@@ -206,8 +262,14 @@ export default {
       errorClientMail: false,
       errorClientPhoneNumber: false,
       errorClientAddress: false,
-      errorClientImage: false,
       errorPasswordCheck: false,
+      errorRestaurantName: false,
+      errorRestaurantEmail: false,
+      errorRestaurantPhoneNumber: false,
+      errorRestaurantAddress: false,
+      errorRestaurantDescription: false,
+      errorRestaurantImage: false,
+      errorRestaurantPassword: false,
       message: "",
       register: {
         type: "",
@@ -229,6 +291,7 @@ export default {
         email: "",
         phoneNumber: "",
         address: "",
+        image:null,
         description: "",
         password: "",
       },
@@ -258,7 +321,12 @@ export default {
         !this.restaurant.phoneNumber ||
         !this.restaurant.address ||
         !this.restaurant.description ||
-        !this.restaurant.password
+        !this.restaurant.password ||
+        this.errorRestaurantName ||
+        this.errorRestaurantEmail ||
+        this.errorRestaurantPhoneNumber ||
+        this.errorRestaurantAddress ||
+        this.errorRestaurantDescription 
         ? true
         : false;
     },
@@ -318,6 +386,13 @@ export default {
         this.errorClientName = true;
       }
     },
+    isRestaurantNameValid() {
+      if (regName.test(this.restaurant.name)) {
+        this.errorRestaurantName = false;
+      } else {
+        this.errorRestaurantName = true;
+      }
+    },
     isClientFirstNameValid() {
       if (regName.test(this.client.firstName)) {
         this.errorClientFirstName = false;
@@ -332,6 +407,13 @@ export default {
         this.errorClientMail = true;
       }
     },
+    isRestaurantMailValid() {
+      if (regMail.test(this.restaurant.email)) {
+        this.errorRestaurantEmail = false;
+      } else {
+        this.errorRestaurantEmail = true;
+      }
+    },
     isClientPhoneNumberValid() {
       if (regPhoneNumber.test(this.client.phoneNumber)) {
         this.errorClientPhoneNumber = false;
@@ -339,11 +421,36 @@ export default {
         this.errorClientPhoneNumber = true;
       }
     },
+    isRestaurantPhoneNumberValid() {
+      if (regPhoneNumber.test(this.restaurant.phoneNumber)) {
+        this.errorRestaurantPhoneNumber = false;
+      } else {
+        this.errorRestaurantPhoneNumber = true;
+      }
+    },
     isClientAdressValid() {
-      if (regPhoneNumber.test(this.client.address)) {
+      if (regAddress.test(this.client.address)) {
         this.errorClientAddress = false;
       } else {
         this.errorClientAddress = true;
+      }
+    },
+    isRestaurantAddressValid() {
+      if (regAddress.test(this.restaurant.address)) {
+        this.errorRestaurantAddress = false;
+      } else {
+        this.errorRestaurantAddress = true;
+      }
+    },
+    isRestaurantImageValid() {
+      // console.log(document.getElementById('restaurantImage').value.substr(12));
+      // console.log(regImage.test(document.getElementById('restaurantImage').value.substr(12)));
+      if (regImage.test(document.getElementById('restaurantImage').value.substr(12))) {
+        this.errorRestaurantImage = false;
+        console.log('Ratesh is caca');
+      } else {
+        this.errorRestaurantImage = true;
+        console.log('Ratesh is pipi');
       }
     },
     isPasswordTheSame() {
