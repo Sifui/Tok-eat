@@ -14,4 +14,3 @@ export default {
     return http.get("/me");
   }
 }
-

@@ -72,7 +72,7 @@
 </template>
 
 <script>
-import DataServices from "../services/userServices";
+import userServices from "../services/userServices";
 const reg = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,24}))$/;
 export default {
   name: "Login",
@@ -100,10 +100,10 @@ export default {
     },
   },
   methods: {
-    async auth() {
-      this.loading = true;
-      DataServices.findByEmail(this.login)
-        .then(async (response) => {
+    async auth() {  
+      this.loading = true;      
+      userServices.findByEmail(this.login)
+        .then(async(response) => {
           this.person = response.data;
           if (this.person.user === false) {
             setTimeout(() => {
@@ -114,8 +114,9 @@ export default {
             setTimeout(() => {
               this.loading = false;
             }, 1000);
-            const user = await DataServices.me();
-            if (user.data.type === "client") {
+            const user = await userServices.me()
+            if(user.data.type === "client")
+            {
               this.$router.push({ path: "/home" });
             } else if (user.data.type === "restaurant") {
               this.$router.push({ path: "/RestaurantDashBoard" });
@@ -128,7 +129,7 @@ export default {
     },
     onEnter: function () {
       this.loading = true;
-      DataServices.findByEmail(this.login)
+      userServices.findByEmail(this.login)
         .then((response) => {
           this.person = response.data;
           console.log(this.person.user);
@@ -166,7 +167,6 @@ export default {
 md-input {
   border: none;
   background: #fff;
-  font-family: "Lato";
   font-weight: 700;
   display: block;
   height: 40px;
@@ -202,7 +202,6 @@ md-input {
   }
   .font-title {
     color: #606d70;
-    font-family: "Lato";
     font-size: 275%;
     // font-weight: 300;
     // line-height: 58px;

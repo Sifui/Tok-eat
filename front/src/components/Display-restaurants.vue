@@ -15,7 +15,7 @@
         </div>
       </div>
     </div>
-    <h1 class="md-display-1">Les sélections Tok'eat</h1>
+    <h1 class="md-display-1 centered">Les sélections Tok'eat</h1>
 
     <div class="container">
       <md-card v-for="(item, index) in restaurants" v-bind:key="index">
@@ -56,21 +56,50 @@
       </div>
       -->
     </div>
+        <h1 class="md-display-1 centered">Vos favoris</h1>
+
+    <div class="container">
+
+        <md-card v-for="(item, index) in favoritesRestaurants" v-bind:key="index">
+        <md-card-media >
+          <img v-on:click="$router.push(`/restaurant?id=${item.id}`)"
+            src="https://breathe-restaurant.com/wp-content/uploads/2019/12/brEAThe-archi-1.jpeg"
+            alt="People"
+          />
+        </md-card-media>
+        <md-card-header>
+          <div class="md-title name">{{ item.name }}</div>
+          <div class="md-subhead address">{{ item.address }}</div>
+          <div class="md-subhead phone">{{ item.phone_number }}</div>
+        </md-card-header>
+      </md-card>
+    </div>
   </div>
 </template>
 
 <script>
+import axios from "axios";
 
 
 export default {
     name:'Display-restaurants',
     props:{
-        restaurants: Array
+        restaurants: Array,
+        
     },
-    data(){
+     data(){
         return {
+          favoritesRestaurants:[]
         }
     },
+    created(){
+
+      axios.get(`http://localhost:8081/client-restaurant/favorites/1`,).then((response)=>{
+          this.favoritesRestaurants = response.data
+        })
+     
+    },
+   
     methods:{
           
     }

@@ -1,44 +1,6 @@
 <template>
   <div class="index" md-theme="black">
-    <md-toolbar md-elevation="4">
-      <img id="logo" src="../assets/logo.png" width="100" />
-      <div class="nav-elements md-layout md-gutter">
-        <div class="md-layout-item">
-          <md-field>
-            <label>Chercher un restaurant</label>
-            <md-input
-              v-model="query"
-              id="search"
-              v-on:keyup="fetchRestaurants"
-            ></md-input>
-            <md-button>Rechercher</md-button>
-            <div
-              style="
-                position: absolute;
-                background-color: white;
-                top: 60px;
-                width: 100%;
-              "
-            >
-              <p
-                v-on:click="updateInput(suggestion.name)"
-                style="padding: 10px; margin: 0"
-                align="left"
-                v-for="(suggestion, index) in suggestions"
-                v-bind:key="index"
-              >
-                {{ suggestion.name }}
-              </p>
-            </div>
-          </md-field>
-        </div>
-        <div class="md-layout-item">
-         <md-button class="nav-button" v-on:click="$router.push('/login')">Connexion</md-button>
-         
-          <md-button class="nav-button" v-on:click="$router.push('/register')">Inscription</md-button>
-        </div>
-      </div>
-    </md-toolbar>
+    <navbar v-bind:restaurants="restaurants"/>
     <router-view :restaurants="restaurants"/>
     
   </div>
@@ -60,44 +22,23 @@ setTimeout(function () {
     .openPopup();
 }, 0);*/
 import axios from "axios";
-
+import navbar from '../components/Navbar'
 export default {
   name: "Index",
   props: {},
+  components:{navbar},
   data() {
     return {
-      suggestions: [],
-       
       restaurants: [],
-      query: "",
     };
   },
   
   methods: {
-   fetchRestaurants() {
-      let cloneRestaurants = [...this.restaurants];
-      cloneRestaurants = cloneRestaurants.map((e) => ({
-        ...e,
-        name: e.name.trim()
-      }));
-      console.log(cloneRestaurants);
-      const exp = `^${this.query.trim().toLowerCase()}`;
-      const regex = new RegExp(exp);
-      this.suggestions = cloneRestaurants.filter((element) =>
-        regex.test(element.name.toLowerCase())
-      );
-      console.log(this.suggestions);
-    },
-    updateInput(text) {
-      this.query = text;
-      this.suggestions = [];
-    },
+   
+    
   },
   
     created() {
-   /* window.addEventListener("wheel",function(){
-    console.log(window.scrollY)      
-})*/
     axios
       .get("http://localhost:8081/restaurants")
       .then((response) => {
@@ -121,17 +62,6 @@ export default {
 ::selection {
   background: #000 !important;
 }
-.md-toolbar + .md-toolbar {
-  margin-top: 16px;
-}
-
-.md-toolbar {
-  position: fixed;
-  background-color: white !important;
-  z-index: 10000;
-  padding-bottom: 10px;
-  padding-top: 10px;
-}
 
 .sidebar {
   height: 100%;
@@ -141,26 +71,9 @@ export default {
   height: 100%;
 }
 
-.nav-elements.md-layout.md-gutter {
-  flex: 1;
-  text-align: right;
-  margin-left: 10%;
-}
-
 .index {
   height: 100%;
 }
 
 
-.nav-button {
-  margin-top: 15px;
-  margin-bottom: 15px;
-}
-
-
-p:hover {
-  background-color: lightgrey;
-  color: white;
-  cursor: pointer;
-}
 </style>

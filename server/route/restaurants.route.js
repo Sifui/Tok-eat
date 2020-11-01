@@ -14,4 +14,9 @@ router.get('/restaurants/:id', async (req,res)=>{
     res.json(result)
 })
 
+router.post('/restaurants', async (req,res)=>{
+
+    const result = await Restaurant.create(req.body)
+    res.json(result)
+})
 module.exports = router

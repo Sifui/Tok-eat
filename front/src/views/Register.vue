@@ -242,7 +242,7 @@
 </template>
 
 <script>
-import DataServices from "../services/userServices";
+import userServices from "../services/userServices";
 const regName = /^[^~"#{([|`^\])}=+-/*$£¤%µ!:;,?.§]*$/;
 const regAddress = /^[^~"#{([`^\])}=+-/*$£¤%µ!:;,?.§]*$/;
 const regMail = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,24}))$/;
@@ -335,7 +335,7 @@ export default {
     clientRegistration() {
       // this.$router.push({ path: "home" });
       this.loading = true;
-      DataServices.register(this.client)
+      userServices.register(this.client)
         .then((response) => {
           this.entity = response.data;
           console.log(this.entity.user);
@@ -358,7 +358,7 @@ export default {
     },
     restaurantRegistration() {
       this.loading = true;
-      DataServices.register(this.restaurant)
+      userServices.register(this.restaurant)
         .then((response) => {
           this.entity = response.data;
           console.log(this.entity.user);
@@ -469,7 +469,6 @@ export default {
 md-input {
   border: none;
   background: #fff;
-  font-family: "Lato";
   font-weight: 700;
   display: block;
   height: 40px;
@@ -503,7 +502,6 @@ md-input {
   }
   .font-title {
     color: #606d70;
-    font-family: "Lato";
     font-size: 275%;
     // font-weight: 300;
     // line-height: 58px;

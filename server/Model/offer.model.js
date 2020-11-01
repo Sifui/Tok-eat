@@ -18,7 +18,6 @@ class Offer {
     }
 
     static async create (offer) {
-        console.log(offer)
         const result = await PostgresStore.client.query({
             text: `INSERT INTO ${Offer.tableName}
                     (name, price, description, image, id_restaurant, id_promo)
@@ -36,7 +35,7 @@ class Offer {
             WHERE id_restaurant=$1`,
             values: [restaurantId]
         })
-        return result.rows[0]
+        return result.rows
     }
 
     static async delete(offerD){
