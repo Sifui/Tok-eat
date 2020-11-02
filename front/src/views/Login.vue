@@ -33,12 +33,8 @@
       </div>
 
       <div class="actions md-layout md-alignment-center-space-between">
-        <!-- <a href="#">Reset password</a> -->
+        <a href="#">Mot de passe oublié?</a>
         <!-- <router-link to="/">Forget your password?</router-link> -->
-
-        <md-button class="md-raised md-primary" type="submit" to="/"
-          >ACCUEIL</md-button
-        >
 
         <md-button
           class="md-raised md-primary"
@@ -124,6 +120,7 @@ export default {
           }
         })
         .catch(() => {
+          this.loading = false;
           console.log("error");
         });
     },
@@ -146,6 +143,7 @@ export default {
           }
         })
         .catch(() => {
+          this.loading = false;
           console.log("error");
         });
     },

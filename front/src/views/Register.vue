@@ -2,7 +2,11 @@
   <div class="centered-container">
     <md-content class="md-elevation-3">
       <div class="title">
-        <img class="logo" src="../assets/logo.png" />
+        <img
+          class="logo"
+          src="../assets/logo.png"
+          v-show="!this.register.type"
+        />
         <!-- <div class="md-title font-title">Tok' eat</div> -->
         <div class="md-body-1"></div>
       </div>
@@ -26,9 +30,13 @@
               maxlength="30"
               v-model="client.lastName"
               @change="isClientNameValid"
+              @input="isClientCharacterNameValid"
             ></md-input>
             <span class="error" v-show="this.errorClientName"
               >Caractères non autorisés)
+            </span>
+            <span class="error" v-show="this.errorClientCharacterName"
+              >Caractères insuffisants
             </span>
           </md-field>
           <md-field>
@@ -40,9 +48,13 @@
               maxlength="30"
               v-model="client.firstName"
               @change="isClientFirstNameValid"
+              @input="isClientFirstNameCharacterValid"
             ></md-input>
             <span class="error" v-show="this.errorClientFirstName"
               >Caractères non autorisés</span
+            >
+            <span class="error" v-show="this.errorClientCharacterFirstName"
+              >Caractères insuffisants</span
             >
           </md-field>
           <md-field>
@@ -86,7 +98,11 @@
           </md-field>
           <md-field md-has-password>
             <label for="clientPasseWord">Mot de passe</label>
-            <md-input v-model="client.password" type="password"></md-input>
+            <md-input
+              v-model="client.password"
+              type="password"
+              @change="isPasswordTheSame"
+            ></md-input>
           </md-field>
           <span class="error" v-show="this.errorPasswordCheck"
             >Différents mot de passe</span
@@ -111,9 +127,13 @@
               maxlength="30"
               v-model="restaurant.name"
               @change="isRestaurantNameValid"
+              @input="isRestaurantNameCharacterValid"
             ></md-input>
             <span class="error" v-show="this.errorRestaurantName"
               >Caractères invalide</span
+            >
+            <span class="error" v-show="this.errorRestaurantNameCharacter"
+              >Caractères insuffisants</span
             >
           </md-field>
           <md-field>
@@ -175,12 +195,27 @@
               @change="isRestaurantImageValid"
             />
           </md-field>
-           <span class="error" v-show="this.errorRestaurantImage"
-              >Format de fichier invalide</span
-            >
+          <span class="error" v-show="this.errorRestaurantImage"
+            >Format de fichier invalide</span
+          >
           <md-field md-has-password>
             <label>Mot de passe</label>
-            <md-input v-model="restaurant.password" type="password"></md-input>
+            <md-input
+              v-model="restaurant.password"
+              type="password"
+              @change="isRestaurantPasswordTheSame"
+            ></md-input>
+          </md-field>
+          <span class="error" v-show="this.errorRestaurantPasswordCheck"
+            >Différents mot de passe</span
+          >
+          <md-field md-has-password>
+            <label>Mot de passe</label>
+            <md-input
+              v-model="restaurant.repassword"
+              type="password"
+              @change="isRestaurantPasswordTheSame"
+            ></md-input>
           </md-field>
         </div>
       </div>
@@ -189,9 +224,7 @@
         v-if="this.register.type === 'client'"
         class="actions md-layout md-alignment-center-space-between"
       >
-        <md-button class="md-raised md-primary" type="submit" to="/"
-          >ACCUEIL</md-button
-        >
+        <a href="#">Mot de passe oublié?</a>
         <md-button
           class="md-raised md-primary"
           :disabled="isDisabledClient"
@@ -205,9 +238,7 @@
         v-if="this.register.type === 'restaurant'"
         class="actions md-layout md-alignment-center-space-between"
       >
-        <md-button class="md-raised md-primary" type="submit" to="/"
-          >ACCUEIL</md-button
-        >
+        <a href="#">Mot de passe oublié?</a>
         <md-button
           class="md-raised md-primary"
           :disabled="isDisabledRestaurant"
@@ -247,7 +278,7 @@ const regName = /^[^~"#{([|`^\])}=+-/*$£¤%µ!:;,?.§]*$/;
 const regAddress = /^[^~"#{([`^\])}=+-/*$£¤%µ!:;,?.§]*$/;
 const regMail = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,24}))$/;
 const regPhoneNumber = /^(\+33|0|\+33 )[1-9]([-. ]?[0-9]{2}){4}( )*$/;
-const regImage = /^[a-zA-Z0-9 -_]+\.(png|jpeg|jpg|gif|tiff)$/gm
+const regImage = /^[a-zA-Z0-9 -_]+\.(png|jpeg|jpg|gif|tiff)$/gm;
 export default {
   name: "Login",
   props: {
@@ -270,6 +301,10 @@ export default {
       errorRestaurantDescription: false,
       errorRestaurantImage: false,
       errorRestaurantPassword: false,
+      errorRestaurantPasswordCheck:false,
+      errorRestaurantNameCharacter: false,
+      errorClientCharacterName: false,
+      errorClientCharacterFirstName: false,
       message: "",
       register: {
         type: "",
@@ -291,9 +326,10 @@ export default {
         email: "",
         phoneNumber: "",
         address: "",
-        image:null,
+        image: null,
         description: "",
         password: "",
+        repassword:"",
       },
       entity: [],
     };
@@ -326,7 +362,7 @@ export default {
         this.errorRestaurantEmail ||
         this.errorRestaurantPhoneNumber ||
         this.errorRestaurantAddress ||
-        this.errorRestaurantDescription 
+        this.errorRestaurantDescription
         ? true
         : false;
     },
@@ -335,7 +371,8 @@ export default {
     clientRegistration() {
       // this.$router.push({ path: "home" });
       this.loading = true;
-      userServices.register(this.client)
+      userServices
+        .register(this.client)
         .then((response) => {
           this.entity = response.data;
           console.log(this.entity.user);
@@ -353,12 +390,14 @@ export default {
           }
         })
         .catch(() => {
+          this.loading = false;
           console.log("error");
         });
     },
     restaurantRegistration() {
       this.loading = true;
-      userServices.register(this.restaurant)
+      userServices
+        .register(this.restaurant)
         .then((response) => {
           this.entity = response.data;
           console.log(this.entity.user);
@@ -376,9 +415,11 @@ export default {
           }
         })
         .catch(() => {
+          this.loading = false;
           console.log("error");
         });
     },
+
     isClientNameValid() {
       if (regName.test(this.client.lastName)) {
         this.errorClientName = false;
@@ -391,6 +432,27 @@ export default {
         this.errorRestaurantName = false;
       } else {
         this.errorRestaurantName = true;
+      }
+    },
+    isRestaurantNameCharacterValid() {
+      if (this.restaurant.name.length > 3) {
+        this.errorRestaurantNameCharacter = false;
+      } else {
+        this.errorRestaurantNameCharacter = true;
+      }
+    },
+    isClientCharacterNameValid() {
+      if (this.client.lastName.length > 3) {
+        this.errorClientCharacterName = false;
+      } else {
+        this.errorClientCharacterName = true;
+      }
+    },
+    isClientFirstNameCharacterValid() {
+      if (this.client.firstName.length > 3) {
+        this.errorClientCharacterFirstName = false;
+      } else {
+        this.errorClientCharacterFirstName = true;
       }
     },
     isClientFirstNameValid() {
@@ -445,12 +507,16 @@ export default {
     isRestaurantImageValid() {
       // console.log(document.getElementById('restaurantImage').value.substr(12));
       // console.log(regImage.test(document.getElementById('restaurantImage').value.substr(12)));
-      if (regImage.test(document.getElementById('restaurantImage').value.substr(12))) {
+      if (
+        regImage.test(
+          document.getElementById("restaurantImage").value.substr(12)
+        )
+      ) {
         this.errorRestaurantImage = false;
-        console.log('Ratesh is caca');
+        console.log("Ratesh is caca");
       } else {
         this.errorRestaurantImage = true;
-        console.log('Ratesh is pipi');
+        console.log("Ratesh is pipi");
       }
     },
     isPasswordTheSame() {
@@ -458,6 +524,13 @@ export default {
         this.errorPasswordCheck = false;
       } else {
         this.errorPasswordCheck = true;
+      }
+    },
+    isRestaurantPasswordTheSame() {
+      if (this.restaurant.password === this.restaurant.repassword) {
+        this.errorRestaurantPasswordCheck = false;
+      } else {
+        this.errorRestaurantPasswordCheck = true;
       }
     },
   },
@@ -477,7 +550,9 @@ md-input {
   margin: auto;
   padding: 6px 12px 6px 12px;
 }
-
+.md-elevation-3 {
+  margin-top: 125px;
+}
 .centered-container {
   display: flex;
   align-items: center;
@@ -527,7 +602,7 @@ md-input {
       rgba(63, 158, 109, 1) 62%
     );
     position: absolute;
-    height: 100%;
+    height: 104%;
     width: 100%;
     top: 0;
     bottom: 0;

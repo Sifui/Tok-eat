@@ -4,7 +4,7 @@
     <div class="container">
       <div class="item-1">
         <div class="logo">
-          <h2 class="title">TOK-EAT</h2>
+          <h2 class="title">TOK' EAT</h2>
           <img src="../assets/logo-no-text.png" alt="missing" />
         </div>
 
@@ -134,7 +134,7 @@ button {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #ffffff;
-  padding: 30px 0 4px 0;
+  padding: 50px 0 4px 0;
 }
 .container {
   /* background-color: aquamarine; */
