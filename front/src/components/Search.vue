@@ -104,7 +104,7 @@ export default {
 }
 #map {
   flex: 1;
-  height:100%
+  max-height:80vh
 }
 #results {
   flex: 1;
@@ -132,10 +132,8 @@ img {
       flex-direction:column;
   }
   #map{
-      height:500px;
-            width:500px;
-
+      min-height:500px !important
   }
-  
+    
 }
 </style>

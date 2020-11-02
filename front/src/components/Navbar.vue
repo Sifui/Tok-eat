@@ -14,6 +14,9 @@
             v-model="query"
             id="search"
             v-on:keyup='fetchRestaurants'
+            v-on:blur='removeSuggestions'
+            autocomplete="off"
+
           ></md-input>
           <md-button v-on:click="redirectToRestaurant()">Rechercher</md-button>
           <div
@@ -87,6 +90,9 @@ export default {
         this.suggestions = this.results
         console.log(this.results);
       });
+    },
+    removeSuggestions(){
+      setTimeout(()=>{this.suggestions = []},100)
     },
     updateInput(text) {
       this.query = text;

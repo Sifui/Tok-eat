@@ -63,7 +63,7 @@
                   <div class="author">
                     {{ item.first_name }} {{ item.last_name }}
                   </div>
-                  <div class="date">{{ item.grade_date }}</div>
+                  <div class="date">{{ item.grade_date.substr(0,10).split('-').reverse().join('/') }}</div>
                 </div>
                 <div class="grade">{{ item.grade }}/5</div>
               </div>
@@ -86,15 +86,17 @@
           <div class="subheading" id="address"></div>
           <div class="subheading" id="phone"></div>
           <br />
-          <label for="favorite">
-            Ajouter à vos favoris
-            <input
-              v-model="favorite"
-              type="checkbox"
-              id="favorite"
-              v-on:change="setFavorite()"
-            />
-          </label>
+          <div id="addFavorite">
+            <label for="favorite">
+              Ajouter à vos favoris
+              <input
+                v-model="favorite"
+                type="checkbox"
+                id="favorite"
+                v-on:change="setFavorite()"
+              />
+            </label>
+          </div>
         </md-card-content>
       </md-card>
     </div>
@@ -103,12 +105,13 @@
 
 <script>
 import axios from "axios";
-
+import UserServices from "../services/userServices";
 export default {
   name: "View-restaurant",
   props: {},
   data() {
     return {
+      user:null,
       grade: 1,
       feedback: "",
       feedbacks: [],
@@ -157,7 +160,7 @@ export default {
             .put(
               `http://localhost:8081/client-restaurant/${this.$route.query.id}`,
               {
-                clientId: 1,
+                clientId: this.user.id,
                 restaurantId: idRestaurant,
                 grade: this.grade,
                 feedback: this.feedback,
@@ -167,7 +170,7 @@ export default {
             .then((response) => {
               console.log(response);
               this.feedbacks.unshift({
-                clientId: 1,
+                clientId:  this.user.id,
                 restaurantId: idRestaurant,
                 grade: response.data.grade,
                 grade_date: response.data.grade_date,
@@ -184,7 +187,7 @@ export default {
         console.log(idRestaurant);
         axios
           .post("http://localhost:8081/client-restaurant", {
-            clientId: 1,
+            clientId: this.user.id,
             restaurantId: idRestaurant,
             grade: this.grade,
             feedback: this.feedback,
@@ -194,8 +197,8 @@ export default {
             console.log(response);
             this.feedbacks.unshift({
               ...response.data,
-              first_name: "Louanne",
-              last_name: "Havens",
+              first_name: this.user.first_name,
+              last_name: this.user.last_name,
             });
           });
         this.hasAlreadyFeedBack = true;
@@ -210,13 +213,13 @@ export default {
           `http://localhost:8081/client-restaurant/${this.$route.query.id}`,
           {
             favorite: this.favorite,
-            clientId: 1,
+            clientId:  this.user.id,
             restaurantId: idRestaurant,
           }
         );
       } else {
         axios.post("http://localhost:8081/client-restaurant", {
-          clientId: 1,
+          clientId: this.user.id,
           restaurantId: idRestaurant,
           favorite: this.favorite,
         });
@@ -227,9 +230,24 @@ export default {
   async created() {
     await this.initData();
   },
+  async mounted() {
+    UserServices.me()
+    .then((user)=>{
+      console.log('vous etes deja connecté !')
+      this.user =user.data
+      console.log(this.user)
+    })
+    .
+    catch(() => {
+      const addFavorite = document.getElementById("addFavorite");
+      const form = document.getElementById("form");
+      form.parentNode.removeChild(form);
+      addFavorite.parentNode.removeChild(addFavorite);
+    });
+  },
   watch: {
     async $route() {
-      this.hasAlreadyFeedBack = false
+      this.hasAlreadyFeedBack = false;
       document.getElementById("form").style.display = "block";
       await this.initData();
     },
@@ -267,8 +285,7 @@ export default {
   margin-left: 10px;
   flex: 1;
 }
-#restaurant-image {
-}
+
 
 #preview {
   flex: 60%;

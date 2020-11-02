@@ -1,6 +1,6 @@
 <template>
   <div>
-      <div class="mainframe md-accent">
+    <div class="mainframe md-accent">
       <div class="md-layout">
         <div class="md-layout-item md-size-3">
           <div id="slogan">
@@ -18,9 +18,14 @@
     <h1 class="md-display-1 centered">Les sélections Tok'eat</h1>
 
     <div class="container">
-      <md-card v-for="(item, index) in restaurants" v-bind:key="index">
-        <md-card-media >
-          <img v-on:click="$router.push(`/restaurant?id=${item.id}`)"
+      <md-card
+        v-for="(item, index) in restaurants"
+        v-bind:key="index"
+        class="restaurant"
+      >
+        <md-card-media>
+          <img
+            v-on:click="$router.push(`/restaurant?id=${item.id}`)"
             src="https://breathe-restaurant.com/wp-content/uploads/2019/12/brEAThe-archi-1.jpeg"
             alt="People"
           />
@@ -56,13 +61,13 @@
       </div>
       -->
     </div>
-        <h1 class="md-display-1 centered">Vos favoris</h1>
+    <h1 class="md-display-1 centered">Vos favoris</h1>
 
     <div class="container">
-
-        <md-card v-for="(item, index) in favoritesRestaurants" v-bind:key="index">
-        <md-card-media >
-          <img v-on:click="$router.push(`/restaurant?id=${item.id}`)"
+      <md-card v-for="(item, index) in favoritesRestaurants" v-bind:key="index" class="restaurant">
+        <md-card-media>
+          <img
+            v-on:click="$router.push(`/restaurant?id=${item.id}`)"
             src="https://breathe-restaurant.com/wp-content/uploads/2019/12/brEAThe-archi-1.jpeg"
             alt="People"
           />
@@ -79,31 +84,35 @@
 
 <script>
 import axios from "axios";
-
+import UserServices from "../services/userServices";
 
 export default {
-    name:'Display-restaurants',
-    props:{
-        restaurants: Array,
-        
-    },
-     data(){
-        return {
-          favoritesRestaurants:[]
-        }
-    },
-    created(){
+  name: "Display-restaurants",
+  props: {
+    restaurants: Array,
+  },
+  data() {
+    return {
+      user: null,
+      favoritesRestaurants: [],
+    };
+  },
+  created() {
+    UserServices.me().then((user) => {
+      console.log("vous etes deja connecté !");
+      this.user = user.data;
+      axios
+        .get(
+          `http://localhost:8081/client-restaurant/favorites/${this.user.id}`
+        )
+        .then((response) => {
+          this.favoritesRestaurants = response.data;
+        });
+    }).catch(()=>{console.log('pas connecté...')});
+  },
 
-      axios.get(`http://localhost:8081/client-restaurant/favorites/1`,).then((response)=>{
-          this.favoritesRestaurants = response.data
-        })
-     
-    },
-   
-    methods:{
-          
-    }
-}
+  methods: {},
+};
 </script>
 
 <style scoped>
@@ -123,6 +132,10 @@ export default {
   padding: 0 1rem;
   position: relative;
   top: 30%;
+}
+.restaurant:hover {
+  cursor: pointer;
+  box-shadow: 5px 5px 5px 1px silver;
 }
 
 .name,
