@@ -39,14 +39,11 @@ export default {
 
   created() {
     axios
-      .get("http://localhost:8081/restaurants")
+      .get("http://localhost:8081/client-restaurant/top-rated")
       .then((response) => {
+        console.log(response)
         const { data } = response;
-        this.restaurants = data.sort((a, b) => {
-          if (a.name < b.name) return -1;
-          if (a.name > b.name) return 1;
-          return 0;
-        });
+        this.restaurants = data;
       })
       .catch(() => {
         console.log("error when fetching the restaurants");

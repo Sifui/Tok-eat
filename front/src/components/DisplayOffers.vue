@@ -1,14 +1,21 @@
 <template>
     <div calss="flex">
+
+        <displayOffer :offer="modals.displayOffer" :me="me" />
+        <addOffer :modals="modals" :me="me" />
+
+        <check :modals="modals" :me="me" />
+        <br><button v-on:click="checkAddOffer()">Ajouter une offre</button><br><br>
+
         <div v-for="offer in offers" :key="offer.id" class="border">
-            <div v-on:click="displayOffer()" class='offer'>
+            <div v-on:click="displayOffer(offer)" class='offer'>
                 {{offer.name}}<br>
                 {{offer.price}} €<br>
                 {{offer.description}}<br>
             </div>
             <div class='buttons'>
-                <button>Modifier</button>
-                <button v-on:click="deleteOffer(offer)">Supprimer</button>
+                <button class="buttonDeletAndUpdate">Modifier</button>
+                <button v-on:click="checkDelete(offer)" class="buttonDeletAndUpdate">Supprimer</button>
             </div>
         </div>
     </div>
@@ -16,31 +23,70 @@
 
 <script>
 import offerServices from "../services/offerServices";
+import displayOffer from "./modals/DisplayOffer";
+import addOffer from "./modals/AddOffer";
+import check from "./modals/Check";
 
 export default {
-    name:'DisplayOffer',
+    name:'DisplayOffers',
     props:{
         me:Object,
         offers:Array
     },
+    components: {
+        displayOffer,
+        check,
+        addOffer
+    },
     data(){
         return {
-            modal:false
+            modals:{
+                displayOffer:null,
+                addOffer:null,
+                deleteOffer:null,
+                updateOffer:null,
+                check:{
+                    action:null,
+                    answer:false
+                }
+            }
         }
     },
     methods:{
-        displayOffer()
+        displayOffer(offer)
         {
-            this.modal=true
+            this.modals.displayOffer = offer
         },
-        /*hideOffer()
+        checkAddOffer()
         {
-
-        },*/
+            this.modals.addOffer = true
+        },
+        checkDelete(offer)
+        {
+            this.modals.deleteOffer = offer
+            this.modals.check.action = "delete"
+        },
+        checkUpdate(offer)
+        {
+            this.modals.updateOffer = offer
+            this.modals.check.action = "update"
+        },
         async deleteOffer(offer)
         {
             await offerServices.deleteOffer(offer)
             this.$parent.creatData()
+        },
+        closeModal(){
+            this.modals = {
+                displayOffer:null,
+                addOffer:null,
+                deletOffer:null,
+                updateOffer:null,
+                check:{
+                    action:null,
+                    answer:false
+                }
+            }
         }
     }
 }
@@ -69,7 +115,7 @@ export default {
     width: 20%;
     text-align: center;
 }
-button{
+.buttonDeletAndUpdate{
     height:100%;
     width: 50%;
 }

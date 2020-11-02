@@ -66,7 +66,7 @@ class Client_Restaurant {
             and id_restaurant = $5
             RETURNING *
                 `
-                values = [f.favorite,f.grade,f.feedback,f.clientId,f.restaurantId]
+            values = [f.favorite, f.grade, f.feedback, f.clientId, f.restaurantId]
         }
         else {
             query = `UPDATE ${Client_Restaurant.tableName}
@@ -75,15 +75,15 @@ class Client_Restaurant {
             and id_restaurant = $3
             RETURNING *
                 `
-                values = [f.favorite,f.clientId,f.restaurantId]
+            values = [f.favorite, f.clientId, f.restaurantId]
         }
         result = await PostgresStore.client.query({
             text: query,
-            values:values
+            values: values
         })
         return result.rows[0]
     }
-    static async getAverage (restaurantId) {
+    static async getAverage(restaurantId) {
         const result = await PostgresStore.client.query({
             text: `SELECT avg(cl.grade) 
             FROM ${Client_Restaurant.tableName} as cl,restaurant as r
@@ -92,6 +92,16 @@ class Client_Restaurant {
             values: [restaurantId]
         })
         return result.rows[0]
+    }
+    static async getTopRated() {
+        const result = await PostgresStore.client.query({
+            text: `SELECT * FROM ${Client_Restaurant.tableName} as cl, restaurant as r
+            where cl.id_restaurant = r.id
+           order by grade desc 
+           limit 3`,
+
+        })
+        return result.rows
     }
 }
 
