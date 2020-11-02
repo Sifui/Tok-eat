@@ -1,6 +1,7 @@
 const PostgresStore = require("../PostgresStore")
 const bcrypt = require('bcrypt')
 const Schedule = require('./schedule.model')
+const Offer = require('./offer.model')
 
 class Restaurant {
     static toSQLTable () {
@@ -65,7 +66,7 @@ class Restaurant {
         const result = await PostgresStore.client.query({
             text: `DELETE FROM ${Restaurant.tableName}
             WHERE id=$1`,
-            values: [restaurantId]
+            values: [Number(restaurantId)]
         })
         return result.rows[0]
     }

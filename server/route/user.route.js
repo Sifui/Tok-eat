@@ -4,6 +4,7 @@ const Client = require("../model/client.model")
 const Restaurant = require("../model/restaurant.model")
 const hasToBeAuthenticated = require('../middlewares/has-to-be-authenticated.middleware')
 const { client } = require("../PostgresStore")
+const Offer = require('../model/offer.model')
 
 router.post('/login', async (req, res) => {
     console.log('HERE ===> '+req.body);
@@ -131,13 +132,15 @@ router.post('/unregister', hasToBeAuthenticated, async (req, res) => {
     if(req.session.type == "client"){
         const result = await Client.delete(req.session.userId)
         res.json(result)
-        res.json({message: "unregistered"})
+        res.json({message: 'unregistered'})
     }
 
     if(req.session.type == "restaurant"){
-        const result = await Restaurant.delete(req.session.userId)
-        res.json(result)
-        res.json({message: "unregistered"})
+        const res1 = await Offer.deleteByRest(req.session.userId)
+        const res2 = await Restaurant.delete(req.session.userId)
+        res.json(res1)
+        res.json(res2)
+        res.json({message: 'unregistered'})
     }
 })
 
