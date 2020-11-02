@@ -77,9 +77,9 @@
     </div>
     <div id="side-description">
       <md-card>
-        <md-card-header style="display:flex;justify-content:space-between">
-          <h1 class="title" id="name" ></h1>
-          <h2 id="grade" ></h2>
+        <md-card-header style="display: flex; justify-content: space-between">
+          <h1 class="title" id="name"></h1>
+          <h2 id="grade"></h2>
         </md-card-header>
 
         <md-card-content>
@@ -114,10 +114,41 @@ export default {
       feedbacks: [],
       favorite: false,
       hasAlreadyFeedBack: false,
-      average: 0
+      average: 0,
     };
   },
   methods: {
+    async initData() {
+      let response = await axios.get(
+        `http://localhost:8081/restaurants/${this.$route.query.id}`
+      );
+
+      document.getElementById("name").innerText = response.data.name;
+      document.getElementById("description-content").innerText =
+        response.data.description;
+      document.getElementById("address").innerText = response.data.address;
+      document.getElementById("phone").innerText = response.data.phone_number;
+
+      response = await axios.get(
+        `http://localhost:8081/client-restaurant/${this.$route.query.id}`
+      );
+      this.feedbacks = [...response.data];
+
+      if (this.feedbacks.length > 0) {
+        this.hasAlreadyFeedBack = true;
+        if (this.feedbacks[0].feedback)
+          document.getElementById("form").style.display = "none";
+      }
+      this.feedbacks = this.feedbacks.filter((el) => el.feedback);
+
+      response = await axios.get(
+        `http://localhost:8081/client-restaurant/average/${this.$route.query.id}`
+      );
+      this.average = Math.round(response.data.average.avg);
+      document.getElementById(
+        "grade"
+      ).innerHTML = `${this.average}/<span style="font-size:16px">5</span>`;
+    },
     sendFeedback() {
       if (this.grade && this.feedback.length > 0) {
         const idRestaurant = this.$route.query.id;
@@ -194,32 +225,14 @@ export default {
     },
   },
   async created() {
-    let response = await axios.get(
-      `http://localhost:8081/restaurants/${this.$route.query.id}`
-    );
-
-    document.getElementById("name").innerText = response.data.name;
-    document.getElementById("description-content").innerText = response.data.description;
-    document.getElementById("address").innerText = response.data.address;
-    document.getElementById("phone").innerText = response.data.phone_number;
-
-    response = await axios.get(
-      `http://localhost:8081/client-restaurant/${this.$route.query.id}`
-    );
-    this.feedbacks = [...response.data];
-
-    if (this.feedbacks.length > 0) {
-      this.hasAlreadyFeedBack = true;
-      if (this.feedbacks[0].feedback)
-        document.getElementById("form").style.display = "none";
-    }
-    this.feedbacks = this.feedbacks.filter((el) => el.feedback);
-
-    response = await axios.get(
-      `http://localhost:8081/client-restaurant/average/${this.$route.query.id}`
-    );
-    this.average = Math.round(response.data.average.avg)
-  document.getElementById('grade').innerHTML = `${this.average}/<span style="font-size:16px">5</span>`
+    await this.initData();
+  },
+  watch: {
+    async $route() {
+      this.hasAlreadyFeedBack = false
+      document.getElementById("form").style.display = "block";
+      await this.initData();
+    },
   },
 };
 </script>

@@ -4,7 +4,7 @@
       id="logo"
       src="../assets/logo.png"
       width="100"
-      v-on:click="$router.push('/')"
+      v-on:click="$router.push('/').catch(()=>{})"
     />
     <div class="nav-elements md-layout md-gutter">
       <div class="md-layout-item">
@@ -13,9 +13,9 @@
           <md-input
             v-model="query"
             id="search"
-            v-on:keyup="fetchRestaurants"
+            v-on:keyup='fetchRestaurants'
           ></md-input>
-          <md-button>Rechercher</md-button>
+          <md-button v-on:click="redirectToRestaurant()">Rechercher</md-button>
           <div
             style="
               position: absolute;
@@ -50,6 +50,8 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   name: "Navbar",
   props: {
@@ -66,24 +68,48 @@ export default {
   },
   methods: {
     fetchRestaurants() {
-      let cloneRestaurants = [...this.restaurants];
+      /*let cloneRestaurants = [...this.restaurants];
       cloneRestaurants = cloneRestaurants.map((e) => ({
         ...e,
         name: e.name.trim(),
       }));
-      console.log(cloneRestaurants);
       const exp = `^${this.query.trim().toLowerCase()}`;
       const regex = new RegExp(exp);
       this.suggestions = cloneRestaurants.filter((element) =>
         regex.test(element.name.toLowerCase())
-      );
-      console.log(this.suggestions);
+      );*/
+    if ( this.query.trim().length === 0)
+      return
+      axios
+      .get(`http://localhost:8081/restaurants/trends/${this.query}`)
+      .then((response) => {
+        this.results = response.data;
+        this.suggestions = this.results
+        console.log(this.results);
+      });
     },
     updateInput(text) {
       this.query = text;
       this.suggestions = [];
+    },
+    redirectToRestaurant(){
+      this.query = this.query.trim()
+       if ( this.query.length === 0)
+      return
+      const search = this.restaurants.find((e) => e.name.toLowerCase() === this.query.toLowerCase())
+      if (search){
+        this.$router.push({path:'restaurant',query:{id:search.id}})
+        this.query = ''
+        this.suggestions = []
+      }
+      else{
+        this.$router.push({path:'search',query:{slug:this.query}}).catch(()=>{})
+
+      }
+      this.suggestions = []
     }
   },
+  
 };
 </script>
 
