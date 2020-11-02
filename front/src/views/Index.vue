@@ -1,8 +1,9 @@
 <template>
   <div class="index" md-theme="black">
-    <navbar v-bind:restaurants="restaurants"/>
-    <router-view :restaurants="restaurants"/>
-    
+    <navbar v-bind:restaurants="restaurants" />
+    <router-view :restaurants="restaurants" />
+    <footerTokEat />
+
   </div>
 </template>
 
@@ -22,23 +23,21 @@ setTimeout(function () {
     .openPopup();
 }, 0);*/
 import axios from "axios";
-import navbar from '../components/Navbar'
+import navbar from "../components/Navbar";
+import footerTokEat from "../components/Footer";
 export default {
   name: "Index",
   props: {},
-  components:{navbar},
+  components: { navbar , footerTokEat },
   data() {
     return {
       restaurants: [],
     };
   },
-  
-  methods: {
-   
-    
-  },
-  
-    created() {
+
+  methods: {},
+
+  created() {
     axios
       .get("http://localhost:8081/restaurants")
       .then((response) => {
@@ -54,8 +53,6 @@ export default {
       });
   },
 };
-
-
 </script>
 
 <style lang="scss" scoped>
@@ -74,6 +71,4 @@ export default {
 .index {
   height: 100%;
 }
-
-
 </style>
