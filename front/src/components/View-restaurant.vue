@@ -3,7 +3,7 @@
     <div id="preview">
       <div id="restaurant-image">
         <img
-          src="https://res.cloudinary.com/tf-lab/image/upload/w_600,h_337,c_fill,g_auto:subject,q_auto,f_auto/restaurant/4a0d9e27-5789-480a-ae60-37f37c4a310e/6950719d-8878-495a-8d0a-8acbecff56d3.jpg"
+          src="https://breathe-restaurant.com/wp-content/uploads/2019/12/brEAThe-archi-1.jpeg"
           alt="People"
         />
       </div>
@@ -127,8 +127,7 @@ export default {
       );
 
       document.getElementById("name").innerText = response.data.name;
-      document.getElementById("description-content").innerText =
-        response.data.description;
+      document.getElementById("description-content").innerText = response.data.description;
       document.getElementById("address").innerText = response.data.address;
       document.getElementById("phone").innerText = response.data.phone_number;
 
@@ -140,6 +139,7 @@ export default {
       if (this.feedbacks.length > 0) {
         this.hasAlreadyFeedBack = true;
         if (this.feedbacks[0].feedback)
+        if ( document.getElementById("form"))
           document.getElementById("form").style.display = "none";
       }
       this.feedbacks = this.feedbacks.filter((el) => el.feedback);
@@ -178,13 +178,13 @@ export default {
                 favorite: response.data.favorite,
               });
             });
+                    if ( document.getElementById("form"))
+
           document.getElementById("form").style.display = "none";
-          console.log(idRestaurant);
 
           return;
         }
         document.getElementById("form").style.display = "none";
-        console.log(idRestaurant);
         axios
           .post("http://localhost:8081/client-restaurant", {
             clientId: this.user.id,

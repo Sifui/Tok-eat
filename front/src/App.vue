@@ -15,6 +15,9 @@
   font-style: normal !important;
   mso-font-alt: "Arial";
 }
+:root{
+  font-size:16px
+}
 #app {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
