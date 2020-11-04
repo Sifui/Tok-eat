@@ -89,15 +89,12 @@ export default {
       this.query = this.query.trim()
        if ( this.query.length === 0)
       return
-      const search = this.restaurants.find((e) => e.name.toLowerCase() === this.query.toLowerCase())
-      if (search){
-        this.$router.push({path:'restaurant',query:{id:search.id}})
-        this.query = ''
-        this.suggestions = []
-      }
-      else{
+     // const search = this.restaurants.find((e) => e.name.toLowerCase() === this.query.toLowerCase())
+     
         this.$router.push({path:'search',query:{slug:this.query}}).catch(()=>{})
-      }
+
+      
+      this.query = ''
       this.suggestions = []
     }
   },

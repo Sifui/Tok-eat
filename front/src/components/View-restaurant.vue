@@ -28,6 +28,9 @@
           du Chef et laissez vous guider par notre Chef Sommelier
         </p>
       </div>
+      <div class="centered">
+        <md-button class="danger" v-on:click="$router.push({name:'Offers',params:{offers}})">Consulter les repas</md-button>
+      </div>
       <div id="form">
         <select
           name="notes"
@@ -269,7 +272,6 @@ export default {
 .conteneur {
   display: flex;
   max-width: 950px;
-  padding-top: 11%;
   margin: auto;
 }
 .conteneur > div {

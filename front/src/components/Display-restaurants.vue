@@ -145,7 +145,6 @@ export default {
 }
 
 .mainframe {
-  padding-top: 11%;
   margin-right: 10%;
   margin-left: 10%;
 }
