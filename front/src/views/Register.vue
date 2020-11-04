@@ -8,6 +8,7 @@
           v-show="!this.register.type"
         />
         <!-- <div class="md-title font-title">Tok' eat</div> -->
+        <span class="error" v-show="this.errorLog">{{ message }}</span>
         <div class="md-body-1"></div>
       </div>
 
@@ -301,7 +302,7 @@ export default {
       errorRestaurantDescription: false,
       errorRestaurantImage: false,
       errorRestaurantPassword: false,
-      errorRestaurantPasswordCheck:false,
+      errorRestaurantPasswordCheck: false,
       errorRestaurantNameCharacter: false,
       errorClientCharacterName: false,
       errorClientCharacterFirstName: false,
@@ -329,7 +330,7 @@ export default {
         image: null,
         description: "",
         password: "",
-        repassword:"",
+        repassword: "",
       },
       entity: [],
     };
@@ -389,9 +390,11 @@ export default {
             this.$router.push({ path: "home" });
           }
         })
-        .catch(() => {
+        .catch((e) => {
           this.loading = false;
-          console.log("error");
+          this.entity = e.response.data;
+          this.message = this.entity.message;
+          this.errorLog = true;
         });
     },
     restaurantRegistration() {
@@ -414,9 +417,11 @@ export default {
             this.$router.push({ path: "home" });
           }
         })
-        .catch(() => {
+        .catch((e) => {
           this.loading = false;
-          console.log("error");
+          this.entity = e.response.data;
+          this.message = this.entity.message;
+          this.errorLog = true;
         });
     },
 
