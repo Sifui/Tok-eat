@@ -270,6 +270,7 @@
       /> -->
     </md-content>
     <div class="background" />
+    <div class="background2" />
   </div>
 </template>
 
@@ -594,12 +595,6 @@ md-input {
   //   background: url(../assets/computer.jpg);
   // }
   .background {
-    // background: rgb(101, 222, 115);
-    // background: linear-gradient(
-    //   143deg,
-    //   rgba(101, 222, 115, 1) 29%,
-    //   rgba(69, 158, 63, 1) 75%
-    // );
     background: rgb(90, 132, 167);
     background: linear-gradient(
       143deg,
@@ -609,6 +604,21 @@ md-input {
     position: absolute;
     height: 104%;
     width: 100%;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    z-index: 0;
+  }
+  .background2 {
+    background-image: url("../assets/restaurant.jpg");
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background-position: center;
+    background-size: cover;
+    opacity: 0.2;
+    // position: fixed;
     top: 0;
     bottom: 0;
     right: 0;
