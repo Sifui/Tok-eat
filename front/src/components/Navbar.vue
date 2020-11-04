@@ -64,23 +64,11 @@ export default {
   data() {
     return {
       query: "",
-    suggestions: [],
-
-
+      suggestions: [],
     };
   },
   methods: {
     fetchRestaurants() {
-      /*let cloneRestaurants = [...this.restaurants];
-      cloneRestaurants = cloneRestaurants.map((e) => ({
-        ...e,
-        name: e.name.trim(),
-      }));
-      const exp = `^${this.query.trim().toLowerCase()}`;
-      const regex = new RegExp(exp);
-      this.suggestions = cloneRestaurants.filter((element) =>
-        regex.test(element.name.toLowerCase())
-      );*/
     if ( this.query.trim().length === 0)
       return
       axios
@@ -88,7 +76,6 @@ export default {
       .then((response) => {
         this.results = response.data;
         this.suggestions = this.results
-        console.log(this.results);
       });
     },
     removeSuggestions(){
@@ -110,7 +97,6 @@ export default {
       }
       else{
         this.$router.push({path:'search',query:{slug:this.query}}).catch(()=>{})
-
       }
       this.suggestions = []
     }

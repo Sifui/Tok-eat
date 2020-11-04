@@ -28,7 +28,6 @@ export default {
     axios
       .get("http://localhost:8081/client-restaurant/top-rated")
       .then((response) => {
-        console.log(response)
         const { data } = response;
         this.restaurants = data;
       })

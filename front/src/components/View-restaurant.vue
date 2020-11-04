@@ -3,7 +3,7 @@
     <div id="preview">
       <div id="restaurant-image">
         <img
-          src="https://breathe-restaurant.com/wp-content/uploads/2019/12/brEAThe-archi-1.jpeg"
+          src="https://res.cloudinary.com/tf-lab/image/upload/w_600,h_337,c_fill,g_auto:subject,q_auto,f_auto/restaurant/4a0d9e27-5789-480a-ae60-37f37c4a310e/6950719d-8878-495a-8d0a-8acbecff56d3.jpg"
           alt="People"
         />
       </div>
@@ -15,6 +15,13 @@
       </div>
       <div id="description">
         <h2>Carte du restaurant</h2>
+        <div v-for="(item,index) in offers" v-bind:key="index" class="offer">
+
+          <div class="offer-name">{{item.name}}</div>
+          <div class="offer-price">{{item.price}} €</div>
+        </div>
+        <br>
+        <h2>Description</h2>
         <p class="bold" id="description-content">
           Chef Valentin Thompson. Tutiac, les premiers vignerons en France à
           ouvrir leur bistro ! épicuriens venez profiter de la cuisine gourmande
@@ -106,6 +113,8 @@
 <script>
 import axios from "axios";
 import UserServices from "../services/userServices";
+import OfferServices from "../services/offerServices";
+
 export default {
   name: "View-restaurant",
   props: {},
@@ -118,6 +127,7 @@ export default {
       favorite: false,
       hasAlreadyFeedBack: false,
       average: 0,
+      offers:[]
     };
   },
   methods: {
@@ -168,7 +178,6 @@ export default {
               }
             )
             .then((response) => {
-              console.log(response);
               this.feedbacks.unshift({
                 clientId:  this.user.id,
                 restaurantId: idRestaurant,
@@ -194,7 +203,6 @@ export default {
             favorite: this.favorite,
           })
           .then((response) => {
-            console.log(response);
             this.feedbacks.unshift({
               ...response.data,
               first_name: this.user.first_name,
@@ -208,7 +216,6 @@ export default {
       const idRestaurant = this.$route.query.id;
 
       if (this.hasAlreadyFeedBack) {
-        console.log("deja noté");
         axios.put(
           `http://localhost:8081/client-restaurant/${this.$route.query.id}`,
           {
@@ -235,7 +242,6 @@ export default {
     .then((user)=>{
       console.log('vous etes deja connecté !')
       this.user =user.data
-      console.log(this.user)
     })
     .
     catch(() => {
@@ -244,6 +250,10 @@ export default {
       form.parentNode.removeChild(form);
       addFavorite.parentNode.removeChild(addFavorite);
     });
+    OfferServices.getOfferByIdRestaurant(this.$route.query.id).then((offers)=>{
+      console.log(offers)
+      this.offers = [...offers.data]
+    })
   },
   watch: {
     async $route() {
@@ -303,4 +313,13 @@ export default {
 #reviewSection a {
   color: inherit;
 }
+.offer{
+  display:flex;
+  margin-bottom: 20px;
+}
+.offer .offer-name{
+  border-bottom : 1px  dotted;
+  flex:1
+}
+
 </style>

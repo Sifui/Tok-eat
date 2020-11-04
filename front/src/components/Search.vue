@@ -2,19 +2,17 @@
   <div id="searchPage" class="flex-container">
     <div id="results">
       <div v-for="(item, index) in results" v-bind:key="index" class="item">
-        <div class="flex-container" @mouseover="map.panTo(coords[index]);markers[index].openPopup()" v-on:click="$router.push(`/restaurant?id=${item.id}`)">
+        <div class="flex-container" @mouseover="map.flyTo(coords[index]);markers[index].openPopup()" v-on:click="$router.push(`/restaurant?id=${item.id}`)">
           <div>
             <img
-              src="https://breathe-restaurant.com/wp-content/uploads/2019/12/brEAThe-archi-1.jpeg"
+              src="https://res.cloudinary.com/tf-lab/image/upload/w_600,h_337,c_fill,g_auto:subject,q_auto,f_auto/restaurant/4a0d9e27-5789-480a-ae60-37f37c4a310e/6950719d-8878-495a-8d0a-8acbecff56d3.jpg"
               alt=""
             />
           </div>
           <div class="description">
             <div class="label yellow">TOKEN X{{Math.round(Math.random()*5+1)}}</div>
-
             <div class="bold">{{ item.name }}</div>
             <div class="subheading">{{ item.address }}</div>
-
             <div class="subheading">{{ item.phone_number }}</div>
           </div>
         </div>
@@ -70,9 +68,9 @@ export default {
               L.marker(currentMarker)
                 .addTo(this.map)
                 .bindPopup(res.name)
-                .openPopup()
+                //.openPopup()
             );
-            this.map.panTo(currentMarker);
+            //this.map.panTo(currentMarker);
           }
         });
     },
