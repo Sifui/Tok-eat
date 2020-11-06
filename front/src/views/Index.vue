@@ -1,25 +1,29 @@
 <template>
   <div class="index" md-theme="black">
-    <navbar v-bind:restaurants="restaurants"/>
-    <router-view :restaurants="restaurants" style="padding-top:9%"/>
+    <navbar v-bind:restaurants="restaurants" />
+    <router-view :restaurants="restaurants" />
+    <footerTokEat />
+
   </div>
 </template>
 
 <script>
 import axios from "axios";
-import navbar from '../components/Navbar'
+import navbar from "../components/Navbar";
+import footerTokEat from "../components/Footer";
 export default {
   name: "Index",
   props: {},
-  components:{navbar},
+  components: { navbar , footerTokEat },
   data() {
     return {
       restaurants: [],
     };
   },
-  methods: {
-  },
-    created() {
+
+  methods: {},
+
+  created() {
     axios
       .get("http://localhost:8081/client-restaurant/top-rated")
       .then((response) => {
@@ -31,8 +35,6 @@ export default {
       });
   },
 };
-
-
 </script>
 
 <style lang="scss" scoped>
@@ -51,6 +53,4 @@ export default {
 .index {
   height: 100%;
 }
-
-
 </style>
