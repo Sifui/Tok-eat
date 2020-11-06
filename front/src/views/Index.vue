@@ -1,7 +1,7 @@
 <template>
   <div class="index" md-theme="black">
     <navbar v-bind:restaurants="restaurants" />
-    <router-view :restaurants="restaurants" />
+    <router-view :restaurants="restaurants" style="padding-top:9%" />
     <footerTokEat />
 
   </div>
