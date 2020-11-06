@@ -1,7 +1,7 @@
 <template>
   <div class="index" md-theme="black">
     <navbar v-bind:restaurants="restaurants" />
-    <router-view :restaurants="restaurants" />
+    <router-view :restaurants="restaurants" style="padding-top:9%" />
     <footerTokEat />
 
   </div>
@@ -20,9 +20,10 @@ export default {
       restaurants: [],
     };
   },
-  methods: {
-  },
-    created() {
+
+  methods: {},
+
+  created() {
     axios
       .get("http://localhost:8081/client-restaurant/top-rated")
       .then((response) => {

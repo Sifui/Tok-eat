@@ -61,6 +61,7 @@
       </div>
       -->
     </div>
+    <div>
     <h1 class="md-display-1 centered">Vos favoris</h1>
 
     <div class="container">
@@ -78,6 +79,7 @@
           <div class="md-subhead phone">{{ item.phone_number }}</div>
         </md-card-header>
       </md-card>
+    </div>
     </div>
   </div>
 </template>
