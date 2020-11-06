@@ -58,7 +58,7 @@ class Restaurant {
         const result = await PostgresStore.client.query({
             text: `SELECT * FROM ${Restaurant.tableName}
             WHERE name ilike $1 
-            limit 7
+            limit 5
             `,
             values : [name+'%']
         })

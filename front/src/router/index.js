@@ -40,7 +40,12 @@ const routes = [
       }
     ]
   },
-
+  {
+    path:'/offers',
+    name:'Offers',
+    component: () => import(/* webpackChunkName: "about" */ '../components/Offers.vue'),
+    props : true
+  },
   {
     path: '/RestaurantDashBoard',
     name: 'RestaurantDashBoard',

@@ -3,7 +3,7 @@
     <div id="preview">
       <div id="restaurant-image">
         <img
-          src="https://breathe-restaurant.com/wp-content/uploads/2019/12/brEAThe-archi-1.jpeg"
+          src="https://res.cloudinary.com/tf-lab/image/upload/w_600,h_337,c_fill,g_auto:subject,q_auto,f_auto/restaurant/4a0d9e27-5789-480a-ae60-37f37c4a310e/6950719d-8878-495a-8d0a-8acbecff56d3.jpg"
           alt="People"
         />
       </div>
@@ -15,11 +15,21 @@
       </div>
       <div id="description">
         <h2>Carte du restaurant</h2>
+        <div v-for="(item,index) in offers" v-bind:key="index" class="offer">
+
+          <div class="offer-name">{{item.name}}</div>
+          <div class="offer-price">{{item.price}} €</div>
+        </div>
+        <br>
+        <h2>Description</h2>
         <p class="bold" id="description-content">
           Chef Valentin Thompson. Tutiac, les premiers vignerons en France à
           ouvrir leur bistro ! épicuriens venez profiter de la cuisine gourmande
           du Chef et laissez vous guider par notre Chef Sommelier
         </p>
+      </div>
+      <div class="centered">
+        <md-button class="danger" v-on:click="$router.push({name:'Offers',params:{offers}})">Consulter les repas</md-button>
       </div>
       <div id="form">
         <select
@@ -63,7 +73,7 @@
                   <div class="author">
                     {{ item.first_name }} {{ item.last_name }}
                   </div>
-                  <div class="date">{{ item.grade_date }}</div>
+                  <div class="date">{{ item.grade_date.substr(0,10).split('-').reverse().join('/') }}</div>
                 </div>
                 <div class="grade">{{ item.grade }}/5</div>
               </div>
@@ -86,15 +96,17 @@
           <div class="subheading" id="address"></div>
           <div class="subheading" id="phone"></div>
           <br />
-          <label for="favorite">
-            Ajouter à vos favoris
-            <input
-              v-model="favorite"
-              type="checkbox"
-              id="favorite"
-              v-on:change="setFavorite()"
-            />
-          </label>
+          <div id="addFavorite">
+            <label for="favorite">
+              Ajouter à vos favoris
+              <input
+                v-model="favorite"
+                type="checkbox"
+                id="favorite"
+                v-on:change="setFavorite()"
+              />
+            </label>
+          </div>
         </md-card-content>
       </md-card>
     </div>
@@ -103,18 +115,22 @@
 
 <script>
 import axios from "axios";
+import UserServices from "../services/userServices";
+import OfferServices from "../services/offerServices";
 
 export default {
   name: "View-restaurant",
   props: {},
   data() {
     return {
+      user:null,
       grade: 1,
       feedback: "",
       feedbacks: [],
       favorite: false,
       hasAlreadyFeedBack: false,
       average: 0,
+      offers:[]
     };
   },
   methods: {
@@ -124,8 +140,7 @@ export default {
       );
 
       document.getElementById("name").innerText = response.data.name;
-      document.getElementById("description-content").innerText =
-        response.data.description;
+      document.getElementById("description-content").innerText = response.data.description;
       document.getElementById("address").innerText = response.data.address;
       document.getElementById("phone").innerText = response.data.phone_number;
 
@@ -137,6 +152,7 @@ export default {
       if (this.feedbacks.length > 0) {
         this.hasAlreadyFeedBack = true;
         if (this.feedbacks[0].feedback)
+        if ( document.getElementById("form"))
           document.getElementById("form").style.display = "none";
       }
       this.feedbacks = this.feedbacks.filter((el) => el.feedback);
@@ -157,7 +173,7 @@ export default {
             .put(
               `http://localhost:8081/client-restaurant/${this.$route.query.id}`,
               {
-                clientId: 1,
+                clientId: this.user.id,
                 restaurantId: idRestaurant,
                 grade: this.grade,
                 feedback: this.feedback,
@@ -165,9 +181,8 @@ export default {
               }
             )
             .then((response) => {
-              console.log(response);
               this.feedbacks.unshift({
-                clientId: 1,
+                clientId:  this.user.id,
                 restaurantId: idRestaurant,
                 grade: response.data.grade,
                 grade_date: response.data.grade_date,
@@ -175,27 +190,26 @@ export default {
                 favorite: response.data.favorite,
               });
             });
+                    if ( document.getElementById("form"))
+
           document.getElementById("form").style.display = "none";
-          console.log(idRestaurant);
 
           return;
         }
         document.getElementById("form").style.display = "none";
-        console.log(idRestaurant);
         axios
           .post("http://localhost:8081/client-restaurant", {
-            clientId: 1,
+            clientId: this.user.id,
             restaurantId: idRestaurant,
             grade: this.grade,
             feedback: this.feedback,
             favorite: this.favorite,
           })
           .then((response) => {
-            console.log(response);
             this.feedbacks.unshift({
               ...response.data,
-              first_name: "Louanne",
-              last_name: "Havens",
+              first_name: this.user.first_name,
+              last_name: this.user.last_name,
             });
           });
         this.hasAlreadyFeedBack = true;
@@ -205,18 +219,17 @@ export default {
       const idRestaurant = this.$route.query.id;
 
       if (this.hasAlreadyFeedBack) {
-        console.log("deja noté");
         axios.put(
           `http://localhost:8081/client-restaurant/${this.$route.query.id}`,
           {
             favorite: this.favorite,
-            clientId: 1,
+            clientId:  this.user.id,
             restaurantId: idRestaurant,
           }
         );
       } else {
         axios.post("http://localhost:8081/client-restaurant", {
-          clientId: 1,
+          clientId: this.user.id,
           restaurantId: idRestaurant,
           favorite: this.favorite,
         });
@@ -227,9 +240,27 @@ export default {
   async created() {
     await this.initData();
   },
+  async mounted() {
+    UserServices.me()
+    .then((user)=>{
+      console.log('vous etes deja connecté !')
+      this.user =user.data
+    })
+    .
+    catch(() => {
+      const addFavorite = document.getElementById("addFavorite");
+      const form = document.getElementById("form");
+      form.parentNode.removeChild(form);
+      addFavorite.parentNode.removeChild(addFavorite);
+    });
+    OfferServices.getOfferByIdRestaurant(this.$route.query.id).then((offers)=>{
+      console.log(offers)
+      this.offers = [...offers.data]
+    })
+  },
   watch: {
     async $route() {
-      this.hasAlreadyFeedBack = false
+      this.hasAlreadyFeedBack = false;
       document.getElementById("form").style.display = "block";
       await this.initData();
     },
@@ -241,7 +272,6 @@ export default {
 .conteneur {
   display: flex;
   max-width: 950px;
-  padding-top: 11%;
   margin: auto;
 }
 .conteneur > div {
@@ -267,8 +297,7 @@ export default {
   margin-left: 10px;
   flex: 1;
 }
-#restaurant-image {
-}
+
 
 #preview {
   flex: 60%;
@@ -286,4 +315,13 @@ export default {
 #reviewSection a {
   color: inherit;
 }
+.offer{
+  display:flex;
+  margin-bottom: 20px;
+}
+.offer .offer-name{
+  border-bottom : 1px  dotted;
+  flex:1
+}
+
 </style>

@@ -1,6 +1,6 @@
 <template>
   <div>
-      <div class="mainframe md-accent">
+    <div class="mainframe md-accent">
       <div class="md-layout">
         <div class="md-layout-item md-size-3">
           <div id="slogan">
@@ -18,10 +18,15 @@
     <h1 class="md-display-1 centered">Les sélections Tok'eat</h1>
 
     <div class="container">
-      <md-card v-for="(item, index) in restaurants" v-bind:key="index">
-        <md-card-media >
-          <img v-on:click="$router.push(`/restaurant?id=${item.id}`)"
-            src="https://breathe-restaurant.com/wp-content/uploads/2019/12/brEAThe-archi-1.jpeg"
+      <md-card
+        v-for="(item, index) in restaurants"
+        v-bind:key="index"
+        class="restaurant"
+      >
+        <md-card-media>
+          <img
+            v-on:click="$router.push(`/restaurant?id=${item.id}`)"
+            src="https://res.cloudinary.com/tf-lab/image/upload/w_600,h_337,c_fill,g_auto:subject,q_auto,f_auto/restaurant/4a0d9e27-5789-480a-ae60-37f37c4a310e/6950719d-8878-495a-8d0a-8acbecff56d3.jpg"
             alt="People"
           />
         </md-card-media>
@@ -56,14 +61,14 @@
       </div>
       -->
     </div>
-        <h1 class="md-display-1 centered">Vos favoris</h1>
+    <h1 class="md-display-1 centered">Vos favoris</h1>
 
     <div class="container">
-
-        <md-card v-for="(item, index) in favoritesRestaurants" v-bind:key="index">
-        <md-card-media >
-          <img v-on:click="$router.push(`/restaurant?id=${item.id}`)"
-            src="https://breathe-restaurant.com/wp-content/uploads/2019/12/brEAThe-archi-1.jpeg"
+      <md-card v-for="(item, index) in favoritesRestaurants" v-bind:key="index" class="restaurant">
+        <md-card-media>
+          <img
+            v-on:click="$router.push(`/restaurant?id=${item.id}`)"
+            src="https://res.cloudinary.com/tf-lab/image/upload/w_600,h_337,c_fill,g_auto:subject,q_auto,f_auto/restaurant/4a0d9e27-5789-480a-ae60-37f37c4a310e/6950719d-8878-495a-8d0a-8acbecff56d3.jpg"
             alt="People"
           />
         </md-card-media>
@@ -79,31 +84,35 @@
 
 <script>
 import axios from "axios";
-
+import UserServices from "../services/userServices";
 
 export default {
-    name:'Display-restaurants',
-    props:{
-        restaurants: Array,
-        
-    },
-     data(){
-        return {
-          favoritesRestaurants:[]
-        }
-    },
-    created(){
+  name: "Display-restaurants",
+  props: {
+    restaurants: Array,
+  },
+  data() {
+    return {
+      user: null,
+      favoritesRestaurants: [],
+    };
+  },
+  created() {
+    UserServices.me().then((user) => {
+      console.log("vous etes deja connecté !");
+      this.user = user.data;
+      axios
+        .get(
+          `http://localhost:8081/client-restaurant/favorites/${this.user.id}`
+        )
+        .then((response) => {
+          this.favoritesRestaurants = response.data;
+        });
+    }).catch(()=>{console.log('pas connecté...')});
+  },
 
-      axios.get(`http://localhost:8081/client-restaurant/favorites/1`,).then((response)=>{
-          this.favoritesRestaurants = response.data
-        })
-     
-    },
-   
-    methods:{
-          
-    }
-}
+  methods: {},
+};
 </script>
 
 <style scoped>
@@ -124,6 +133,10 @@ export default {
   position: relative;
   top: 30%;
 }
+.restaurant:hover {
+  cursor: pointer;
+  box-shadow: 5px 5px 5px 1px silver;
+}
 
 .name,
 .address,
@@ -132,7 +145,6 @@ export default {
 }
 
 .mainframe {
-  padding-top: 11%;
   margin-right: 10%;
   margin-left: 10%;
 }
@@ -140,7 +152,5 @@ export default {
   margin: 20px;
   flex: 0 0 25%;
 }
-::selection {
-  background: #000 !important;
-}
+
 </style>
