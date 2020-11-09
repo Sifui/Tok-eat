@@ -62,8 +62,47 @@ class Client {
         })
         return result.rows[0]
     }
-}
 
+    static async editName(client){
+        const result = await PostgresStore.client.query({
+            text: `UPDATE ${Client.tableName}
+            SET first_name=$1, last_name=$2
+            WHERE id=$3`,
+            values: [client.firstName, client.lastName, Number(client.id)]
+        })
+        return result.rows[0]
+    }
+
+    static async editEmail(client){
+        const result = await PostgresStore.client.query({
+            text: `UPDATE ${Client.tableName}
+            SET email=$1
+            WHERE id=$2`,
+            values: [client.email, Number(client.id)]
+        })
+        return result.rows[0]
+    }
+
+    static async editPhone(client){
+        const result = await PostgresStore.client.query({
+            text: `UPDATE ${Client.tableName}
+            SET phone_number=$1
+            WHERE id=$2`,
+            values: [client.phoneNumber, Number(client.id)]
+        })
+        return result.rows[0]
+    }
+
+    static async editAddress(client){
+        const result = await PostgresStore.client.query({
+            text: `UPDATE ${Client.tableName}
+            SET address=$1
+            WHERE id=$2`,
+            values: [client.address, Number(client.id)]
+        })
+        return result.rows[0]
+    }
+}
 /** @type {String} */
 Client.tableName = 'client'
 

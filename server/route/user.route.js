@@ -144,4 +144,59 @@ router.post('/unregister', hasToBeAuthenticated, async (req, res) => {
     }
 })
 
+router.put('/edit_name', hasToBeAuthenticated, async (req, res) => {
+    if(req.session.type == "client"){
+        const result = await Client.editName(req.session.userId)
+        res.json(result)
+    }
+
+    if(req.session.type == "restaurant"){
+        const result = await Restaurant.editName(req.body)
+        res.json(result)
+    }
+})
+
+router.put('/edit_email', hasToBeAuthenticated, async (req, res) => {
+    if(req.session.type == "client"){
+        const result = await Client.editEmail(req.body)
+        res.json(result)
+    }
+
+    if(req.session.type == "restaurant"){
+        const result = await Restaurant.editEmail(req.body)
+        res.json(result)
+    }
+})
+
+router.put('/edit_description', hasToBeAuthenticated, async (req, res) => {
+    if(req.session.type == "restaurant"){
+        const result = await Restaurant.editDescription(req.body)
+        res.json(result)
+    }
+})
+
+router.put('/edit_phone', hasToBeAuthenticated, async (req, res) => {
+    if(req.session.type == "client"){
+        const result = await Client.editPhone(req.body)
+        res.json(result)
+    }
+
+    if(req.session.type == "restaurant"){
+        const result = await Restaurant.editPhone(req.body)
+        res.json(result)
+    }
+})
+
+router.put('/edit_address', hasToBeAuthenticated, async (req, res) => {
+    if(req.session.type == "client"){
+        const result = await Client.editAddress(req.body)
+        res.json(result)
+    }
+
+    if(req.session.type == "restaurant"){
+        const result = await Restaurant.editAddress(req.body)
+        res.json(result)
+    }
+})
+
 module.exports = router
