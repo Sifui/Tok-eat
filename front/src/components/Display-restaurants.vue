@@ -61,7 +61,7 @@
       </div>
       -->
     </div>
-    <div>
+    <div v-if="favoritesRestaurants.length">
     <h1 class="md-display-1 centered">Vos favoris</h1>
 
     <div class="container">
@@ -121,7 +121,6 @@ export default {
 .container {
   width: 1000px;
   margin: auto;
-  padding-top: 70px;
   display: flex;
   justify-content: center;
   flex-wrap: wrap !important;

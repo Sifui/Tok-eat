@@ -64,7 +64,7 @@
 
 <script>
 export default {
-  name: "footer",
+  name: "Footer",
   props: {},
 };
 </script>
@@ -96,7 +96,6 @@ h3 {
 .title {
   margin: 0px 0 5px 25px;
   /* font-family: "Lato", sans-serif; */
-  font-family: "Great Vibes", cursive;
   font-size: 30px;
   font-weight: 300;
 }
@@ -130,7 +129,6 @@ button {
 .footer {
   /* background-color: brown; */
   background-color: #393b3d;
-  font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #ffffff;
@@ -155,7 +153,6 @@ button {
   flex-direction: column;
   margin: 0px 5px 0px 5px;
   color: #d6d2d2;
-  font-family: "Verdana", sans-serif;
 }
 
 .container .item-1 p span {
