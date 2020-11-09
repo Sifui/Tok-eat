@@ -1,7 +1,6 @@
 const PostgresStore = require("../PostgresStore")
 const bcrypt = require('bcrypt')
 const Schedule = require('./schedule.model')
-const Offer = require('./offer.model')
 
 class Restaurant {
     static toSQLTable () {
