@@ -6,6 +6,7 @@ const Promo = require('./model/promo.model')
 const Basket = require('./model/basket.model')
 const Offer = require('./model/offer.model')
 const Ordered_Product = require('./model/ordered_product.model')
+const Category = require('./model/category.model')
 
 const clientData = require('./utils/generateData/clientData')
 const restaurantData = require('./utils/generateData/restaurantData')
@@ -41,8 +42,10 @@ async function createEverything () {
         Client_Restaurant,
         Promo,
         Basket,
+        Category,
         Offer,
         Ordered_Product
+        
     ]
 
     for (const model of models) {
@@ -58,14 +61,22 @@ async function createFakeData () {
     }
     console.log('Clients generated')
 
-    let offerSample = {}
-    let restaurantInDb = {}
+    let offerSample
+    let restaurantInDb
+    let category
 
     for(const restaurant of restaurantData) {
         restaurantInDb = await Restaurant.create(restaurant)
         offerSample = generateOffer(restaurantInDb.id,3)
+        
+        category = await Category.create({
+            name:"other",
+            priority:0,
+            idRestaurant:restaurantInDb.id
+        })
         for(let offer of offerSample)
         {
+            offer.idCategory = category.id
             await Offer.create(offer)
         }
     }

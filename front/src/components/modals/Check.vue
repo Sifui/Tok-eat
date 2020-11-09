@@ -15,8 +15,8 @@
 
         <div class="modal__footer">
             <slot name="footer"/>
-                <button v-on:click="deleteOffer(modals.deleteOffer)">Oui</button>
-                <button v-on:click="closeModal()" class="rightCentredButton">Non</button>
+              <md-button v-on:click="closeModal()" >Non</md-button>
+              <md-button v-on:click="deleteOffer(modals.deleteOffer)" class="rightCentredButton">Oui</md-button>
         </div>
 
       </div>
@@ -38,11 +38,10 @@ export default {
     },
     methods:{
         closeModal(){
-            this.$parent.closeModal()
+            this.$emit('close')
         },
         deleteOffer(offer){
-            console.log(this.modals)
-            this.$parent.deleteOffer(offer)
+            this.$emit('delete', offer)
             this.closeModal()
         }
     }

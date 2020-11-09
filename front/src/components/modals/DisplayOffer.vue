@@ -4,20 +4,21 @@
       <div class="modal__backdrop"/>
 
       <div class="modal__dialog">
+        
         <div class="modal__header">
             <slot name="header"/>
-                {{offer.name}}
+            {{offer.name}}
         </div>
 
         <div class="modal__body">
             <slot name="body"/>
-                {{offer.description}}
+            {{offer.description}}
         </div>
 
         <div class="modal__footer">
             <slot name="footer"/>
-                {{offer.price}}€
-                <button v-on:click="closeModal" class="rightCentredButton">Retour</button>
+            <md-button v-on:click="closeModal" >Retour</md-button>
+            <p class="rightCentredButton">{{offer.price}}€</p>
         </div>
 
       </div>
@@ -39,7 +40,7 @@ export default {
     },
     methods:{
         closeModal(){
-            this.$parent.closeModal()
+            this.$emit('close')
         }
     }
 }

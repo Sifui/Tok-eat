@@ -1,10 +1,9 @@
 <template>
     <div calss="flex">
+        <displayOffer :offer="modals.displayOffer" :me="me" @close="closeModal"/>
+        <addOffer :modals="modals" :me="me"  @close="closeModal"/>
 
-        <displayOffer :offer="modals.displayOffer" :me="me" />
-        <addOffer :modals="modals" :me="me" />
-
-        <check :modals="modals" :me="me" />
+        <check :modals="modals" :me="me"  @close="closeModal" @delete="deleteOffer"/>
         <br><button v-on:click="checkAddOffer()">Ajouter une offre</button><br><br>
 
         <div v-for="offer in offers" :key="offer.id" class="border">
@@ -74,7 +73,7 @@ export default {
         async deleteOffer(offer)
         {
             await offerServices.deleteOffer(offer)
-            this.$parent.creatData()
+            this.$emit("reload")
         },
         closeModal(){
             this.modals = {

@@ -1,6 +1,6 @@
 const PostgresStore = require("../PostgresStore")
-const Restaurant = require('./restaurant.model')
 const Promo = require('./promo.model')
+const Category = require("./category.model")
 
 class Offer {
     static toSQLTable () {
@@ -11,8 +11,9 @@ class Offer {
                 price FLOAT,
                 description TEXT,
                 image BYTEA,
-                id_restaurant INTEGER REFERENCES ${Restaurant.tableName}(id),
-                id_promo INTEGER REFERENCES ${Promo.tableName}(id)
+                id_category INTEGER REFERENCES ${Category.tableName}(id) ON DELETE CASCADE,
+                id_promo INTEGER REFERENCES ${Promo.tableName}(id) ON DELETE CASCADE
+
             )
         `
     }
@@ -20,59 +21,20 @@ class Offer {
     static async create (offer) {
         const result = await PostgresStore.client.query({
             text: `INSERT INTO ${Offer.tableName}
-                    (name, price, description, image, id_restaurant, id_promo)
+                    (name, price, description, image, id_category, id_promo)
                     VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
                     values : [
-                        offer.name, Number(offer.price), offer.description, offer.image, offer.idRestaurant, offer.idPromo
+                        offer.name, Number(offer.price), offer.description, offer.image, offer.idCategory, offer.idPromo
                     ]
         })
         return result.rows[0]
     }
 
-    static async getByIdRestaurant (restaurantId) {
-        const result = await PostgresStore.client.query({
-            text: `SELECT * FROM ${Offer.tableName}
-            WHERE id_restaurant=$1`,
-            values: [restaurantId]
-        })
-        return result.rows
-    }
-
-    static async delete(offerD){
+    static async delete(id){
         const result = await PostgresStore.client.query({
             text: `DELETE FROM ${Offer.tableName}
             WHERE id=$1`,
-            values: [Number(offerD)]
-        })
-        return result.rows[0]
-    }
-
-    static async modifName(offerM){
-        const result = await PostgresStore.client.query({
-            text: `UPDATE ${Offer.tableName}
-            SET name=$1
-            WHERE id=$2`,
-            values : [offerM.name, Number(offerM.id)]
-        })
-        return result.rows[0]
-    }
-
-    static async modifPrice(offerP){
-        const result = await PostgresStore.client.query({
-            text: `UPDATE ${Offer.tableName}
-            SET price=$1
-            WHERE id=$2`,
-            values : [offerP.price, Number(offerP.id)]
-        })
-        return result.rows[0]
-    }
-
-    static async modifDes(offerD){
-        const result = await PostgresStore.client.query({
-            text: `UPDATE ${Offer.tableName}
-            SET description=$1
-            WHERE id=$2`,
-            values : [offerD.description, Number(offerD.id)]
+            values: [Number(id)]
         })
         return result.rows[0]
     }
@@ -80,12 +42,25 @@ class Offer {
     static async modif(offer){
         const result = await PostgresStore.client.query({
             text:`UPDATE ${Offer.tableName}
-            SET name=$1, price=$2, description=$3
-            WHERE id=$4
+            SET name=$1, price=$2, description=$3, id_category=$4
+            WHERE id=$5
             RETURNING *`,
-            values : [offer.name, Number(offer.price), offer.description, Number(offer.id)]
+            values : [offer.name, offer.price, offer.description,offer.idCategory ,offer.id]
         })
         return result.rows[0]
+    }
+
+        static async getByIdRestaurant (restaurantId) {
+        const result = await PostgresStore.client.query({
+            text: `SELECT ${Offer.tableName}.id, ${Offer.tableName}.name, ${Offer.tableName}.price, ${Offer.tableName}.description, ${Offer.tableName}.image,
+            ${Category.tableName}.name as categoryName,${Category.tableName}.priority
+            FROM ${Offer.tableName} 
+            JOIN ${Category.tableName}
+            ON(${Category.tableName}.id=${Offer.tableName}.id_category) 
+            WHERE id_restaurant=$1`,
+            values: [restaurantId]
+        })
+        return result.rows
     }
 }
 
