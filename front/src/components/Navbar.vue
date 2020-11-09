@@ -39,7 +39,7 @@
           </div>
         </md-field>
       </div>
-      <div class="md-layout-item">
+      <div class="md-layout-item" v-if='!user'>
         <md-button class="nav-button" v-on:click="$router.push('/login')"
           >Connexion</md-button
         >
@@ -54,7 +54,7 @@
 
 <script>
 import axios from "axios";
-
+import UserServices from '../services/userServices'
 export default {
   name: "Navbar",
   props: {
@@ -63,6 +63,7 @@ export default {
   },
   data() {
     return {
+      user: null,
       query: "",
       suggestions: [],
     };
@@ -98,6 +99,14 @@ export default {
       this.suggestions = []
     }
   },
+  async created(){
+        console.log('KANKANAAAAAAAAAAAAAAAAA')
+
+    const res = await UserServices.me()
+    this.user = res.data
+    console.log(this.user)
+  }
+
   
 };
 </script>

@@ -94,6 +94,7 @@ export default {
       attribution:
         '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     }).addTo(this.map);
+    setTimeout(()=>{this.map.invalidateSize()},500)
     this.initData();
   },
 };
@@ -105,11 +106,11 @@ export default {
   justify-content: space-between;
   max-width: 80%;
   margin: auto;
-  height: 100%;
 }
 #map {
   flex: 1;
-  max-height: 80vh;
+  max-height: 75vh;
+  min-height:40vh
 }
 #results {
   flex: 1;

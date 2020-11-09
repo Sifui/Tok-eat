@@ -219,6 +219,7 @@ export default {
       const idRestaurant = this.$route.query.id;
 
       if (this.hasAlreadyFeedBack) {
+        console.log('modification........',this.favorite)
         axios.put(
           `http://localhost:8081/client-restaurant/${this.$route.query.id}`,
           {
@@ -226,7 +227,7 @@ export default {
             clientId:  this.user.id,
             restaurantId: idRestaurant,
           }
-        );
+        ).then((r)=>{console.log(r)}).catch((e)=>{console.log('error',e)});
       } else {
         axios.post("http://localhost:8081/client-restaurant", {
           clientId: this.user.id,
@@ -238,6 +239,7 @@ export default {
     },
   },
   async created() {
+    window.scrollTo(0,0)
     await this.initData();
   },
   async mounted() {
