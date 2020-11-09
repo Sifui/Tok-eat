@@ -1,6 +1,6 @@
 <template>
   <div>
-    <displayOffers :me="me" :offers="offers" />
+    <displayOffers :me="me" :offers="offers" @reload="creatData()"/>
   </div>
 </template>
 
