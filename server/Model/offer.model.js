@@ -11,7 +11,8 @@ class Offer {
                 price FLOAT,
                 description TEXT,
                 image BYTEA,
-                id_restaurant INTEGER REFERENCES ${Restaurant.tableName}(id),
+                id_restaurant INTEGER REFERENCES ${Restaurant.tableName}(id)
+                ON DELETE CASCADE ON UPDATE CASCADE,
                 id_promo INTEGER REFERENCES ${Promo.tableName}(id)
             )
         `
@@ -43,6 +44,15 @@ class Offer {
             text: `DELETE FROM ${Offer.tableName}
             WHERE id=$1`,
             values: [Number(offerD)]
+        })
+        return result.rows[0]
+    }
+
+    static async deleteByRest(offerR){
+        const result = await PostgresStore.client.query({
+            text: `DELETE FROM ${Offer.tableName}
+            WHERE id_restaurant=$1`,
+            values: [Number(offerR)]
         })
         return result.rows[0]
     }

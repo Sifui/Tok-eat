@@ -21,11 +21,18 @@ router.delete('/offer', hasToBeAuthenticated, async (req,res)=>{
 
 router.put('/offer', hasToBeAuthenticated, async (req,res)=>{
     const result = await Offer.modif(req.body)
-    res.json(result)
+
+    if(!req.body.name ||
+        !req.body.price ||
+        !Req.body.description)
+    {
+        res.status(400)
+        res.json({message: "missimg form"})
+    }
+    else {
+        res.json(result)
+    }
 })
-
-
-
 
 module.exports = router
 
