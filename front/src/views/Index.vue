@@ -1,48 +1,32 @@
 <template>
   <div class="index" md-theme="black">
-    <navbar v-bind:restaurants="restaurants"/>
-    <router-view :restaurants="restaurants"/>
-    
+    <navbar v-bind:restaurants="restaurants" />
+    <router-view :restaurants="restaurants" style="padding-top:11%;padding-bottom:5%" />
+    <footerTokEat />
+
   </div>
 </template>
 
 <script>
-/*var L = window.L;
-setTimeout(function () {
-  var map = L.map("map").setView([51.505, -0.09], 13);
-
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    attribution:
-      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-  }).addTo(map);
-
-  L.marker([51.5, -0.09])
-    .addTo(map)
-    .bindPopup("A pretty CSS3 popup.<br> Easily customizable.")
-    .openPopup();
-}, 0);*/
 import axios from "axios";
-import navbar from '../components/Navbar'
+import navbar from "../components/Navbar";
+import footerTokEat from "../components/Footer";
 export default {
   name: "Index",
   props: {},
-  components:{navbar},
+  components: { navbar , footerTokEat },
   data() {
     return {
       restaurants: [],
     };
   },
-  
-  methods: {
-   
-    
-  },
-  
-    created() {
+
+  methods: {},
+
+  created() {
     axios
       .get("http://localhost:8081/client-restaurant/top-rated")
       .then((response) => {
-        console.log(response)
         const { data } = response;
         this.restaurants = data;
       })
@@ -51,8 +35,6 @@ export default {
       });
   },
 };
-
-
 </script>
 
 <style lang="scss" scoped>
@@ -71,6 +53,4 @@ export default {
 .index {
   height: 100%;
 }
-
-
 </style>

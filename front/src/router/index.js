@@ -25,22 +25,15 @@ const routes = [
         name:'searchRestaurants',
         component:()=> import('../components/Search'),
       },
-      {
-        path: '/login',
-        name: 'Login',
-        component:()=> import('../views/Login.vue'),
-      },
-      {
-        path: '/register',
-        name: 'Register',
-        // route level code-splitting
-        // this generates a separate chunk (about.[hash].js) for this route
-        // which is lazy-loaded when the route is visited.
-        component: () => import(/* webpackChunkName: "about" */ '../views/Register.vue')
-      }
+      
     ]
   },
-
+  {
+    path:'/offers',
+    name:'Offers',
+    component: () => import(/* webpackChunkName: "about" */ '../components/Offers.vue'),
+    props : true
+  },
   {
     path: '/RestaurantDashBoard',
     name: 'RestaurantDashBoard',
@@ -57,6 +50,19 @@ const routes = [
     name: 'Error404',
     component: () => import(/* webpackChunkName: "about" */ '../views/Error404.vue')
   },
+  {
+    path: '/login',
+    name: 'Login',
+    component:()=> import('../views/Login.vue'),
+  },
+  {
+    path: '/register',
+    name: 'Register',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () => import(/* webpackChunkName: "about" */ '../views/Register.vue')
+  }
 ]
 
 const router = new VueRouter({

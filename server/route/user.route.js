@@ -3,6 +3,8 @@ const bcrypt = require('bcrypt')
 const Client = require("../model/client.model")
 const Restaurant = require("../model/restaurant.model")
 const hasToBeAuthenticated = require('../middlewares/has-to-be-authenticated.middleware')
+const { client } = require("../PostgresStore")
+const Offer = require('../model/offer.model')
 
 router.post('/login', async (req, res) => {
     console.log('HERE ===> '+req.body);
@@ -123,6 +125,77 @@ router.post('/register', async (req, res) => {
     {
         res.status(401)
         res.json({message: "This kind of user doesn't exist"})
+    }
+})
+
+router.post('/unregister', hasToBeAuthenticated, async (req, res) => {
+    if(req.session.type == "client"){
+        const result = await Client.delete(req.session.userId)
+        res.json(result)
+        res.json({message: 'unregistered'})
+    }
+
+    if(req.session.type == "restaurant"){
+        const res1 = await Offer.deleteByRest(req.session.userId)
+        const res2 = await Restaurant.delete(req.session.userId)
+        res.json(res1)
+        res.json(res2)
+        res.json({message: 'unregistered'})
+    }
+})
+
+router.put('/edit_name', hasToBeAuthenticated, async (req, res) => {
+    if(req.session.type == "client"){
+        const result = await Client.editName(req.body)
+        res.json(result)
+    }
+
+    if(req.session.type == "restaurant"){
+        const result = await Restaurant.editName(req.body)
+        res.json(result)
+    }
+})
+
+router.put('/edit_email', hasToBeAuthenticated, async (req, res) => {
+    if(req.session.type == "client"){
+        const result = await Client.editEmail(req.body)
+        res.json(result)
+    }
+
+    if(req.session.type == "restaurant"){
+        const result = await Restaurant.editEmail(req.body)
+        res.json(result)
+    }
+})
+
+router.put('/edit_description', hasToBeAuthenticated, async (req, res) => {
+    if(req.session.type == "restaurant"){
+        const result = await Restaurant.editDescription(req.body)
+        res.json(result)
+    }
+})
+
+router.put('/edit_phone', hasToBeAuthenticated, async (req, res) => {
+    if(req.session.type == "client"){
+        const result = await Client.editPhone(req.body)
+        res.json(result)
+    }
+
+    if(req.session.type == "restaurant"){
+        const result = await Restaurant.editPhone(req.body)
+        res.json(result)
+    }
+})
+
+router.put('/edit_address', hasToBeAuthenticated, async (req, res) => {
+    if(req.session.type == "client"){
+        const result = await Client.editAddress(req.body)
+        res.json(result)
+    }
+
+    if(req.session.type == "restaurant"){
+        const result = await Restaurant.editAddress(req.body)
+        res.json(result)
     }
 })
 

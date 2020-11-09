@@ -14,6 +14,9 @@
             v-model="query"
             id="search"
             v-on:keyup='fetchRestaurants'
+            v-on:blur='removeSuggestions'
+            autocomplete="off"
+
           ></md-input>
           <md-button v-on:click="redirectToRestaurant()">Rechercher</md-button>
           <div
@@ -36,7 +39,7 @@
           </div>
         </md-field>
       </div>
-      <div class="md-layout-item">
+      <div class="md-layout-item" v-if='!user'>
         <md-button class="nav-button" v-on:click="$router.push('/login')"
           >Connexion</md-button
         >
@@ -51,7 +54,7 @@
 
 <script>
 import axios from "axios";
-
+import UserServices from '../services/userServices'
 export default {
   name: "Navbar",
   props: {
@@ -60,24 +63,13 @@ export default {
   },
   data() {
     return {
+      user: null,
       query: "",
-    suggestions: [],
-
-
+      suggestions: [],
     };
   },
   methods: {
     fetchRestaurants() {
-      /*let cloneRestaurants = [...this.restaurants];
-      cloneRestaurants = cloneRestaurants.map((e) => ({
-        ...e,
-        name: e.name.trim(),
-      }));
-      const exp = `^${this.query.trim().toLowerCase()}`;
-      const regex = new RegExp(exp);
-      this.suggestions = cloneRestaurants.filter((element) =>
-        regex.test(element.name.toLowerCase())
-      );*/
     if ( this.query.trim().length === 0)
       return
       axios
@@ -85,8 +77,10 @@ export default {
       .then((response) => {
         this.results = response.data;
         this.suggestions = this.results
-        console.log(this.results);
       });
+    },
+    removeSuggestions(){
+      setTimeout(()=>{this.suggestions = []},100)
     },
     updateInput(text) {
       this.query = text;
@@ -96,19 +90,23 @@ export default {
       this.query = this.query.trim()
        if ( this.query.length === 0)
       return
-      const search = this.restaurants.find((e) => e.name.toLowerCase() === this.query.toLowerCase())
-      if (search){
-        this.$router.push({path:'restaurant',query:{id:search.id}})
-        this.query = ''
-        this.suggestions = []
-      }
-      else{
+     // const search = this.restaurants.find((e) => e.name.toLowerCase() === this.query.toLowerCase())
+     
         this.$router.push({path:'search',query:{slug:this.query}}).catch(()=>{})
 
-      }
+      
+      this.query = ''
       this.suggestions = []
     }
   },
+  async created(){
+        console.log('KANKANAAAAAAAAAAAAAAAAA')
+
+    const res = await UserServices.me()
+    this.user = res.data
+    console.log(this.user)
+  }
+
   
 };
 </script>
