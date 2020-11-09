@@ -146,7 +146,7 @@ router.post('/unregister', hasToBeAuthenticated, async (req, res) => {
 
 router.put('/edit_name', hasToBeAuthenticated, async (req, res) => {
     if(req.session.type == "client"){
-        const result = await Client.editName(req.session.userId)
+        const result = await Client.editName(req.body)
         res.json(result)
     }
 
