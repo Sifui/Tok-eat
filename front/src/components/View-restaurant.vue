@@ -138,7 +138,10 @@ export default {
       let response = await axios.get(
         `http://localhost:8081/restaurants/${this.$route.query.id}`
       );
-
+      if ( !response.data){
+        this.$router.push({path:'/'})
+        return
+      }
       document.getElementById("name").innerText = response.data.name;
       document.getElementById("description-content").innerText = response.data.description;
       document.getElementById("address").innerText = response.data.address;

@@ -1,10 +1,10 @@
 <template>
   <div id="searchPage" class="flex-container">
     <div id="results">
-      <div v-for="(item, index) in results" v-bind:key="index" class="item">
+      <div v-for="(item, index) in temp" v-bind:key="index" class="item">
         <div
           class="flex-container"
-          @mouseover="flyToCoords(index)"
+          @mouseover="flyToCoords((pagination*3)+index)"
           v-on:click="$router.push(`/restaurant?id=${item.id}`)"
         >
           <div>
@@ -23,6 +23,14 @@
           </div>
         </div>
       </div>
+      <nav id="pagination-nav">
+        <ul>
+          <li  v-for="i in (results.length>3 ? parseInt(results.length/3)+1 : 1)" v-bind:key="i">
+              <span v-on:click="test(i-1)">{{i}}</span>
+          </li>
+        
+        </ul>
+      </nav>
     </div>
     <div id="map" ref="mapElement" style="width: 500px"></div>
   </div>
@@ -41,9 +49,11 @@ export default {
   data() {
     return {
       results: [],
+      temp : [],
       map: null,
       coords: [],
       markers: [],
+      pagination : 0
     };
   },
   watch: {
@@ -54,11 +64,20 @@ export default {
         this.map.removeLayer(m);
       }
       this.markers = [];
+      this.pagination = 0
       this.initData();
     },
   },
   methods: {
+    test(index){ // (0,3) (3,6) (6,9) ...
+    this.pagination = index
+    console.log(this.pagination)
+      this.temp = this.results.slice(3*index,(3*index)+3)
+      console.log(this.results)
+    }
+    ,
     flyToCoords(index) {
+      console.log(index)
       if (!(this.coords[index] && this.markers[index])) return;
       this.map.flyTo(this.coords[index]);
       this.markers[index].openPopup();
@@ -70,6 +89,7 @@ export default {
         )
         .then(async (response) => {
           this.results = response.data;
+          this.temp = this.results.slice(0,3)
           for (const res of this.results) {
             const data = await provider.search({ query: `${res.address}` });
             this.coords.push([data[0].y, data[0].x]);
@@ -94,7 +114,9 @@ export default {
       attribution:
         '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     }).addTo(this.map);
-    setTimeout(()=>{this.map.invalidateSize()},500)
+    setTimeout(() => {
+      this.map.invalidateSize();
+    }, 500);
     this.initData();
   },
 };
@@ -110,7 +132,7 @@ export default {
 #map {
   flex: 1;
   max-height: 75vh;
-  min-height:40vh
+  min-height: 75vh;
 }
 #results {
   flex: 1;
@@ -140,5 +162,17 @@ img {
   #map {
     min-height: 500px !important;
   }
+}
+
+ul {
+  list-style: none;
+  display: flex;
+}
+nav {
+}
+li {
+  margin: 0 1px;
+  padding: 15px;
+  border: 1px solid black;
 }
 </style>

@@ -7,7 +7,7 @@
       v-on:click="$router.push('/').catch(()=>{})"
     />
     <div class="nav-elements md-layout md-gutter">
-      <div class="md-layout-item">
+      <div class="md-layout-item" style="margin-right:auto;">
         <md-field>
           <label>Chercher un restaurant</label>
           <md-input
@@ -48,7 +48,23 @@
           >Inscription</md-button
         >
       </div>
+     
     </div>
+       <md-speed-dial v-if="user" md-event="hover" md-direction="bottom" style="position:fixed;right:30px;top:30px;">
+      <md-speed-dial-target style="background-color:white;">
+        <md-icon style="color:black">perm_identity</md-icon>
+      </md-speed-dial-target>
+
+      <md-speed-dial-content>
+        <md-button class="md-icon-button">
+          <md-icon>account_circle</md-icon>
+        </md-button>
+
+        <md-button class="md-icon-button" v-on:click="$router.push('*')">
+          <md-icon>exit_to_app</md-icon>
+        </md-button>
+      </md-speed-dial-content>
+    </md-speed-dial> 
   </md-toolbar>
 </template>
 
@@ -100,8 +116,6 @@ export default {
     }
   },
   async created(){
-        console.log('KANKANAAAAAAAAAAAAAAAAA')
-
     const res = await UserServices.me()
     this.user = res.data
     console.log(this.user)
@@ -133,9 +147,11 @@ export default {
 }
 
 .nav-elements.md-layout.md-gutter {
-  flex: 1;
+  
   text-align: right;
   margin-left: 10%;
+  margin-right: auto;
+  flex:0.70
 }
 p.search-result:hover {
   background-color: lightgrey;
