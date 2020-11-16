@@ -8,6 +8,7 @@
 </template>
 
 <script>
+
 import navbar from "../components/Navbar";
 import footerTokEat from "../components/Footer";
 export default {
@@ -49,4 +50,5 @@ export default {
 .index {
   height: 100%;
 }
+
 </style>
