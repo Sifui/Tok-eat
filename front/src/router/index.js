@@ -56,6 +56,11 @@ const routes = [
     component:()=> import('../views/Login.vue'),
   },
   {
+    path: '/profil',
+    name: 'profil',
+    component:()=> import('../views/Profil.vue'),
+  },
+  {
     path: '/register',
     name: 'Register',
     // route level code-splitting
