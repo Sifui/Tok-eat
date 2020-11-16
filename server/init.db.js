@@ -74,11 +74,11 @@ async function createFakeData () {
             priority:0,
             idRestaurant:restaurantInDb.id
         })
-        for(let offer of offerSample)
-        {
+        offerSample.forEach(async(offer,index) => {
             offer.idCategory = category.id
+            offer.priority = index
             await Offer.create(offer)
-        }
+        });
     }
     console.log('Restaurants and offers generated')
 }
