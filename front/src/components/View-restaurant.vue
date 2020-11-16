@@ -242,7 +242,6 @@ export default {
     },
   },
   async created() {
-    window.scrollTo(0,0)
     await this.initData();
   },
   async mounted() {

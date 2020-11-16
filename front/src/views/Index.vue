@@ -1,14 +1,13 @@
 <template>
   <div class="index" md-theme="black">
-    <navbar v-bind:restaurants="restaurants" />
-    <router-view :restaurants="restaurants" style="padding-top:11%;padding-bottom:5%" />
+    <navbar />
+    <router-view style="padding-top:11%;padding-bottom:5%" />
     <footerTokEat />
 
   </div>
 </template>
 
 <script>
-import axios from "axios";
 import navbar from "../components/Navbar";
 import footerTokEat from "../components/Footer";
 export default {
@@ -17,22 +16,19 @@ export default {
   components: { navbar , footerTokEat },
   data() {
     return {
-      restaurants: [],
+
     };
   },
 
   methods: {},
 
   created() {
-    axios
-      .get("http://localhost:8081/client-restaurant/top-rated")
-      .then((response) => {
-        const { data } = response;
-        this.restaurants = data;
-      })
-      .catch(() => {
-        console.log("error when fetching the restaurants");
-      });
+   
+  },
+  watch: {
+    async $route() {
+      window.scrollTo(0,0)
+    },
   },
 };
 </script>

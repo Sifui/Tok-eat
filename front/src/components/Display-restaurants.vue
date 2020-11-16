@@ -91,15 +91,24 @@ import UserServices from "../services/userServices";
 export default {
   name: "Display-restaurants",
   props: {
-    restaurants: Array,
   },
   data() {
     return {
       user: null,
       favoritesRestaurants: [],
+      restaurants: []
     };
   },
   created() {
+     axios
+      .get("http://localhost:8081/client-restaurant/top-rated")
+      .then((response) => {
+        const { data } = response;
+        this.restaurants = data;
+      })
+      .catch(() => {
+        console.log("error when fetching the restaurants");
+      });
     UserServices.me().then((user) => {
       console.log("vous etes deja connecté !");
       this.user = user.data;
