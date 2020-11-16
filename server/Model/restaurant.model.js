@@ -81,7 +81,65 @@ class Restaurant {
         return result.rows[0]
     }
 
-    
+    static async delete(restaurantId){
+        const result = await PostgresStore.client.query({
+            text: `DELETE FROM ${Restaurant.tableName}
+            WHERE id=$1`,
+            values: [Number(restaurantId)]
+        })
+        return result.rows[0]
+    }
+
+    static async editName(restaurant){
+        const result = await PostgresStore.client.query({
+            text: `UPDATE ${Restaurant.tableName}
+            SET name=$1
+            WHERE id=$2`,
+            values: [restaurant.name, Number(restaurant.id)]
+        })
+        return result.rows[0]
+    }
+
+    static async editEmail(restaurant){
+        const result = await PostgresStore.client.query({
+            text: `UPDATE ${Restaurant.tableName}
+            SET email=$1
+            WHERE id=$2`,
+            values: [restaurant.email, Number(restaurant.id)]
+        })
+        return result.rows[0]
+    }
+
+    static async editDescription(restaurant){
+        const result = await PostgresStore.client.query({
+            text: `UPDATE ${Restaurant.tableName}
+            SET desscription=$1
+            WHERE id=$2`,
+            values: [restaurant.description, Number(restaurant.id)]
+        })
+        return result.rows[0]
+    }
+
+    static async editPhone(restaurant){
+        const result = await PostgresStore.client.query({
+            text: `UPDATE ${Restaurant.tableName}
+            SET phone_number=$1
+            WHERE id=$2`,
+            values: [restaurant.phoneNumber, Number(restaurant.id)]
+        })
+        return result.rows[0]
+    }
+
+    static async editAddress(restaurant){
+        const result = await PostgresStore.client.query({
+            text: `UPDATE ${Restaurant.tableName}
+            SET address=$1
+            WHERE id=$2`,
+            values: [restaurant.address, Number(restaurant.id)]
+        })
+        return result.rows[0]
+    }
+
 }
 
 /** @type {String} */

@@ -1,5 +1,6 @@
 const PostgresStore = require("../PostgresStore")
 const bcrypt = require('bcrypt')
+const { postgres } = require("../server.config")
 
 class Client {
     static toSQLTable () {
@@ -48,12 +49,60 @@ class Client {
         const result = await PostgresStore.client.query({
             text: `SELECT * FROM ${Client.tableName}
             WHERE id=$1`,
-            values: [clientId]
+            values: [Number(clientId)]
+        })
+        return result.rows[0]
+    }
+
+    static async delete(clientId){
+        const result = await PostgresStore.client.query({
+            text: `DELETE FROM ${Client.tableName}
+            WHERE id=$1`,
+            values: [Number(clientId)]
+        })
+        return result.rows[0]
+    }
+
+    static async editName(client){
+        const result = await PostgresStore.client.query({
+            text: `UPDATE ${Client.tableName}
+            SET first_name=$1, last_name=$2
+            WHERE id=$3`,
+            values: [client.firstName, client.lastName, Number(client.id)]
+        })
+        return result.rows[0]
+    }
+
+    static async editEmail(client){
+        const result = await PostgresStore.client.query({
+            text: `UPDATE ${Client.tableName}
+            SET email=$1
+            WHERE id=$2`,
+            values: [client.email, Number(client.id)]
+        })
+        return result.rows[0]
+    }
+
+    static async editPhone(client){
+        const result = await PostgresStore.client.query({
+            text: `UPDATE ${Client.tableName}
+            SET phone_number=$1
+            WHERE id=$2`,
+            values: [client.phoneNumber, Number(client.id)]
+        })
+        return result.rows[0]
+    }
+
+    static async editAddress(client){
+        const result = await PostgresStore.client.query({
+            text: `UPDATE ${Client.tableName}
+            SET address=$1
+            WHERE id=$2`,
+            values: [client.address, Number(client.id)]
         })
         return result.rows[0]
     }
 }
-
 /** @type {String} */
 Client.tableName = 'client'
 
