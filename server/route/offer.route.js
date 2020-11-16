@@ -14,12 +14,12 @@ router.post('/offer', hasToBeAuthenticated, async (req,res)=>{
     res.json(result)
 })
 
-router.delete('/offer', hasToBeAuthenticated, async (req,res)=>{
+router.delete('/delete', hasToBeAuthenticated, async (req,res)=>{
     const result = await Offer.delete(req.body.id)
     res.json(result)
 })
 
-router.put('/offer', hasToBeAuthenticated, async (req,res)=>{
+router.put('/edit', hasToBeAuthenticated, async (req,res)=>{
     const result = await Offer.modif(req.body)
 
     if(!req.body.name ||
