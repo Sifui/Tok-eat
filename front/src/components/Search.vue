@@ -1,10 +1,23 @@
 <template>
   <div id="searchPage" class="flex-container">
     <div id="results">
+      <div class="pagination">
+        <div class="pagination-item">&laquo;</div>
+        <div
+          v-on:click="test(i - 1)"
+          class="pagination-item"
+          v-for="i in results.length > 3 ? parseInt(results.length / 3) + 1 : 1"
+          v-bind:key="i"
+        >
+          {{ i }}
+        </div>
+
+        <div class="pagination-item">&raquo;</div>
+      </div>
       <div v-for="(item, index) in temp" v-bind:key="index" class="item">
         <div
           class="flex-container"
-          @mouseover="flyToCoords((pagination*3)+index)"
+          @mouseover="flyToCoords(pagination * 3 + index)"
           v-on:click="$router.push(`/restaurant?id=${item.id}`)"
         >
           <div>
@@ -23,14 +36,8 @@
           </div>
         </div>
       </div>
-      <div style="text-align:center">
-        <ul>
-          <li  v-for="i in (results.length>3 ? parseInt(results.length/3)+1 : 1)" v-bind:key="i">
-              <span v-on:click="test(i-1)">{{i}}</span>
-          </li>
-        
-        </ul>
-        </div>
+
+      
     </div>
     <div id="map" ref="mapElement" style="width: 500px"></div>
   </div>
@@ -49,11 +56,11 @@ export default {
   data() {
     return {
       results: [],
-      temp : [],
+      temp: [],
       map: null,
       coords: [],
       markers: [],
-      pagination : 0
+      pagination: 0,
     };
   },
   watch: {
@@ -64,20 +71,24 @@ export default {
         this.map.removeLayer(m);
       }
       this.markers = [];
-      this.pagination = 0
+      this.pagination = 0;
       this.initData();
     },
   },
   methods: {
-    test(index){ // (0,3) (3,6) (6,9) ...
-    this.pagination = index
-    console.log(this.pagination)
-      this.temp = this.results.slice(3*index,(3*index)+3)
-      console.log(this.results)
-    }
-    ,
+    test(index) {
+      // (0,3) (3,6) (6,9) ...
+      this.pagination = index;
+      console.log(this.pagination);
+      this.temp = this.results.slice(3 * index, 3 * index + 3);
+      for ( let i = 0 ; i < document.getElementsByClassName('pagination-item').length;i++)
+      {
+        document.getElementsByClassName('pagination-item')[i].className= "pagination-item"
+      }
+      document.getElementsByClassName('pagination-item')[index+1].className+= " active"
+    },
     flyToCoords(index) {
-      console.log(index)
+      console.log(index);
       if (!(this.coords[index] && this.markers[index])) return;
       this.map.flyTo(this.coords[index]);
       this.markers[index].openPopup();
@@ -89,7 +100,7 @@ export default {
         )
         .then(async (response) => {
           this.results = response.data;
-          this.temp = this.results.slice(0,3)
+          this.temp = this.results.slice(0, 3);
           for (const res of this.results) {
             const data = await provider.search({ query: `${res.address}` });
             this.coords.push([data[0].y, data[0].x]);
@@ -105,6 +116,7 @@ export default {
     },
   },
   mounted() {
+    
     this.map = new L.map(this.$refs["mapElement"]).setView(
       [48.8534, 2.3488],
       12
@@ -112,12 +124,14 @@ export default {
 
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution:
-        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        '&copy; <div href="https://www.openstreetmap.org/copyright">OpenStreetMap</div> contributors',
     }).addTo(this.map);
     setTimeout(() => {
       this.map.invalidateSize();
     }, 500);
     this.initData();
+            document.getElementsByClassName('pagination-item')[1].className+= " active"
+
   },
 };
 </script>
@@ -164,18 +178,36 @@ img {
   }
 }
 
-ul {
-  list-style: none;
-  display: inline-flex;
-  margin:0;
-  padding:0;
-  border:1px solid silver
-  
+.pagination {
+  display: inline-block;
 }
 
-li {
-  margin: 0 1px;
-  padding: 15px;
-  border-right:1px solid silver;
+.pagination .pagination-item {
+  color: black;
+  float: left;
+  padding: 8px 16px;
+  text-decoration: none;
+  border: 1px solid #ddd;
+}
+
+.pagination .pagination-item.active {
+  background-color: #4CAF50;
+  color: white;
+  border: 1px solid #4CAF50;
+}
+
+.pagination .pagination-item:hover:not(.active) {
+  background-color: #ddd;
+  cursor: pointer;
+}
+
+.pagination .pagination-item:first-child {
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+}
+
+.pagination .pagination-item:last-child {
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
 }
 </style>
