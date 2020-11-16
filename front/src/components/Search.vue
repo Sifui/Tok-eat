@@ -23,14 +23,14 @@
           </div>
         </div>
       </div>
-      <nav id="pagination-nav">
+      <div style="text-align:center">
         <ul>
           <li  v-for="i in (results.length>3 ? parseInt(results.length/3)+1 : 1)" v-bind:key="i">
               <span v-on:click="test(i-1)">{{i}}</span>
           </li>
         
         </ul>
-      </nav>
+        </div>
     </div>
     <div id="map" ref="mapElement" style="width: 500px"></div>
   </div>
@@ -166,13 +166,16 @@ img {
 
 ul {
   list-style: none;
-  display: flex;
+  display: inline-flex;
+  margin:0;
+  padding:0;
+  border:1px solid silver
+  
 }
-nav {
-}
+
 li {
   margin: 0 1px;
   padding: 15px;
-  border: 1px solid black;
+  border-right:1px solid silver;
 }
 </style>

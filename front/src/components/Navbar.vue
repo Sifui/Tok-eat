@@ -56,11 +56,11 @@
       </md-speed-dial-target>
 
       <md-speed-dial-content>
-        <md-button class="md-icon-button">
+        <md-button class="md-icon-button" v-on:click="$router.push('/profil')">
           <md-icon>account_circle</md-icon>
         </md-button>
 
-        <md-button class="md-icon-button" v-on:click="$router.push('*')">
+        <md-button class="md-icon-button" v-on:click="$router.push('/disconnect')">
           <md-icon>exit_to_app</md-icon>
         </md-button>
       </md-speed-dial-content>
@@ -119,6 +119,11 @@ export default {
     const res = await UserServices.me()
     this.user = res.data
     console.log(this.user)
+    if ( this.user)
+    {
+      document.getElementsByClassName("nav-elements md-layout md-gutter")[0].style.marginRight='auto'
+      document.getElementsByClassName("nav-elements md-layout md-gutter")[0].style.flex = '0.7'
+    }
   }
 
   
@@ -150,8 +155,7 @@ export default {
   
   text-align: right;
   margin-left: 10%;
-  margin-right: auto;
-  flex:0.70
+  flex:1
 }
 p.search-result:hover {
   background-color: lightgrey;
