@@ -71,12 +71,11 @@
 
 <section>
     <div
-      class="disclaimer-container"
       style="max-width: 880px; margin: auto; font-size: 0.9rem;"
     >
       <h2 class="">Êtes-vous un restaurateur ?</h2>
-      <div class="disclaimer" style="display: flex;flex-wrap:wrap">
-        <img style="flex:1;height:auto;max-height:254px"
+      <div class="flex-container flex-wrap" >
+        <img id="disclaimer-img"
           src="https://c.tfstatic.com/w_800,h_508,c_fill,g_auto:subject,q_auto,f_auto/w_400/tf-product/ContactPage/contactpage_background.png"
           alt=""
         />
@@ -193,5 +192,10 @@ export default {
 }
 section{
   margin: 100px 0 0 0
+}
+#disclaimer-img{
+  flex:1;
+  height:auto;
+  max-height:254px
 }
 </style>

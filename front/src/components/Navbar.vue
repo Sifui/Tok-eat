@@ -20,17 +20,11 @@
           ></md-input>
           <md-button v-on:click="redirectToRestaurant()">Rechercher</md-button>
           <div
-            style="
-              position: absolute;
-              background-color: white;
-              top: 60px;
-              width: 100%;
-            "
+            
+            id="search-result-container"
           >
             <p class="search-result"
               v-on:click="updateInput(suggestion.name)"
-              style="padding: 10px; margin: 0"
-              align="left"
               v-for="(suggestion, index) in suggestions"
               v-bind:key="index"
             >
@@ -57,12 +51,12 @@
       </md-speed-dial-target>
 
     </md-speed-dial> 
-       <md-speed-dial  md-event="hover" md-direction="bottom" style="position:relative">
+       <md-speed-dial  md-event="hover" md-direction="bottom">
       <md-speed-dial-target >
         <md-icon>perm_identity</md-icon>
       </md-speed-dial-target>
 
-      <md-speed-dial-content style="position:absolute;top:60px;left:8px">
+      <md-speed-dial-content>
         <md-button class="md-icon-button" v-on:click="$router.push('/profil')">
           <md-icon>account_circle</md-icon>
         </md-button>
@@ -170,9 +164,26 @@ p.search-result:hover {
   color: white;
   cursor: pointer;
 }
+p.search-result{
+  padding: 10px; 
+  margin: 0;
+  text-align: left;
+}
+#search-result-container{
+  position: absolute;
+  background-color: white;
+  top: 60px;
+  width: 100%;
+}
 .md-speed-dial
 {
-  margin-right:20px 
+  margin-right:20px;
+  position:relative
+}
+.md-speed-dial-content{
+  position:absolute;
+  top:60px;
+  left:8px
 }
 .md-button.md-theme-default.md-fab:not([disabled]){
   background-color: white;
@@ -187,4 +198,5 @@ p.search-result:hover {
     position:sticky
   }
 }
+
 </style>
