@@ -14,7 +14,6 @@ router.post('/offer', hasToBeAuthenticated, async (req,res)=>{
 })
 
 router.delete('/offer', hasToBeAuthenticated, async (req,res)=>{
-    console.log(req.body)
     const result = await Offer.delete(req.body.id)
     res.json(result)
 })

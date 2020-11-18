@@ -32,7 +32,7 @@ class Client_Restaurant {
     }
     static async get(restaurant_id) {
         const result = await PostgresStore.client.query({
-            text: `SELECT first_name,last_name,feedback,grade,grade_date,favorite  from ${Client_Restaurant.tableName} as cl,restaurant as r,client as c  
+            text: `SELECT first_name,last_name,feedback,grade,grade_date,favorite  from ${Client_Restaurant.tableName} as cl,${Restaurant.tableName} as r,client as c  
             WHERE r.id = cl.id_restaurant
             AND cl.id_client = c.id
                 AND r.id = $1
@@ -43,7 +43,7 @@ class Client_Restaurant {
     }
     static async getFavorites(id) {
         const result = await PostgresStore.client.query({
-            text: `SELECT DISTINCT r.id,r.name,r.phone_number,r.address  from ${Client_Restaurant.tableName} as cl,restaurant as r,client as c  
+            text: `SELECT DISTINCT r.id,r.name,r.phone_number,r.address  from ${Client_Restaurant.tableName} as cl,${Restaurant.tableName} as r,client as c  
                 WHERE r.id = cl.id_restaurant
                 AND cl.id_client = c.id
                 AND c.id = $1
@@ -87,7 +87,7 @@ class Client_Restaurant {
     static async getAverage(restaurantId) {
         const result = await PostgresStore.client.query({
             text: `SELECT avg(cl.grade) 
-            FROM ${Client_Restaurant.tableName} as cl,restaurant as r
+            FROM ${Client_Restaurant.tableName} as cl,${Restaurant.tableName} as r
             WHERE r.id = cl.id_restaurant
             AND r.id = $1`,
             values: [restaurantId]
@@ -96,7 +96,7 @@ class Client_Restaurant {
     }
     static async getTopRated() {
         let result = await PostgresStore.client.query({
-            text: `SELECT * FROM ${Client_Restaurant.tableName} as cl, restaurant as r
+            text: `SELECT * FROM ${Client_Restaurant.tableName} as cl, ${Restaurant.tableName} as r
             where cl.id_restaurant = r.id
            order by grade desc 
            limit 9`,
@@ -105,7 +105,7 @@ class Client_Restaurant {
         if ( result.rows.length ===0)
         {
             result = await PostgresStore.client.query({
-                text: `SELECT * FROM restaurant
+                text: `SELECT * FROM ${Restaurant.tableName}
                limit 9`,
     
             })

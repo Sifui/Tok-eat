@@ -116,6 +116,7 @@ export default {
     }
   },
   async created(){
+    
     const res = await UserServices.me()
     this.user = res.data
     console.log(this.user)
