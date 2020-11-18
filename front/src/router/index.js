@@ -32,15 +32,16 @@ const routes = [
         name: 'searchRestaurants',
         component: () => import('../components/Search'),
       },
+      {
+        path: '/offers',
+        name: 'Offers',
+        component: () => import(/* webpackChunkName: "about" */ '../components/Offers.vue'),
+        props: true
+      },
 
     ]
   },
-  {
-    path: '/offers',
-    name: 'Offers',
-    component: () => import(/* webpackChunkName: "about" */ '../components/Offers.vue'),
-    props: true
-  },
+  
   {
     path: '/RestaurantDashBoard',
     name: 'RestaurantDashBoard',
