@@ -1,19 +1,49 @@
 <template>
   <div>
-    {{message}}
+    <displayOffers :me="me" :offers="offers" @reload="creatData()"/>
   </div>
 </template>
 
 <script>
+import userServices from "../services/userServices";
+import offerServices from "../services/offerServices";
+import displayOffers from "../components/DisplayOffers";
+
 export default {
-  name: "Home",
+  name: "RestaurantDashBoard",
   props: {
   },
   data() {
     return {
-      message:'restaurant'
+      action:"",
+      me:{},
+      offers:[]
     };
   },
+  components: {
+    displayOffers
+  },
+  created() {
+    this.creatData()
+  },
+  methods:
+  {
+    async initMe()
+    {
+      let me = await userServices.me()
+      this.me = me.data
+    },
+    async initOffer()
+    {
+      let offers = await offerServices.getOfferByIdRestaurant(this.me.id)
+      this.offers = offers.data
+    },
+    async creatData()
+    {
+      await this.initMe()
+      await this.initOffer()
+    }
+  }
 };
 </script>
 

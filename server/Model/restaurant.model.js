@@ -1,7 +1,6 @@
 const PostgresStore = require("../PostgresStore")
 const bcrypt = require('bcrypt')
 const Schedule = require('./schedule.model')
-const Offer = require('./offer.model')
 
 class Restaurant {
     static toSQLTable () {
@@ -44,6 +43,26 @@ class Restaurant {
             values : [email]
         })
         return result.rows[0]
+    }
+    static async findByName(name) {
+
+        const result = await PostgresStore.client.query({
+            text: `SELECT * FROM ${Restaurant.tableName}
+            WHERE name ilike $1`,
+            values : [name+'%']
+        })
+        return result.rows
+    }
+    static async findTrendsByName(name) {
+
+        const result = await PostgresStore.client.query({
+            text: `SELECT * FROM ${Restaurant.tableName}
+            WHERE name ilike $1 
+            limit 5
+            `,
+            values : [name+'%']
+        })
+        return result.rows
     }
 
     static async getAll(){

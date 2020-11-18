@@ -4,7 +4,6 @@ const PostgresStore = require("../PostgresStore")
 const hasToBeAuthenticated = require('../middlewares/has-to-be-authenticated.middleware')
 
 router.get('/offer/:id', async (req,res)=>{
-
     const result = await Offer.getByIdRestaurant(req.params.id)
     res.json(result)
 })
