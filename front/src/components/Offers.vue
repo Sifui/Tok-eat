@@ -1,10 +1,7 @@
 <template>
-  <div class="container" style="height:100vh">
+  <div class="container" style="height: 100vh">
     panier : {{ articlesCount }}
-    <div
-      v-for="(item, index) in offers"
-      v-bind:key="index"
-    >
+    <div v-for="(item, index) in offers" v-bind:key="index">
       {{ item.name }}
       {{ item.price }} €
 
@@ -16,7 +13,7 @@
       />
     </div>
     <button type="button" v-on:click="passerCommande">
-      passer la commande
+      ajouter une nouvelle commande
     </button>
   </div>
 </template>
@@ -37,17 +34,23 @@ export default {
     test(event, index) {
       if (event.target.value > 0 && this.offersClone[index].quantity == 0)
         this.articlesCount++;
-      else if (event.target.value == 0) 
-        if ( this.articlesCount >0)
-          this.articlesCount--;
+      else if (event.target.value == 0 && this.offersClone[index].quantity > 0)
+        if (this.articlesCount > 0) this.articlesCount--;
 
       this.offersClone[index].quantity = event.target.value;
     },
     passerCommande() {
+      if (!this.articlesCount) {
+        alert("veuillez selectionner au moins un article...");
+        return;
+      }
       let filteredArticles = this.offersClone
         .filter((e) => e.quantity != 0)
         .map((e) => ({ ...e, quantity: parseInt(e.quantity) }));
       console.log(filteredArticles);
+    // creer une ligne dans la table order
+    // creer une ligne pour chaque produit commandé dans la table ordered_product
+      
     },
   },
   created() {

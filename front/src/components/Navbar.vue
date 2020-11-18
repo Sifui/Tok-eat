@@ -48,14 +48,21 @@
           >Inscription</md-button
         >
       </div>
-     
+      
     </div>
-       <md-speed-dial v-if="user" md-event="hover" md-direction="bottom" style="position:fixed;right:30px;top:30px;">
-      <md-speed-dial-target style="background-color:white;">
-        <md-icon style="color:black">perm_identity</md-icon>
+     <div v-if="user">
+            <md-speed-dial  md-event="hover" md-direction="bottom">
+      <md-speed-dial-target>
+        <md-icon >shopping_cart</md-icon>
       </md-speed-dial-target>
 
-      <md-speed-dial-content>
+    </md-speed-dial> 
+       <md-speed-dial  md-event="hover" md-direction="bottom" style="position:relative">
+      <md-speed-dial-target >
+        <md-icon>perm_identity</md-icon>
+      </md-speed-dial-target>
+
+      <md-speed-dial-content style="position:absolute;top:60px;left:8px">
         <md-button class="md-icon-button" v-on:click="$router.push('/profil')">
           <md-icon>account_circle</md-icon>
         </md-button>
@@ -65,6 +72,7 @@
         </md-button>
       </md-speed-dial-content>
     </md-speed-dial> 
+    </div>
   </md-toolbar>
 </template>
 
@@ -119,7 +127,6 @@ export default {
     
     const res = await UserServices.me()
     this.user = res.data
-    console.log("user:",this.user)
     if ( this.user)
     {
       document.getElementsByClassName("nav-elements md-layout md-gutter")[0].style.marginRight='auto'
@@ -162,5 +169,22 @@ p.search-result:hover {
   background-color: lightgrey;
   color: white;
   cursor: pointer;
+}
+.md-speed-dial
+{
+  margin-right:20px 
+}
+.md-button.md-theme-default.md-fab:not([disabled]){
+  background-color: white;
+}
+.md-icon.md-icon-font.md-theme-default
+{
+  color:black !important
+}
+@media screen and (max-width: 1000px) {
+  
+  .md-toolbar  {
+    position:sticky
+  }
 }
 </style>
