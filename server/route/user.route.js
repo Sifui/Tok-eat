@@ -46,7 +46,7 @@ router.get('/me', hasToBeAuthenticated, async (req, res) => {
     }
     else if(req.session.type === "restaurant")
     {
-        user = await Client.getById(req.session.userId)
+        user = await Restaurant.getById(req.session.userId)
         user.type = "restaurant"
     }
 

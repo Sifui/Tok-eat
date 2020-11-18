@@ -1,5 +1,5 @@
 <template>
-  <md-toolbar md-elevation="4">
+  <md-toolbar md-elevation="1">
     <img
       id="logo"
       src="../assets/logo.png"
@@ -139,9 +139,9 @@ export default {
 .md-toolbar {
   position: fixed;
   background-color: white !important;
-  z-index: 10000;
   padding-bottom: 10px;
   padding-top: 10px;
+  z-index:10000
 }
 
 #logo:hover {

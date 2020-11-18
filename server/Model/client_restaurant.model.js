@@ -96,20 +96,23 @@ class Client_Restaurant {
     }
     static async getTopRated() {
         let result = await PostgresStore.client.query({
-            text: `SELECT * FROM ${Client_Restaurant.tableName} as cl, ${Restaurant.tableName} as r
+            text: `SELECT * from ${Restaurant.tableName} 
+            
+           limit 9`,
+                /* 
+                text: `SELECT * FROM ${Client_Restaurant.tableName} as cl, ${Restaurant.tableName} as r
             where cl.id_restaurant = r.id
            order by grade desc 
-           limit 9`,
-
+           limit 9`,*/
         })
-        if ( result.rows.length ===0)
+       /* if ( result.rows.length ===0)
         {
             result = await PostgresStore.client.query({
                 text: `SELECT * FROM ${Restaurant.tableName}
                limit 9`,
     
             })
-        }
+        }*/
         return result.rows
     }
 }

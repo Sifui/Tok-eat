@@ -1,10 +1,9 @@
 <template>
-  <div class="container">
+  <div class="container" style="height:100vh">
     panier : {{ articlesCount }}
     <div
       v-for="(item, index) in offers"
       v-bind:key="index"
-      style="border: 1px solid black"
     >
       {{ item.name }}
       {{ item.price }} €
