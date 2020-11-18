@@ -7,7 +7,7 @@ const { client } = require("../PostgresStore")
 const Offer = require('../model/offer.model')
 
 router.post('/login', async (req, res) => {
-    console.log('HERE ===> ' + req.body);
+    // console.log('HERE ===> ' + req.body);
     const client = await Client.findByEmail(req.body.email)
 
     const restaurant = await Restaurant.findByEmail(req.body.email)
@@ -51,7 +51,7 @@ router.get('/me', hasToBeAuthenticated, async (req, res) => {
 
 router.post('/logout', hasToBeAuthenticated, (req, res) => {
     req.session.destroy(() => { })
-    res.json({ message: 'disconnected' })
+    res.json({ message: 'Déconnecté' })
 })
 
 router.post('/register', async (req, res) => {
@@ -65,15 +65,15 @@ router.post('/register', async (req, res) => {
             !req.body.password
         ) {
             res.status(400)
-            res.json({ message: "missing form" })
+            res.json({ message: "formulaire manquant" })
         }
         else if (!emailRegex.test(req.body.email)) {
             res.status(400)
-            res.json({ message: "error invalid mail" })
+            res.json({ message: "erreur - email invalide" })
         }
         else if (await Client.findByEmail(req.body.email)) {
             res.status(401)
-            res.json({ message: "error already used mail" })
+            res.json({ message: "erreur - email déjà utilisé" })
         }
         else {
             let client = await Client.create(req.body)
@@ -90,15 +90,15 @@ router.post('/register', async (req, res) => {
             !req.body.password
         ) {
             res.status(400)
-            res.json({ message: "missing form" })
+            res.json({ message: "formulaire manquant" })
         }
         else if (!emailRegex.test(req.body.email)) {
             res.status(400)
-            res.json({ message: "error invalid mail" })
+            res.json({ message: "erreur - email invalide" })
         }
         else if (await Restaurant.findByEmail(req.body.email)) {
             res.status(401)
-            res.json({ message: "error already used mail" })
+            res.json({ message: "erreur - email déjà utilisé" })
         }
         else {
             let restaurant = await Restaurant.create(req.body)
@@ -108,7 +108,7 @@ router.post('/register', async (req, res) => {
     }
     else {
         res.status(401)
-        res.json({ message: "This kind of user doesn't exist" })
+        res.json({ message: "Ce genre d' utilisateur n' existe pas" })
     }
 })
 
@@ -116,7 +116,7 @@ router.post('/unregister', hasToBeAuthenticated, async (req, res) => {
     if (req.session.type == "client") {
         const result = await Client.delete(req.session.userId)
         res.json(result)
-        res.json({ message: 'unregistered' })
+        res.json({ message: 'Pas enregistré' })
     }
 
     if (req.session.type == "restaurant") {
@@ -124,7 +124,7 @@ router.post('/unregister', hasToBeAuthenticated, async (req, res) => {
         const res2 = await Restaurant.delete(req.session.userId)
         res.json(res1)
         res.json(res2)
-        res.json({ message: 'unregistered' })
+        res.json({ message: 'Pas enregistré' })
     }
 })
 

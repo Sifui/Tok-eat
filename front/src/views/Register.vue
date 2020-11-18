@@ -388,7 +388,7 @@ export default {
             setTimeout(() => {
               this.loading = false;
             }, 1000);
-            this.$router.push({ path: "home" });
+            this.$router.push({ path: "/" });
           }
         })
         .catch((e) => {
@@ -415,7 +415,7 @@ export default {
             setTimeout(() => {
               this.loading = false;
             }, 1000);
-            this.$router.push({ path: "home" });
+            this.$router.push({ path: "/" });
           }
         })
         .catch((e) => {
