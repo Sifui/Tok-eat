@@ -15,6 +15,8 @@ export default {
   },
   async logout() {
     return http.post("/logout");
+  },
+  async edit_name(data) {
+    return http.put("/edit_name", data);
   }
-
 }

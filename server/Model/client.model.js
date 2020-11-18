@@ -67,8 +67,8 @@ class Client {
         const result = await PostgresStore.client.query({
             text: `UPDATE ${Client.tableName}
             SET first_name=$1, last_name=$2
-            WHERE id=$3`,
-            values: [client.firstName, client.lastName, Number(client.id)]
+            WHERE id=$3 RETURNING *`,
+            values: [client.first_name, client.last_name, Number(client.id)]
         })
         return result.rows[0]
     }
