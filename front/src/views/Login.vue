@@ -110,7 +110,7 @@ export default {
             const user = await userServices.me()
             if(user.data.type === "client")
             {
-              this.$router.push({ path: "/home" });
+              this.$router.push({ path: "/" });
             } else if (user.data.type === "restaurant") {
               this.$router.push({ path: "/RestaurantDashBoard" });
             }

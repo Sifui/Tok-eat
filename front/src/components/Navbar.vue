@@ -60,7 +60,7 @@
           <md-icon>account_circle</md-icon>
         </md-button>
 
-        <md-button class="md-icon-button" v-on:click="$router.push('/disconnect')">
+        <md-button class="md-icon-button" v-on:click="$router.push('/logout')">
           <md-icon>exit_to_app</md-icon>
         </md-button>
       </md-speed-dial-content>

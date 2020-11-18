@@ -12,5 +12,9 @@ export default {
   },
   async me(){
     return http.get("/me");
+  },
+  async logout() {
+    return http.post("/logout");
   }
+
 }
