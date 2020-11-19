@@ -6,10 +6,14 @@ export default {
         return{};
     },
     methods: {
-        Logout: function(){
-            userServices.logout();
+        logout:  async function(){
+            await userServices.logout();
             this.$router.push({ path: "/" });
         }
+    },
+   async created()
+    {
+        await this.logout()
     }
 }
 </script>

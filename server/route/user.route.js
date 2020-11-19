@@ -7,7 +7,6 @@ const { client } = require("../PostgresStore")
 const Offer = require('../model/offer.model')
 
 router.post('/login', async (req, res) => {
-    // console.log('HERE ===> ' + req.body);
     const client = await Client.findByEmail(req.body.email)
 
     const restaurant = await Restaurant.findByEmail(req.body.email)
@@ -40,8 +39,9 @@ router.get('/me', hasToBeAuthenticated, async (req, res) => {
         user = await Client.getById(req.session.userId)
         user.type = "client"
     }
-    else if (req.session.type === "restaurant") {
-        user = await Client.getById(req.session.userId)
+    else if(req.session.type === "restaurant")
+    {
+        user = await Restaurant.getById(req.session.userId)
         user.type = "restaurant"
     }
 

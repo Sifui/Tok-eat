@@ -1,24 +1,25 @@
 <template>
   <transition name="fade">
-    <div class="modal" v-if="offer">
+
+    <div class="modal" v-if="modals.displayOffer">
       <div class="modal__backdrop"/>
 
       <div class="modal__dialog">
         
         <div class="modal__header">
             <slot name="header"/>
-            {{offer.name}}
+            {{modals.displayOffer.name}}
         </div>
 
         <div class="modal__body">
             <slot name="body"/>
-            {{offer.description}}
+            {{modals.displayOffer.description}}
         </div>
 
         <div class="modal__footer">
             <slot name="footer"/>
             <md-button v-on:click="closeModal" >Retour</md-button>
-            <p class="rightCentredButton">{{offer.price}}€</p>
+            <p class="rightCentredButton">{{modals.displayOffer.price}}€</p>
         </div>
 
       </div>
@@ -31,7 +32,7 @@ export default {
     name:'DisplayOffer',
     props:{
         me:Object,
-        offer:Object
+        modals:Object
     },
     data(){
         return {

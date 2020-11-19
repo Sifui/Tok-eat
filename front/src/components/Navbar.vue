@@ -119,7 +119,7 @@ export default {
     
     const res = await UserServices.me()
     this.user = res.data
-    console.log(this.user)
+    console.log("user:",this.user)
     if ( this.user)
     {
       document.getElementsByClassName("nav-elements md-layout md-gutter")[0].style.marginRight='auto'
