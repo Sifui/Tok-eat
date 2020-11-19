@@ -388,7 +388,7 @@ export default {
             setTimeout(() => {
               this.loading = false;
             }, 1000);
-            this.$router.push({ path: "home" });
+            this.$router.push({ path: "/" });
           }
         })
         .catch((e) => {
@@ -415,7 +415,7 @@ export default {
             setTimeout(() => {
               this.loading = false;
             }, 1000);
-            this.$router.push({ path: "home" });
+            this.$router.push({ path: "/" });
           }
         })
         .catch((e) => {
@@ -602,7 +602,7 @@ md-input {
       rgba(63, 158, 109, 1) 62%
     );
     position: absolute;
-    height: 104%;
+    height: 105%;
     width: 100%;
     top: 0;
     bottom: 0;
@@ -613,7 +613,7 @@ md-input {
   .background2 {
     background-image: url("../assets/restaurant.jpg");
     position: absolute;
-    height: 100%;
+    height: 105%;
     width: 100%;
     background-position: center;
     background-size: cover;

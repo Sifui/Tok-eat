@@ -1,43 +1,51 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import userServices from '../services/userServices'
 // import Home from '../views/Home.vue'
 
 Vue.use(VueRouter)
-
+function isAuthenticated() {
+  return userServices.me().then(() => {
+    return true
+  }).catch(() => {
+    return false
+  })
+}
 const routes = [
   {
     path: '/',
     name: 'Index',
-    component: () =>  import(/* webpackChunkName: "about" */ '../views/Index.vue'),
-    children:[
+    component: () => import(/* webpackChunkName: "about" */ '../views/Index.vue'),
+    children: [
       {
-        path:'',
-        name:'display-restaurants',
-        component:()=> import('../components/Display-restaurants')
+        path: '',
+        name: 'display-restaurants',
+        component: () => import('../components/Display-restaurants')
       },
       {
-        path:'restaurant',
-        name:'restaurant',
-        component:()=> import('../components/View-restaurant'),
+        path: 'restaurant',
+        name: 'restaurant',
+        component: () => import('../components/View-restaurant'),
       },
       {
-        path:'search',
-        name:'searchRestaurants',
-        component:()=> import('../components/Search'),
+        path: 'search',
+        name: 'searchRestaurants',
+        component: () => import('../components/Search'),
       },
-      
+      {
+        path: '/offers',
+        name: 'Offers',
+        component: () => import(/* webpackChunkName: "about" */ '../components/Offers.vue'),
+        props: true
+      },
+
     ]
   },
-  {
-    path:'/offers',
-    name:'Offers',
-    component: () => import(/* webpackChunkName: "about" */ '../components/Offers.vue'),
-    props : true
-  },
+  
   {
     path: '/RestaurantDashBoard',
     name: 'RestaurantDashBoard',
-    component:()=> import('../views/RestaurantDashBoard.vue'),
+    component: () => import('../views/RestaurantDashBoard.vue'),
   },
 
   {
@@ -53,7 +61,20 @@ const routes = [
   {
     path: '/login',
     name: 'Login',
-    component:()=> import('../views/Login.vue'),
+    component: () => import('../views/Login.vue'),
+    async beforeEnter(to, from, next) {
+      let isAuth = await isAuthenticated()
+      if (!isAuth) {
+        next();
+      } else {
+        next(false);
+      }
+    }
+  },
+  {
+    path: '/profil',
+    name: 'profil',
+    component:()=> import('../views/Profil.vue'),
   },
   {
     path: '/register',
@@ -61,7 +82,20 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/Register.vue')
+    component: () => import(/* webpackChunkName: "about" */ '../views/Register.vue'),
+    async beforeEnter(to, from, next) {
+      let isAuth = await isAuthenticated()
+      if (!isAuth) {
+        next();
+      } else {
+        next(false);
+      }
+    }
+  },
+  {
+    path: '/logout',
+    name: 'Logout',
+    component: () => import(/* webpackChunkName: "about" */ '../views/Logout.vue')
   }
 ]
 

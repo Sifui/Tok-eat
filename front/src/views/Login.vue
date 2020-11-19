@@ -110,7 +110,7 @@ export default {
             const user = await userServices.me()
             if(user.data.type === "client")
             {
-              this.$router.push({ path: "/home" });
+              this.$router.push({ path: "/" });
             } else if (user.data.type === "restaurant") {
               this.$router.push({ path: "/RestaurantDashBoard" });
             }
@@ -122,11 +122,10 @@ export default {
         });
     },
     onEnter: function () {
-      this.loading = true;
+      this.loading = true;      
       userServices.findByEmail(this.login)
-        .then((response) => {
+        .then(async(response) => {
           this.person = response.data;
-          console.log(this.person.user);
           if (this.person.user === false) {
             setTimeout(() => {
               this.loading = false;
@@ -136,7 +135,13 @@ export default {
             setTimeout(() => {
               this.loading = false;
             }, 1000);
-            this.$router.push({ path: "home" });
+            const user = await userServices.me()
+            if(user.data.type === "client")
+            {
+              this.$router.push({ path: "/" });
+            } else if (user.data.type === "restaurant") {
+              this.$router.push({ path: "/RestaurantDashBoard" });
+            }
           }
         })
         .catch(() => {

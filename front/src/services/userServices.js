@@ -12,5 +12,11 @@ export default {
   },
   async me(){
     return http.get("/me");
+  },
+  async logout() {
+    return http.post("/logout");
+  },
+  async edit_name(data) {
+    return http.put("/edit_name", data);
   }
 }

@@ -1,5 +1,5 @@
 <template>
-  <md-toolbar md-elevation="4">
+  <md-toolbar md-elevation="1">
     <img
       id="logo"
       src="../assets/logo.png"
@@ -7,7 +7,7 @@
       v-on:click="$router.push('/').catch(()=>{})"
     />
     <div class="nav-elements md-layout md-gutter">
-      <div class="md-layout-item">
+      <div class="md-layout-item" style="margin-right:auto;">
         <md-field>
           <label>Chercher un restaurant</label>
           <md-input
@@ -48,7 +48,23 @@
           >Inscription</md-button
         >
       </div>
+     
     </div>
+       <md-speed-dial v-if="user" md-event="hover" md-direction="bottom" style="position:fixed;right:30px;top:30px;">
+      <md-speed-dial-target style="background-color:white;">
+        <md-icon style="color:black">perm_identity</md-icon>
+      </md-speed-dial-target>
+
+      <md-speed-dial-content>
+        <md-button class="md-icon-button" v-on:click="$router.push('/profil')">
+          <md-icon>account_circle</md-icon>
+        </md-button>
+
+        <md-button class="md-icon-button" v-on:click="$router.push('/logout')">
+          <md-icon>exit_to_app</md-icon>
+        </md-button>
+      </md-speed-dial-content>
+    </md-speed-dial> 
   </md-toolbar>
 </template>
 
@@ -100,11 +116,15 @@ export default {
     }
   },
   async created(){
-        console.log('KANKANAAAAAAAAAAAAAAAAA')
-
+    
     const res = await UserServices.me()
     this.user = res.data
-    console.log(this.user)
+    console.log("user:",this.user)
+    if ( this.user)
+    {
+      document.getElementsByClassName("nav-elements md-layout md-gutter")[0].style.marginRight='auto'
+      document.getElementsByClassName("nav-elements md-layout md-gutter")[0].style.flex = '0.7'
+    }
   }
 
   
@@ -119,9 +139,9 @@ export default {
 .md-toolbar {
   position: fixed;
   background-color: white !important;
-  z-index: 10000;
   padding-bottom: 10px;
   padding-top: 10px;
+  z-index:10000
 }
 
 #logo:hover {
@@ -133,9 +153,10 @@ export default {
 }
 
 .nav-elements.md-layout.md-gutter {
-  flex: 1;
+  
   text-align: right;
   margin-left: 10%;
+  flex:1
 }
 p.search-result:hover {
   background-color: lightgrey;
