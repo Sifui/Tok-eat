@@ -14,6 +14,19 @@ class Basket {
             )
         `
     }
+     static async create(basket)
+    {
+        const result = await PostgresStore.client.query({
+            text: `INSERT INTO ${Basket.tableName}
+                    (validation, on_site, order_date,meal_date,id_client)
+                    VALUES (false, true, new Date(),new Date(),$1)
+                     RETURNING *`,
+                    values : [
+                        basket.clientId
+                    ]
+        })
+        return result.rows[0]
+    }
 }
 
 /** @type {String} */
