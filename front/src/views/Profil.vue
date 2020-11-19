@@ -1,6 +1,6 @@
 <template>
   <div id="main-home">
-    <navbar/>
+    <navbar />
     <div id="home">
       <Tabs>
         <Tab name="profil" selected="true">
@@ -18,7 +18,7 @@
                 <label for="name">Nom</label>
               </div>
               <div class="profil-input-div">
-                <input type="text" v-model='user.last_name' />
+                <input type="text" v-model="user.last_name" />
               </div>
               <div class="profil-label-div">
                 <label for="name">Prénom</label>
@@ -54,7 +54,12 @@
                 </button>
               </div>
               <div class="profil-but-div-validate">
-                <button class="profil-but-validate" @click="edit_name" >modifier</button>
+                <button
+                  class="profil-but-validate"
+                  @click="displayModalValidateModification"
+                >
+                  modifier
+                </button>
               </div>
             </div>
           </div>
@@ -119,26 +124,42 @@
               </div>
             </div>
             <div class="payement-cards-div">
-              <div>
-                <p></p>
-              </div>
-              <div>
-                <p>{{this.user.first_name}}</p>
-              </div>
-              <div>
-                <p>pipi</p>
-              </div>
-              <div>
-                <p>pipi</p>
-              </div>
-              <div>
-                <p>pipi</p>
-              </div>
-              <div>
-                <p>pipi</p>
-              </div>
-              <div>
-                <p>pipi</p>
+              <div class="all-card-div">
+                <div class="card-div">
+                  <div class="card-div-part-one">
+                    <div class="card-puce">
+                      <img src="../assets/puce.png" alt="puce-image">
+                    </div>
+                    <div class="input-puce">
+                        <input type="text" value="XXXX-XXXX-XXXX-1234">
+                    </div>
+                  </div>
+                  <div class="card-div-part-two">
+                    <div class="card-type">
+                      <img src="../assets/visa.jpg" alt="">
+                    </div>
+                    <div class="card-label">
+                      <label for="">CVV</label>
+                    </div>
+                    <div class="card-input-number">
+                      <input type="number" value="230">
+                    </div>
+                    <div class="card-label">
+                      <label for="">expire</label>
+                    </div>
+                    <div class="card-input-date">
+                      <input type="month" name="" id="" value="2023-08" >
+                    </div>
+                  </div>
+                </div>
+                <div class="buttons-card-div">
+                  <div class="button-card-div-delete">
+                    <button>Supprimer</button>
+                  </div>
+                  <div class="button-card-div-update">
+                    <button>Modifier</button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -148,7 +169,13 @@
         </Tab>
       </Tabs>
     </div>
-    <footerTokEat/>
+    <validateProfilModification
+      :modals="modals"
+      @validate="edit_name"
+      @reload="reloadPage"
+      @close="closeModal"
+    />
+    <footerTokEat />
   </div>
 </template>
 
@@ -158,21 +185,25 @@ import navbar from "../components/Navbar";
 import Tab from "@/components/Tab";
 import Tabs from "@/components/Tabs";
 import footerTokEat from "@/components/Footer";
-import UserServices from '../services/userServices'
-import userServices from '../services/userServices';
+import UserServices from "../services/userServices";
+import validateProfilModification from "@/components/modals/validateProfilModification";
 export default {
   name: "Home",
   components: {
     Tab,
     Tabs,
     navbar,
-    footerTokEat
+    footerTokEat,
+    validateProfilModification,
   },
   data() {
     return {
-      user:null,
+      user: null,
       maxH: "0",
       isA: false,
+      modals: {
+        displayModalModification: null,
+      },
     };
   },
   methods: {
@@ -185,23 +216,34 @@ export default {
         this.isA = false;
       }
     },
-    edit_name(){
-      userServices.edit_name(this.user).then((response)=>{
+    edit_name() {
+      UserServices.edit_name(this.user).then((response) => {
         // this.user=response.data;
-        console.log('VITAAAAA'+response.data);
-      })
-    }
+        console.log("VITAAAAA" + response.data);
+      });
+    },
+    displayModalValidateModification() {
+      this.modals.displayModalModification = true;
+    },
+    closeModal() {
+      this.modals = {
+        displayModalModification: null,
+      };
+    },
+    reloadPage() {
+      window.location.reload();
+    },
   },
   computed: {
     computedHeight() {
       return this.maxH;
     },
   },
-  async created(){
-    const res = await UserServices.me()
-    this.user = res.data
+  async created() {
+    const res = await UserServices.me();
+    this.user = res.data;
     // console.log(this.user)
-  }
+  },
 };
 </script>
 
@@ -213,7 +255,7 @@ export default {
   background-color: yellow;
 } */
 
-.md-toolbar{
+.md-toolbar {
   position: relative;
 }
 #home {
@@ -230,7 +272,7 @@ export default {
   margin-top: 40px;
   /* overflow: scroll; */
 }
-#home::-webkit-scrollbar{
+#home::-webkit-scrollbar {
   display: none;
 }
 
@@ -412,6 +454,143 @@ export default {
   height: auto;
 }
 
+.all-card-div{
+  display: flex;
+  /* background-color: #777; */
+  padding: 1% 1% 1% 1%;
+}
+
+.card-div{
+  background-color: #2140a5;
+  width: 70%;
+  height: 250px;
+  display: flex;
+  border-radius: 29px;
+}
+.card-div-part-one{
+  /* background-color: #b7beb7; */
+  padding-left: 2%;
+  width: 70%;
+  height: auto;
+}
+.card-puce{
+  /* background-color: #b94242; */
+  width: 17%;
+  height: auto;
+  margin-top: 24%;
+  margin-left: 5%;
+}
+.input-puce{
+  /* background-color: #d62a2a; */
+  margin-top: 15%;
+  height: 50px;
+}
+.input-puce input{
+  height: 90%;
+  width: 95%;
+  border: hidden;
+  color: #ffffff;
+  background-color: #2140a5;
+  text-align: center;
+  font-size: 20px;
+  /* font-weight:bold; */
+  text-shadow: 1px 1px 1px #000;
+  letter-spacing: 2px;
+  font-family: 'Farrington 7B';
+}
+.card-div-part-two{
+ /* background-color: rgb(185, 160, 160); */
+ width: 30%;
+ height: auto;
+ padding: 1%;
+}
+.card-type{
+  /* background-color: #b94242; */
+  width: 50%;
+  margin-left: 35%;
+  margin-bottom: 15%;
+  margin-top: 10%;
+}
+.card-label{
+  /* background-color: #b94242; */
+  margin-bottom: 5%;
+  margin-top: 25%;
+  color: #b1a9a9;
+}
+.card-input-number{
+  /* background-color: #b94242; */
+  height: 10%;
+}
+.card-input-number input{
+  color: #ffffff;
+  letter-spacing: 1px;
+  background-color: #2140a5;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+.card-input-date{
+  /* background-color: #b94242; */
+  height: 15%;
+}
+.card-input-date input{
+  color: #ffffff;
+ background-color: #2140a5;
+  width: 100%;
+  height: 100%;
+  border: none;
+  font-size: 15px;
+}
+.buttons-card-div{
+  /* background-color: antiquewhite; */
+  width: 30%;
+  padding: 8% 2% 5% 2%;
+  margin-left: 5px;
+}
+.button-card-div-update{
+  /* background-color: rgb(250, 215, 239); */
+  width: 100%;
+  height: 60px;
+  margin-bottom: 15px;
+}
+.button-card-div-delete{
+  /* background-color: rgb(250, 215, 239); */
+  width: 100%;
+  height: 60px;
+  margin-bottom: 15px;
+}
+
+.button-card-div-update button{
+  width: 100%;
+  height: 90%;
+  border-radius: 29071992px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  background-color: #6db672;
+  color: aliceblue;
+  border: none;
+}
+
+.button-card-div-update button:hover {
+  cursor: pointer;
+  background-color: #57915b;
+}
+
+.button-card-div-delete button{
+  width: 100%;
+  height: 90%;
+  border-radius: 29071992px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  background-color: #b94242;
+  color: aliceblue;
+  border: none;
+}
+
+.button-card-div-delete button:hover {
+  cursor: pointer;
+  background-color: #d62a2a;
+}
 .payement-add-card-button-div {
   width: 100%;
 }
