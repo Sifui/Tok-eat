@@ -5,7 +5,6 @@ const Restaurant = require("../model/restaurant.model")
 const hasToBeAuthenticated = require('../middlewares/has-to-be-authenticated.middleware')
 
 router.post('/login', async (req, res) => {
-    console.log('HERE ===> '+req.body);
     const client = await Client.findByEmail(req.body.email)
 
     const restaurant = await Restaurant.findByEmail(req.body.email)
@@ -44,7 +43,7 @@ router.get('/me', hasToBeAuthenticated, async (req, res) => {
     }
     else if(req.session.type === "restaurant")
     {
-        user = await Client.getById(req.session.userId)
+        user = await Restaurant.getById(req.session.userId)
         user.type = "restaurant"
     }
 

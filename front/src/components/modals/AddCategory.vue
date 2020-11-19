@@ -1,6 +1,6 @@
 <template>
   <transition name="fade">
-    <div class="modal" v-if="modals.addOffer">
+    <div class="modal" v-if="modals.addCategory">
       <div class="modal__backdrop"/>
 
       <div class="modal__dialog">
@@ -12,22 +12,10 @@
             <slot name="body"/>
             <div class="form">
                 <md-field>
-                    <label for="name">Nom de l'offre</label>
-                    <md-input v-model="offer.name" @change="isNameValid" type="text" id="name"></md-input>
-                    <span class="error" v-show="this.offerError.name">3 à 45 caractères</span>
+                    <label for="name">Nom de la catégorie</label>
+                    <md-input v-model="category.name" @change="isNameValid" type="text" id="name"></md-input>
+                    <span class="error" v-show="this.categoryError.name">3 à 45 caractères</span>
                 </md-field>
-                
-                <md-field>
-                    <label for="price">Prix</label>
-                    <md-input v-model="offer.price" @change="isPriceValid" type="number" min="0" max="9999" id="price"></md-input>
-                    <span class="error" v-show="this.offerError.price">Prix invalide</span>
-                </md-field>
-
-                <md-field>
-                    <label for="description">Description</label>
-                    <md-textarea v-model="offer.description" @change="isDescriptionValid" type="text" id="description"></md-textarea>
-                </md-field>
-                <span class="error" v-show="this.offerError.description">3 à 500 caractères</span>
             </div>
         </div>
 
@@ -37,7 +25,7 @@
                 <md-button 
                 class="rightCentredButton"
                 :disabled="isDisabledOffer"
-                @click="closeModal"
+                @click="createCategory(category)"
                 >
                   Confirmer
                 </md-button>
@@ -50,82 +38,54 @@
 
 <script>
 export default {
-    name:'AddOffer',
+    name:'AddCategory',
     props:{
         me:Object,
         modals:Object
     },
     data(){
         return {
-            offer:{
+            category:{
                 name:null,
-                price:null,
-                description:null,
-                image:null,
-                idRestaurant:this.me.idRestaurant,
-                idPromo:null
+
             },
-            offerError:{
+            categoryError:{
               name:false,
-              price:false,
-              description:false,
-              image:false,
-              idPromo:false
             }
         }
     },
     computed:{
       isDisabledOffer() {
-        return !this.offer.name ||
-        !this.offer.price ||
-        !this.offer.description ||
-        this.offerError.name ||
-        this.offerError.price ||
-        this.offerError.description
+        return !this.category.name ||
+        this.categoryError.name
         ? true
         : false;
       }
     },
     methods:{
         closeModal(){
-          this.offer = {
+          this.category = {
             name:null,
-            price:null,
-            description:null,
-            image:null,
-            idRestaurant:this.me.idRestaurant,
-            idPromo:null
           }
-          this.offerError= {
+          this.categoryError= {
             name:false,
-            price:false,
-            description:false,
-            image:false,
-            idPromo:false
+
           }
           this.$emit('close')
         },
+        createCategory(category)
+        {
+            category.idRestaurant = this.me.id
+            this.$emit('createCategory',category)
+            this.closeModal()
+        },
         isNameValid(){
-          if (this.offer.name.length > 2 && this.offer.name.length < 46) {
-            this.offerError.name = false;
+          if (this.category.name.length > 2 && this.category.name.length < 46) {
+            this.categoryError.name = false;
           } else {
-            this.offerError.name = true;
+            this.categoryError.name = true;
           }
         },
-        isPriceValid(){
-          if (this.offer.price > 0 && this.offer.price < 9999) {
-            this.offerError.price = false;
-          } else {
-            this.offerError.price = true;
-          }
-        },
-        isDescriptionValid(){
-          if (this.offer.description.length > 2 && this.offer.description.length < 501) {
-            this.offerError.description = false;
-          } else {
-            this.offerError.description = true;
-          }
-        }
     }
 }
 </script>
