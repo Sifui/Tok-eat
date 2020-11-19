@@ -24,7 +24,7 @@ export default {
   methods: {},
 
   created() {
-   
+   console.log('test 123')
   },
   watch: {
     async $route() {

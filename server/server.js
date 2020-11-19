@@ -15,6 +15,7 @@ var userRouter = require('./route/user.route')
 var restaurantsRouter = require('./route/restaurants.route')
 var offerRouter = require('./route/offer.route')
 var clientRestaurantRouter = require('./route/client-restaurant.route')
+var basketRouter = require('./route/basket.route')
 
 var app = express()
 app.use(session({
@@ -40,3 +41,4 @@ app.use('/', userRouter);
 app.use('/', restaurantsRouter);
 app.use('/', offerRouter);
 app.use('/',clientRestaurantRouter)
+app.use('/',basketRouter)
