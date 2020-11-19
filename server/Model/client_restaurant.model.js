@@ -18,8 +18,6 @@ class Client_Restaurant {
         `
     }
     static async create(fb) {
-        console.log(fb)
-
         const result = await PostgresStore.client.query({
             text: `INSERT INTO ${Client_Restaurant.tableName}
                     (favorite,grade,grade_date,feedback,id_client,id_restaurant)
