@@ -26,7 +26,7 @@
 
 <script>
 export default {
-    name:'DisplayOffer',
+    name:'Check',
     props:{
         me:Object,
         modals:Object

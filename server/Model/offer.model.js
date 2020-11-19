@@ -54,11 +54,12 @@ class Offer {
         static async getByIdRestaurant (restaurantId) {
         const result = await PostgresStore.client.query({
             text: `SELECT ${Offer.tableName}.id, ${Offer.tableName}.name, ${Offer.tableName}.price, ${Offer.tableName}.description, ${Offer.tableName}.image, ${Offer.tableName}.priority,
-            ${Category.tableName}.name as categoryName,${Category.tableName}.priority as categoryPriority
+            ${Category.tableName}.id as idCategory,${Category.tableName}.name as categoryName,${Category.tableName}.priority as categoryPriority
             FROM ${Offer.tableName} 
             JOIN ${Category.tableName}
             ON(${Category.tableName}.id=${Offer.tableName}.id_category) 
-            WHERE id_restaurant=$1`,
+            WHERE id_restaurant=$1
+            ORDER BY ${Category.tableName}.priority`,
             values: [restaurantId]
         })
         return result.rows
