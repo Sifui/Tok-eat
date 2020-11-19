@@ -1,10 +1,11 @@
 <template>
   <div>
-        <draggable v-model="offers" ghost-class="ghost" >
+        <draggable v-model="listOffers" ghost-class="ghost" :group="{ name: 'offers', pull: 'clone' }">
             <transition-group type ="transition" name="flip-list">
-                <div class="sortable" :id="offer.id" v-for="offer in offers" :key="offer.id">
+                <div class="sortable" :id="offer.id" v-for="offer in listOffers" :key="offer.id">
                     name: {{offer.name}}<br>
-                    priority: {{offer.priority}}
+                    priority: {{offer.priority}}<br>
+                    idcategory: {{offer.idcategory}}
                 </div>
             </transition-group>
         </draggable>
@@ -17,16 +18,40 @@ export default {
     name:'offersInDisplay',
     props:
     {
-        offers:Array
+        offers:Array,
+        category:Object
     },
     components: 
     {
         draggable
     },
-    data()
-    {
-
-    }
+    data() {
+        return {
+            categorieStart:null
+        };
+    },
+    created() {
+        this.categorieStart = JSON.parse(JSON.stringify(this.category))
+    },
+    computed: {
+        listOffers: {
+            get () {
+                
+                return this.offers 
+            },
+            set (offers) {
+                //console.log(offer)
+                //console.log(this.category)
+                let data = {
+                    offers:offers,
+                    category:this.category,
+                    categoryStart:this.categorieStart
+                }
+                this.$emit("orderOffer",data)
+                //this.categorieStart = this.category
+            }
+        }
+    },
 }
 </script>
 

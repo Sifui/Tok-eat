@@ -22,9 +22,9 @@
         </div>-->
         <draggable v-model="listCategories" ghost-class="ghost" >
             <transition-group type ="transition" name="flip-list">
-                <div class="sortable" :id="category.id" v-for="category in categories" :key="category.id">
-                    name: {{category.name}}<br>
-                    priority: {{category.priority}}
+                <div class="sortable" :id="category.id" v-for="category in listCategories" :key="category.id">
+                        name: {{category.name}}<br>
+                        priority: {{category.priority}}
                     <!--<draggable v-model="offers" ghost-class="ghost" >
                         <transition-group type ="transition" name="flip-list">
                             <div class="sortable" :id="offer.id" v-for="offer in offersByCategory(category)" :key="offer.id">
@@ -33,7 +33,7 @@
                             </div>
                         </transition-group>
                     </draggable>-->
-                    <offersInDisplay :offers="offersByCategory(category)"/>  
+                    <offersInDisplay :offers="offersByCategory(category)" :category="category" @orderOffer="orderOffer"/>  
                 </div>
             </transition-group>
         </draggable>
@@ -83,7 +83,7 @@ export default {
             }
         }
     },
-     computed: {
+    computed: {
         listCategories: {
             get () {
                 return this.categories 
@@ -105,6 +105,9 @@ export default {
                 }
             }
             return offers
+        },
+        orderOffer(data){
+            this.$emit("orderOffer",data)
         },
         onEnd(evt)
         {
