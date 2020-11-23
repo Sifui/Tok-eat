@@ -29,7 +29,7 @@
         </p>
       </div>
       <div class="centered">
-        <md-button class="danger" v-on:click="$router.push({name:'Offers',params:{offers}})">Consulter les repas</md-button>
+        <md-button class="danger" v-on:click="$router.push({name:'Offers',params:{offers,restaurantId:parseInt($route.query.id)}})">Consulter les repas</md-button>
       </div>
       <div id="form">
         <select

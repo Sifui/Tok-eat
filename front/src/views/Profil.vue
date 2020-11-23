@@ -189,7 +189,6 @@
           </div>
         </Tab>
         <Tab name="token">
-          <div class="token">zizi</div>
         </Tab>
       </Tabs>
     </div>

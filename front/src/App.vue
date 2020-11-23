@@ -63,6 +63,9 @@ html {
 .flex-container {
   display: flex;
 }
+.flex-wrap{
+  flex-wrap: wrap;
+}
 .label {
   display: inline-block;
   padding: 4px;
