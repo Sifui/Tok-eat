@@ -4,26 +4,26 @@
       id="logo"
       src="../assets/logo.png"
       width="100"
-      v-on:click="$router.push('/').catch(()=>{})"
+      v-on:click="$router.push('/').catch(() => {})"
     />
-    <div class="nav-elements md-layout md-gutter">
-      <div class="md-layout-item" style="margin-right:auto;">
+    <div
+      class="nav-elements md-layout md-gutter"
+      v-bind:style="{ marginRight, flex }"
+    >
+      <div class="md-layout-item" style="margin-right: auto">
         <md-field>
           <label>Chercher un restaurant</label>
           <md-input
             v-model="query"
             id="search"
-            v-on:keyup='fetchRestaurants'
-            v-on:blur='removeSuggestions'
+            v-on:keyup="fetchRestaurants"
+            v-on:blur="removeSuggestions"
             autocomplete="off"
-
           ></md-input>
           <md-button v-on:click="redirectToRestaurant()">Rechercher</md-button>
-          <div
-            
-            id="search-result-container"
-          >
-            <p class="search-result"
+          <div id="search-result-container">
+            <p
+              class="search-result"
               v-on:click="updateInput(suggestion.name)"
               v-for="(suggestion, index) in suggestions"
               v-bind:key="index"
@@ -33,7 +33,7 @@
           </div>
         </md-field>
       </div>
-      <div class="md-layout-item" v-if='!user'>
+      <div class="md-layout-item" v-if="!user">
         <md-button class="nav-button" v-on:click="$router.push('/login')"
           >Connexion</md-button
         >
@@ -42,93 +42,100 @@
           >Inscription</md-button
         >
       </div>
-      
     </div>
-     <div v-if="user">
-            <md-speed-dial  md-event="hover" md-direction="bottom">
-      <md-speed-dial-target>
-        <md-icon >shopping_cart</md-icon>
-      </md-speed-dial-target>
+    <div v-if="user">
+      <md-speed-dial md-event="hover" md-direction="bottom" >
+        <md-speed-dial-target v-on:click="$emit('showcart')">
+          <md-icon>shopping_cart</md-icon>
+        </md-speed-dial-target>
+      </md-speed-dial>
+      <md-speed-dial md-event="hover" md-direction="bottom">
+        <md-speed-dial-target>
+          <md-icon>perm_identity</md-icon>
+        </md-speed-dial-target>
 
-    </md-speed-dial> 
-       <md-speed-dial  md-event="hover" md-direction="bottom">
-      <md-speed-dial-target >
-        <md-icon>perm_identity</md-icon>
-      </md-speed-dial-target>
+        <md-speed-dial-content>
+          <md-button
+            class="md-icon-button"
+            v-on:click="$router.push('/profil')"
+          >
+            <md-icon>account_circle</md-icon>
+          </md-button>
 
-      <md-speed-dial-content>
-        <md-button class="md-icon-button" v-on:click="$router.push('/profil')">
-          <md-icon>account_circle</md-icon>
-        </md-button>
-
-        <md-button class="md-icon-button" v-on:click="$router.push('/logout')">
-          <md-icon>exit_to_app</md-icon>
-        </md-button>
-      </md-speed-dial-content>
-    </md-speed-dial> 
+          <md-button
+            class="md-icon-button"
+            v-on:click="$router.push('/logout')"
+          >
+            <md-icon>exit_to_app</md-icon>
+          </md-button>
+        </md-speed-dial-content>
+      </md-speed-dial>
     </div>
   </md-toolbar>
 </template>
 
 <script>
 import axios from "axios";
-import UserServices from '../services/userServices'
+import UserServices from "../services/userServices";
 export default {
   name: "Navbar",
   props: {
-        restaurants: Array,
-
+    restaurants: Array,
   },
   data() {
     return {
       user: null,
       query: "",
       suggestions: [],
+      flex: 1,
+      marginRight: 0,
     };
   },
   methods: {
     fetchRestaurants() {
-    if ( this.query.trim().length === 0)
-      return
+      if (this.query.trim().length === 0) return;
       axios
-      .get(`http://localhost:8081/restaurants/trends/${this.query}`)
-      .then((response) => {
-        this.results = response.data;
-        this.suggestions = this.results
-      });
+        .get(`http://localhost:8081/restaurants/trends/${this.query}`)
+        .then((response) => {
+          this.results = response.data;
+          this.suggestions = this.results;
+        });
     },
-    removeSuggestions(){
-      setTimeout(()=>{this.suggestions = []},100)
+    removeSuggestions() {
+      setTimeout(() => {
+        this.suggestions = [];
+      }, 100);
     },
     updateInput(text) {
       this.query = text;
       this.suggestions = [];
     },
-    redirectToRestaurant(){
-      this.query = this.query.trim()
-       if ( this.query.length === 0)
-      return
-     // const search = this.restaurants.find((e) => e.name.toLowerCase() === this.query.toLowerCase())
-     
-        this.$router.push({path:'search',query:{slug:this.query}}).catch(()=>{})
+    redirectToRestaurant() {
+      this.query = this.query.trim();
+      if (this.query.length === 0) return;
+      // const search = this.restaurants.find((e) => e.name.toLowerCase() === this.query.toLowerCase())
 
-      
-      this.query = ''
-      this.suggestions = []
-    }
+      this.$router
+        .push({ path: "search", query: { slug: this.query } })
+        .catch(() => {});
+
+      this.query = "";
+      this.suggestions = [];
+    },
   },
-  async created(){
-    
-    const res = await UserServices.me()
-    this.user = res.data
-    if ( this.user)
-    {
-      document.getElementsByClassName("nav-elements md-layout md-gutter")[0].style.marginRight='auto'
-      document.getElementsByClassName("nav-elements md-layout md-gutter")[0].style.flex = '0.7'
-    }
-  }
-
-  
+  created() {
+     UserServices.me() .then((res) => {
+        this.user = res.data;
+        if (this.user) {
+          this.marginRight = "auto";
+          this.flex = "0.7";
+        }
+      })
+      .catch(() => {
+        console.log("not connected...");
+      })
+     
+  },
 };
 </script>
 
@@ -142,7 +149,6 @@ export default {
   background-color: white !important;
   padding-bottom: 10px;
   padding-top: 10px;
-  z-index:10000
 }
 
 #logo:hover {
@@ -154,49 +160,44 @@ export default {
 }
 
 .nav-elements.md-layout.md-gutter {
-  
   text-align: right;
   margin-left: 10%;
-  flex:1
+  flex: 1;
 }
 p.search-result:hover {
   background-color: lightgrey;
   color: white;
   cursor: pointer;
 }
-p.search-result{
-  padding: 10px; 
+p.search-result {
+  padding: 10px;
   margin: 0;
   text-align: left;
 }
-#search-result-container{
+#search-result-container {
   position: absolute;
   background-color: white;
   top: 60px;
   width: 100%;
 }
-.md-speed-dial
-{
-  margin-right:20px;
-  position:relative
+.md-speed-dial {
+  margin-right: 20px;
+  position: relative;
 }
-.md-speed-dial-content{
-  position:absolute;
-  top:60px;
-  left:8px
+.md-speed-dial-content {
+  position: absolute;
+  top: 60px;
+  left: 8px;
 }
-.md-button.md-theme-default.md-fab:not([disabled]){
+.md-button.md-theme-default.md-fab:not([disabled]) {
   background-color: white;
 }
-.md-icon.md-icon-font.md-theme-default
-{
-  color:black !important
+.md-icon.md-icon-font.md-theme-default {
+  color: black !important;
 }
 @media screen and (max-width: 1000px) {
-  
-  .md-toolbar  {
-    position:sticky
+  .md-toolbar {
+    position: sticky;
   }
 }
-
 </style>

@@ -23,7 +23,7 @@
 export default {
   name: "Offers",
   props: {
-    restaurantId: Number,
+    restaurant: Object,
     offers: {},
   },
   data() {
@@ -54,27 +54,30 @@ export default {
       // const result = await axios.post("http://localhost:8080/basket",{clientId:this.user.id})
       // creer une ligne pour chaque produit commandé dans la table ordered_product
       if (!this.$cookies.get("cart")) {
-        this.$cookies.set("cart", { [this.restaurantId]: filteredArticles });
+        this.$cookies.set("cart", { [this.restaurant.id]: {articles:filteredArticles,restaurant:this.restaurant} });
       } else {
+        if ( !this.$cookies.get("cart")[this.restaurant])
+            this.$cookies.set("cart", { ...this.$cookies.get("cart"),[this.restaurant.id]: {articles:filteredArticles,restaurant:this.restaurant} });
+
         let p = this.$cookies.get("cart");
-        // p[this.restaurantId] = filteredArticles;
+        // p[this.restaurant.id] = filteredArticles;
         let found = false
         for (let i = 0; i < filteredArticles.length; i++) {
-          for (let j = 0; j < p[this.restaurantId].length; j++) {
-            if (p[this.restaurantId][j].id == filteredArticles[i].id){
-              console.log(filteredArticles[i].id);
-              p[this.restaurantId][j].quantity = filteredArticles[i].quantity
+          for (let j = 0; j < p[this.restaurant.id]['articles'].length; j++) {
+            if (p[this.restaurant.id]['articles'][j].id == filteredArticles[i].id){
+              p[this.restaurant.id]['articles'][j].quantity = filteredArticles[i].quantity
               found = true
             }
           }
           if ( !found){
-               p[this.restaurantId].push(filteredArticles[i])
+               p[this.restaurant.id]['articles'].push(filteredArticles[i])
           }
           found = false
         }
         this.$cookies.set("cart", p);
       }
-      console.log("cookie: ", this.$cookies.get("cart"));
+            this.$emit('updatecart')
+
     },
   },
   created() {

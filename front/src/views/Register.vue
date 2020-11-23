@@ -511,8 +511,6 @@ export default {
       }
     },
     isRestaurantImageValid() {
-      // console.log(document.getElementById('restaurantImage').value.substr(12));
-      // console.log(regImage.test(document.getElementById('restaurantImage').value.substr(12)));
       if (
         regImage.test(
           document.getElementById("restaurantImage").value.substr(12)

@@ -130,12 +130,9 @@ export default {
         const { data } = response;
         this.restaurants = data;
       })
-      .catch(() => {
-        console.log("error when fetching the restaurants");
-      });
+      
     UserServices.me()
       .then((user) => {
-        console.log("vous etes deja connecté !");
         this.user = user.data;
         axios
           .get(
@@ -144,10 +141,7 @@ export default {
           .then((response) => {
             this.favoritesRestaurants = response.data;
           });
-      })
-      .catch(() => {
-        console.log("pas connecté...");
-      });
+      }).catch(()=>{console.log('not connected...')})
   },
 
   methods: {},
