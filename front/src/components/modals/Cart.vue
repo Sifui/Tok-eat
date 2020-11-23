@@ -1,8 +1,8 @@
 <template>
-  <div id="cartModal" v-bind:style="{ opacity: display }">
+  <div id="cartModal" v-bind:style="{ opacity: display, 'z-index':zIndex}">
     <h1 class="title">Vos commandes ({{totalPrice}} euros)</h1>
     <div v-for="item in infos" v-bind:key="item.restaurantId" style="margin-bottom:50px">
-      <h2>{{ item.restaurant.name }}</h2>
+      <h2 class="subheading">{{ item.restaurant.name }}</h2>
       <div v-for="offer in item.articles" v-bind:key="offer.id">
                   {{ offer.name }} {{offer.price}}€
         <select v-on:change="updateCartInfos($event.target.value,item.restaurant.id,item.articles.indexOf(offer))">
@@ -13,7 +13,7 @@
         </select>
       </div>
     </div>
-    <div align="center">
+    <div class="centered">
       <md-button> Procéder au paiement</md-button>
     </div>
   </div>
@@ -25,10 +25,12 @@ export default {
   props: {
     display: Number,
     infos: Array,
+    price:Number
   },
   data() {
     return {
-        totalPrice:0
+        totalPrice:0,
+        zIndex:-1
     };
   },
   created() {
@@ -39,6 +41,7 @@ export default {
           for ( let j = 0 ; j  < currentRestaurantArticles.length;j++)
               this.totalPrice += currentRestaurantArticles[j].quantity * currentRestaurantArticles[j].price
       }
+      this.totalPrice = Math.round((this.totalPrice + Number.EPSILON) * 100) / 100
   },
   methods:{
       updateCartInfos(valeur,restaurant,offre)
@@ -47,9 +50,28 @@ export default {
         let p = this.$cookies.get('cart')
         this.totalPrice -= p[restaurant]['articles'][offre]['price'] * p[restaurant]['articles'][offre]['quantity']
         this.totalPrice += valeur * p[restaurant]['articles'][offre]['price'] 
+        this.totalPrice = Math.round((this.totalPrice + Number.EPSILON) * 100) / 100
         p[restaurant]['articles'][offre]['quantity'] = valeur
         this.$cookies.set('cart',p)
       }
+  },
+  watch:{
+    display(){
+      if ( this.display)
+        this.zIndex = 3
+      else{
+        setTimeout(()=>{this.zIndex = -1;
+        if ( this.display && this.zIndex == -1)
+          {
+              this.zIndex = 3
+          }
+        },200)
+        
+      }
+    },
+    price(){
+      this.totalPrice = this.price
+    }
   }
 };
 </script>

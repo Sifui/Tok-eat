@@ -7,11 +7,11 @@
       v-on:click="$router.push('/').catch(() => {})"
     />
     <div
-      class="nav-elements md-layout md-gutter"
-      v-bind:style="{ marginRight, flex }"
+      class="nav-elements flex-container"
+      style="flex:1"
     >
-      <div class="md-layout-item" style="margin-right: auto">
-        <md-field>
+      <div style="flex:0.45">
+        <md-field >
           <label>Chercher un restaurant</label>
           <md-input
             v-model="query"
@@ -33,7 +33,7 @@
           </div>
         </md-field>
       </div>
-      <div class="md-layout-item" v-if="!user">
+      <div class="" v-if="!user" style="flex:0.55">
         <md-button class="nav-button" v-on:click="$router.push('/login')"
           >Connexion</md-button
         >
@@ -41,11 +41,15 @@
         <md-button class="nav-button" v-on:click="$router.push('/register')"
           >Inscription</md-button
         >
+        <md-speed-dial md-event="hover" md-direction="bottom" >
+        <md-speed-dial-target v-on:click="openCart">
+          <md-icon>shopping_cart</md-icon>
+        </md-speed-dial-target>
+      </md-speed-dial>
       </div>
-    </div>
-    <div v-if="user">
+      <div v-else style="flex:0.55">
       <md-speed-dial md-event="hover" md-direction="bottom" >
-        <md-speed-dial-target v-on:click="$emit('showcart')">
+        <md-speed-dial-target v-on:click="openCart">
           <md-icon>shopping_cart</md-icon>
         </md-speed-dial-target>
       </md-speed-dial>
@@ -71,6 +75,8 @@
         </md-speed-dial-content>
       </md-speed-dial>
     </div>
+    </div>
+    
   </md-toolbar>
 </template>
 
@@ -87,11 +93,23 @@ export default {
       user: null,
       query: "",
       suggestions: [],
-      flex: 1,
-      marginRight: 0,
+      showCart:false
     };
   },
   methods: {
+    openCart(){
+     
+      if ( !this.showCart )
+      {
+        this.$emit('showcart')
+        this.showCart = true
+      }
+      else
+      {
+          this.$emit('hidecart')
+          this.showCart = false
+      }
+    },
     fetchRestaurants() {
       if (this.query.trim().length === 0) return;
       axios
@@ -126,10 +144,6 @@ export default {
   created() {
      UserServices.me() .then((res) => {
         this.user = res.data;
-        if (this.user) {
-          this.marginRight = "auto";
-          this.flex = "0.7";
-        }
       })
       .catch(() => {
         console.log("not connected...");
@@ -159,10 +173,10 @@ export default {
   margin-bottom: 15px;
 }
 
-.nav-elements.md-layout.md-gutter {
+.nav-elements {
   text-align: right;
   margin-left: 10%;
-  flex: 1;
+  flex-wrap: nowrap;
 }
 p.search-result:hover {
   background-color: lightgrey;

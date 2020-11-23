@@ -1,8 +1,8 @@
 <template>
   <div class="index" md-theme="black">
-    <cart style="z-index: 3" :display="display" :infos="infos" />
-    <navbar style="z-index: 2" v-on:showcart="showCart" />
-    <router-view style="padding-top: 11%; padding-bottom: 5%; z-index: 1" v-on:updatecart="updateCart"/>
+    <cart  :display="display" :infos="infos" :price="computedPrice" />
+    <navbar style="z-index: 2" v-on:showcart="showCart(1)" v-on:hidecart="showCart(0)" />
+    <router-view style="padding-top: 8%; padding-bottom: 5%; z-index: 1" v-on:updatecart="updateCart"/>
     <footerTokEat style="z-index: 1" />
   </div>
 </template>
@@ -21,10 +21,10 @@ export default {
       display: 0,
       scrolled: false,
       infos: [],
+      computedPrice: 0
     };
   },
   created() {
-    //console.log(this.infos)
     for ( let i = 0 ; i < Object.keys(this.$cookies.get("cart")).length;i++)
       {
         this.infos.push(this.$cookies.get("cart")[Object.keys(this.$cookies.get("cart"))[i]])
@@ -40,26 +40,30 @@ export default {
     });
   },
   methods: {
-    showCart() {
-      this.display = 1;
+    showCart(i) {
+      this.display = i;
     },
     updateCart(){
       this.infos = []
+      this.computedPrice = 0
       for ( let i = 0 ; i < Object.keys(this.$cookies.get("cart")).length;i++)
       {
+        let currentRestaurant = this.$cookies.get("cart")[Object.keys(this.$cookies.get("cart"))[i]]
+        for ( let j = 0 ; j < Object.keys(currentRestaurant).length-1;j++)
+        {
+           for( let article in currentRestaurant[Object.keys(currentRestaurant)[j]] )
+           {
+                this.computedPrice += currentRestaurant[Object.keys(currentRestaurant)[j]][article].price* currentRestaurant[Object.keys(currentRestaurant)[j]][article].quantity
+           }
+        }
         this.infos.push(this.$cookies.get("cart")[Object.keys(this.$cookies.get("cart"))[i]])
       }
-      //console.log("cookie en cours:", this.$cookies.get("cart"));
+      this.computedPrice = Math.round((this.computedPrice + Number.EPSILON) * 100) / 100
     }
   },
   watch: {
     async $route() {
       window.scrollTo(0, 0);
-      /*this.infos = [];
-      for ( let i = 0 ; i < Object.keys(this.$cookies.get("cart")).length;i++)
-      {
-        this.infos.push(this.$cookies.get("cart")[Object.keys(this.$cookies.get("cart"))[i]])
-      }*/
     },
   },
 };

@@ -20,7 +20,7 @@
     <section>
     <h2 class="md-display-1 centered">Les sélections Tok'eat</h2>
 
-    <div class="container">
+    <div class="container flex-container">
       <md-card
         v-for="(item, index) in restaurants"
         v-bind:key="index"
@@ -46,7 +46,7 @@
     <div v-if="favoritesRestaurants.length">
       <h2 class="md-display-1 centered">Vos favoris</h2>
 
-      <div class="container">
+      <div class="container flex-container">
         <md-card
           v-for="(item, index) in favoritesRestaurants"
           v-bind:key="index"
@@ -152,7 +152,6 @@ export default {
 .container {
   max-width: 1000px;
   margin: auto;
-  display: flex;
   justify-content: center;
   flex-wrap: wrap !important;
 }
@@ -167,9 +166,11 @@ export default {
 }
 .restaurant:hover {
   cursor: pointer;
-  box-shadow: 5px 5px 5px 1px silver;
+  box-shadow: 0 0 25px 0 silver;
 }
-
+.restaurant {
+    transition:  box-shadow 0.2s linear;
+}
 .name,
 .address,
 .phone {

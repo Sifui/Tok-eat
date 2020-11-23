@@ -78,4 +78,7 @@ html {
 .background-green{
   background-color:green !important
 }
+div[class^='md'], div[class*=' md']{
+    z-index: 1;
+}
 </style>

@@ -38,7 +38,11 @@ const routes = [
         component: () => import(/* webpackChunkName: "about" */ '../components/Offers.vue'),
         props: true
       },
-
+      {
+        path: '/profil',
+        name: 'profil',
+        component:()=> import('../views/Profil.vue'),
+      },
     ]
   },
   
@@ -71,11 +75,7 @@ const routes = [
       }
     }
   },
-  {
-    path: '/profil',
-    name: 'profil',
-    component:()=> import('../views/Profil.vue'),
-  },
+ 
   {
     path: '/register',
     name: 'Register',

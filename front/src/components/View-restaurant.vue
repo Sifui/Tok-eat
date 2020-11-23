@@ -1,5 +1,5 @@
 <template>
-  <div class="conteneur">
+  <div class="conteneur flex-container">
     <div id="preview">
       <div id="restaurant-image">
         <img
@@ -7,7 +7,7 @@
           alt="People"
         />
       </div>
-      <div id="reviewSection">
+      <div id="reviewSection" class="flex-container">
         <a href="#menus">Menus</a>
         <a href="#promos">Promos</a>
         <a herf="#feedbacks">Avis</a>
@@ -15,7 +15,7 @@
       </div>
       <div id="description">
         <h2>Carte du restaurant</h2>
-        <div v-for="(item, index) in offers" v-bind:key="index" class="offer">
+        <div v-for="(item, index) in offers" v-bind:key="index" class="offer flex-container">
           <div class="offer-name">{{ item.name }}</div>
           <div class="offer-price">{{ item.price }} €</div>
         </div>
@@ -72,7 +72,7 @@
           class="feedback-container"
         >
           <div v-if="item.feedback">
-            <div class="header">
+            <div class="header flex-container">
               <div><img width="40" src="../assets/profil.jpg" alt="" /></div>
               <div class="metadata-wrapper">
                 <div class="metadata">
@@ -101,7 +101,7 @@
     </div>
     <div id="side-description">
       <md-card>
-        <md-card-header style="display: flex; justify-content: space-between">
+        <md-card-header class="flex-container" style="justify-content: space-between">
           <h1 class="title" id="name">{{ restaurant.name }}</h1>
           <h2 id="grade">
             {{ restaurant.average }}/<span style="font-size: 16px">5</span>
@@ -280,6 +280,7 @@ export default {
     OfferServices.getOfferByIdRestaurant(this.$route.query.id).then(
       (offers) => {
         this.offers = [...offers.data];
+        console.log(this.offers)
       }
     );
   },
@@ -294,12 +295,10 @@ export default {
 
 <style scoped>
 .conteneur {
-  display: flex;
   max-width: 950px;
   margin: auto;
 }
-.conteneur > div {
-}
+
 .feedback-container {
   border: 1px solid silver;
   padding: 30px;
@@ -308,7 +307,6 @@ export default {
 }
 
 .header {
-  display: flex;
   flex-direction: row;
 }
 
@@ -317,7 +315,6 @@ export default {
   flex: 1;
 }
 .metadata-wrapper {
-  display: flex;
   margin-left: 10px;
   flex: 1;
 }
@@ -331,7 +328,6 @@ export default {
 }
 #reviewSection {
   font-weight: 500;
-  display: flex;
   justify-content: space-between;
   padding: 20px;
 }
@@ -339,7 +335,6 @@ export default {
   color: inherit;
 }
 .offer {
-  display: flex;
   margin-bottom: 20px;
 }
 .offer .offer-name {

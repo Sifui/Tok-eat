@@ -1,20 +1,33 @@
 <template>
-  <div class="container" style="height: 100vh">
-    panier : {{ articlesCount }}
-    <div v-for="(item, index) in offers" v-bind:key="index">
-      {{ item.name }}
-      {{ item.price }} €
-
-      <input
+  <div class="container" style="min-height: 100vh">
+    <div class="flex-container flex-wrap" style="justify-content:center">
+     <md-card v-for="(item, index) in offers" v-bind:key="index">
+      <md-card-header>
+        <md-card-header-text>
+          <div class="md-title">{{ item.name }}</div>
+          <div class="md-subhead">{{ item.price }} €</div>
+          <input
         type="number"
         min="0"
         max="100"
         v-on:change="test($event, index)"
       />
+        </md-card-header-text>
+
+        <md-card-media md-big>
+          <img src="https://d1ralsognjng37.cloudfront.net/5efdd7d4-0ab2-4656-9973-aa0612b1e973.png" alt="People">
+        </md-card-media>
+      </md-card-header>
+
+    </md-card>
+   
     </div>
-    <button type="button" v-on:click="passerCommande">
+    <div align="right" > 
+      <md-button type="button" v-on:click="passerCommande" style="border:1px solid silver;">
       ajouter une nouvelle commande
-    </button>
+    </md-button>
+    </div>
+    
   </div>
 </template>
 
@@ -49,7 +62,6 @@ export default {
       let filteredArticles = this.offersClone
         .filter((e) => e.quantity != 0)
         .map((e) => ({ ...e, quantity: parseInt(e.quantity) }));
-      console.log("filtered:", filteredArticles);
       // creer une ligne dans la table basket
       // const result = await axios.post("http://localhost:8080/basket",{clientId:this.user.id})
       // creer une ligne pour chaque produit commandé dans la table ordered_product
@@ -85,10 +97,12 @@ export default {
       this.$router.go(-1);
       return;
     }
+
     this.offersClone = this.offersClone.map((e) => {
-      let { id, name, image, price } = e;
-      return { id, name, image, price, quantity: 0 };
+      let { id, name, image, price,idcategory } = e;
+      return { id, name, image, price,idcategory, quantity: 0 };
     });
+    this.offersClone.sort((a,b)=>a.category - b.category)
   },
 };
 </script>
@@ -96,7 +110,11 @@ export default {
 <style scoped>
 .container {
   padding-top: 9%;
-  max-width: 500px;
-  margin: auto;
+  margin: 0 auto;
+}
+.md-card {
+  margin: 10px;
+  flex: 1 1 16%;
+  
 }
 </style>
