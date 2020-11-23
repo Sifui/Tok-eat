@@ -45,29 +45,50 @@
                 />
               </div>
               <div class="profil-label-div">
-                <label for="address">Adresse <span class="error-input" v-show="this.errorClientAddress"
+                <label for="address"
+                  >Adresse
+                  <span class="error-input" v-show="this.errorClientAddress"
                     >Caractères non autorisés</span
-                  ></label>
+                  ></label
+                >
               </div>
               <div class="profil-input-div">
-                <input type="text" v-model="user.address" @change="isClientAdressValid"/>
+                <input
+                  type="text"
+                  v-model="user.address"
+                  @change="isClientAdressValid"
+                />
               </div>
               <div class="profil-label-div">
-                <label for="phone-number">N° téléphone <span class="error-input" v-show="this.errorClientPhoneNumber"
+                <label for="phone-number"
+                  >N° téléphone
+                  <span class="error-input" v-show="this.errorClientPhoneNumber"
                     >Caractères non autorisés</span
-                  ></label>
+                  ></label
+                >
               </div>
               <div class="profil-input-div">
-              <input type="text" v-model="user.phone_number" @change="isClientPhoneNumberValid" />
+                <input
+                  type="text"
+                  v-model="user.phone_number"
+                  @change="isClientPhoneNumberValid"
+                />
               </div>
               <p class="separator">Paramètres d' authentification</p>
               <div class="profil-label-div">
-                <label for="email">E-mail <span class="error-input" v-show="this.errorClientMail"
+                <label for="email"
+                  >E-mail
+                  <span class="error-input" v-show="this.errorClientMail"
                     >Email non valide</span
-                  ></label>
+                  ></label
+                >
               </div>
               <div class="profil-input-div">
-                <input type="email" v-model="user.email" @change="isClientMailValid"/>
+                <input
+                  type="email"
+                  v-model="user.email"
+                  @change="isClientMailValid"
+                />
               </div>
               <div class="profil-label-div">
                 <label for="password">Mot de passe</label>
@@ -81,6 +102,7 @@
                 <button
                   class="profil-but-validate"
                   @click="displayModalValidateModification"
+                  :disabled="isDisabledClient"
                 >
                   modifier
                 </button>
@@ -231,9 +253,9 @@ export default {
       isA: false,
       errorClientName: false,
       errorClientFirstName: false,
-      errorClientAddress:false,
-      errorClientPhoneNumber:false,
-      errorClientMail:false,
+      errorClientAddress: false,
+      errorClientPhoneNumber: false,
+      errorClientMail: false,
       modals: {
         displayModalModification: null,
       },
@@ -297,16 +319,25 @@ export default {
     isClientMailValid() {
       if (regMail.test(this.user.email)) {
         this.errorClientMail = false;
-        this.boxColorErrorFunction()
+        this.boxColorErrorFunction();
       } else {
         this.errorClientMail = true;
-        this.boxColorErrorFunction()
+        this.boxColorErrorFunction();
       }
     },
   },
   computed: {
     computedHeight() {
       return this.maxH;
+    },
+    isDisabledClient() {
+      return this.errorClientName ||
+        this.errorClientFirstName ||
+        this.errorClientMail ||
+        this.errorClientPhoneNumber ||
+        this.errorClientAddress
+        ? true
+        : false;
     },
   },
   async created() {
@@ -425,14 +456,14 @@ export default {
 }
 .profil-but-password {
   height: 25px;
-  background-color: #b7beb7;
+  /* background-color: #b8dab8; */
   /* background: none; */
   border: none;
 }
 .profil-but-password:hover {
   cursor: pointer;
-  background-color: #8f948f;
-  color: #ffffff;
+  background-color: #6db672;
+  color: #000000;
 }
 .profil-but-div-validate {
   /* background-color: rebeccapurple; */
@@ -450,9 +481,24 @@ export default {
   color: aliceblue;
   border: none;
 }
+.profil-but-validate:disabled {
+  width: 100%;
+  height: 40px;
+  border-radius: 29071992px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  background-color: #959b96;
+  color: rgb(92, 50, 50);
+  border: none;
+}
 .profil-but-validate:hover {
   cursor: pointer;
   background-color: #57915b;
+}
+.profil-but-validate:hover:disabled {
+  cursor: pointer;
+  background-color: #525252;
+  color: #e78f8f;
 }
 
 .separator {
