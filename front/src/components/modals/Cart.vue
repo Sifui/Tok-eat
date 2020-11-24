@@ -6,6 +6,7 @@
       <div v-for="offer in item.articles" v-bind:key="offer.id">
                   {{ offer.name }} {{offer.price}}€
         <select v-on:change="updateCartInfos($event.target.value,item.restaurant.id,item.articles.indexOf(offer))">
+          <option value="0">0</option>
             <template v-for="index in 100" > 
                 <option v-if="index==offer.quantity" selected :value="index" v-bind:key="index">{{ index }}</option>
                 <option v-else :value=" index" v-bind:key="index">{{ index }}</option>
@@ -81,6 +82,8 @@ export default {
   padding: 30px;
   background-color: white;
   transition: right 0.5s ease;
+  overflow: auto;
+  max-height:85vh;
 }
 select {
   width: 40px;
