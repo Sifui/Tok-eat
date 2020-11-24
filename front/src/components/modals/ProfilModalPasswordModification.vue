@@ -6,10 +6,9 @@
       <div class="modal__dialog">
         <div class="modal__header">
           <slot name="header">
-            <h3>Modification de votre mot de passe</h3>
+            <h3>Modification du mot de passe</h3>
           </slot>
         </div>
-        <hr />
         <div class="modal__body">
           <slot name="body" />
           <div class="form" v-if="!passwordChecked">
@@ -17,10 +16,12 @@
               <label>Veuillez saisir votre mot de passe actuel</label>
             </div>
             <div class="input-div">
-              <input type="password" v-model="this.password"/>
+              <input type="password" v-model="password" />
             </div>
             <div class="label-div">
-              <!-- <p class="error">Le mot de passe saisi est incorrecte</p> -->
+              <p class="error" v-show="errorPasswordCheck">
+                Le mot de passe saisi est incorrecte
+              </p>
             </div>
           </div>
           <div class="form" v-else>
@@ -29,16 +30,17 @@
                 <label for="">Veuillez saisir votre nouveau mot de passe</label>
               </div>
               <div class="input-div">
-                <input type="password" />
+                <input type="password" v-model="newPassword" />
               </div>
               <div class="label-div">
                 <label for="">Confirmez votre nouveau mot de passe</label>
               </div>
               <div class="input-div">
-                <input type="password" />
+                <input type="password" v-model="newPassword2" />
               </div>
               <div class="label-div">
-                <p class="error" for="">Mot de passe différents</p>
+                <p class="error" v-show="errorPasswordConfirmation">Mot de passe différents</p>
+                <p class="success" v-show="passwordChangedSuccess">Votre mot de passe à été changer</p>
               </div>
             </div>
           </div>
@@ -46,9 +48,31 @@
 
         <div class="modal__footer">
           <slot name="footer" />
-          <md-button v-on:click="closeModal">annuler</md-button>
-          <md-button class="rightCentredButton" v-if="!passwordChecked" @click="check_password" > Vérifier </md-button>
-          <md-button class="rightCentredButton" v-else> Confirmer modification </md-button>
+          <div class="but-1">
+            <button class="but-cancel" v-on:click="closeModal" v-show="passwordChangedSuccess"
+            >Terminer</button
+          >
+          <button class="but-cancel" v-on:click="closeModal" v-show="!passwordChangedSuccess"
+            >annuler</button
+          >
+          </div>
+          <div class="but-2">
+            <button
+            class="but-validation"
+            v-show="!passwordChecked"
+            @click="check_password"
+          >
+            Vérifier
+          </button>
+          <button
+            class="but-validation"
+            v-show="passwordChecked"
+            @click="edit_password"
+          >
+            modifier
+          </button>
+          </div>
+          
         </div>
       </div>
     </div>
@@ -65,33 +89,92 @@ export default {
   },
   data() {
     return {
+      password: null,
       passwordChecked: false,
-      password:"",
+      errorPasswordCheck: false,
+      newPassword: null,
+      newPassword2: null,
+      errorPasswordConfirmation: false,
+      passwordChangedSuccess: false,
     };
   },
   computed: {},
   methods: {
     closeModal() {
-      this.$emit("close");
+      (this.password = null),
+        (this.passwordChecked = false),
+        (this.errorPasswordCheck = false),
+        (this.newPassword = null),
+        (this.newPassword2 = null),
+        (this.errorPasswordConfirmation = false),
+        (this.passwordChangedSuccess = false),
+        this.$emit("close");
       this.$emit("reload");
     },
-    check_password(){
+    check_password() {
+      this.user.password = this.password;
       // console.log(this.user);
-      UserServices.check_password(this.user).then((response)=>{
-        this.passwordChecked=response.data
-      })
-    }
-    // validate() {
-    //   this.$emit("validate");
-    //   this.$emit("close");
-    // },
+      UserServices.check_password(this.user).then((response) => {
+        this.passwordChecked = response.data.password;
+      });
+      if (!this.passwordChecked) {
+        this.errorPasswordCheck = true;
+      } else {
+        this.errorPasswordCheck = false;
+      }
+    },
+    edit_password() {
+      this.user.password=this.newPassword
+      console.log(this.user);
+      UserServices.edit_password(this.user).then((response) => {
+        this.passwordChangedSuccess = response.data.password;
+      });
+    },
   },
 };
 </script>
 
 <style lang="scss" scoped>
+.success {
+  color: rgb(17, 141, 48);
+}
 .error {
   color: red;
+}
+.but-1{
+width: 50%;
+}
+.but-2{
+width: 50%;
+}
+.but-cancel {
+  width: 90%;
+  height: 40px;
+  border-radius: 29071992px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  background-color: #b94d45;
+  color: aliceblue;
+  border: none;
+}
+.but-cancel:hover {
+  cursor: pointer;
+  background-color: #a82b22;
+}
+.but-validation {
+  margin-left: 10%;;
+  width: 90%;
+  height: 40px;
+  border-radius: 29071992px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  background-color: #6db672;
+  color: aliceblue;
+  border: none;
+}
+.but-validation:hover{
+  cursor: pointer;
+  background-color: #57915b;
 }
 .modal {
   position: fixed;
@@ -136,9 +219,10 @@ export default {
     // background-color: aqua;
     text-align: center;
     text-transform: uppercase;
+    margin-bottom: 10px;
   }
   &__body {
-    padding: 10px 20px 10px 20px;
+    padding: 10px 50px 10px 50px;
     display: flex;
     flex-direction: column;
     // align-items: stretch;
@@ -147,7 +231,8 @@ export default {
   }
 
   &__footer {
-    padding: 10px 20px 20px;
+    padding: 10px 50px 40px 50px;
+    display: flex;
   }
 }
 .label-div {
@@ -185,10 +270,5 @@ export default {
 .fade-leave-to {
   opacity: 0;
 }
-.rightCentredButton {
-  float: right;
-}
-.error {
-  color: red;
-}
+
 </style>

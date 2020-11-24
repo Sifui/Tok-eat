@@ -32,6 +32,17 @@ router.post('/login', async (req, res) => {
     }
 })
 
+router.post('/check_password', hasToBeAuthenticated, async (req, res) => {
+    // console.log('HERE ===> ' + req.body);
+    const client = await Client.findByEmail(req.body.email)
+    if (client && (await bcrypt.compare(req.body.password, client.password))) {
+        res.json({ password: true })
+    }
+    else {
+        res.json({ password: false })
+    }
+})
+
 router.get('/me', hasToBeAuthenticated, async (req, res) => {
 
     let user = {}
@@ -150,6 +161,11 @@ router.put('/edit_email', hasToBeAuthenticated, async (req, res) => {
         const result = await Restaurant.editEmail(req.body)
         res.json(result)
     }
+})
+
+router.put('/edit_password', hasToBeAuthenticated, async (req, res) => {
+    await Client.editPassword(req.body)
+    res.json({ password: true })
 })
 
 router.put('/edit_description', hasToBeAuthenticated, async (req, res) => {

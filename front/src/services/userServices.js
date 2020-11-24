@@ -22,7 +22,7 @@ export default {
   async check_password(data) {
     return http.post("/check_password", data);
   },
-  async validate_password(data) {
+  async edit_password(data) {
     return http.put("/edit_password", data);
   }
 }

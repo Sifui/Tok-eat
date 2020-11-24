@@ -83,6 +83,17 @@ class Client {
         return result.rows[0]
     }
 
+    static async editPassword(client){
+        const hashedPw = await bcrypt.hash(client.password,10)
+        const result = await PostgresStore.client.query({
+            text: `UPDATE ${Client.tableName}
+            SET password=$1
+            WHERE id=$2`,
+            values: [hashedPw, Number(client.id)]
+        })
+        return result.rows[0]
+    }
+
     static async editPhone(client){
         const result = await PostgresStore.client.query({
             text: `UPDATE ${Client.tableName}
