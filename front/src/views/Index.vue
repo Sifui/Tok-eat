@@ -1,7 +1,7 @@
 <template>
   <div class="index" md-theme="black">
-    <cart  :display="display" :infos="infos" :price="computedPrice" />
-    <navbar style="z-index: 2" v-on:showcart="showCart(1)" v-on:hidecart="showCart(0)" />
+    <cart  :display="display" :infos="cartInfos" :price="computedPrice" style="z-index: 3" />
+    <navbar :display="display" style="z-index: 2" v-on:showcart="showCart(1)" v-on:hidecart="showCart(0)" />
     <router-view style="padding-top: 8%; padding-bottom: 5%; z-index: 1" v-on:updatecart="updateCart"/>
     <footerTokEat style="z-index: 1" />
   </div>
@@ -20,15 +20,12 @@ export default {
     return {
       display: 0,
       scrolled: false,
-      infos: [],
+      cartInfos: [],
       computedPrice: 0
     };
   },
   created() {
-    for ( let i = 0 ; i < Object.keys(this.$cookies.get("cart")).length;i++)
-      {
-        this.infos.push(this.$cookies.get("cart")[Object.keys(this.$cookies.get("cart"))[i]])
-      }
+    
     window.addEventListener("scroll", () => {
       if (!this.scrolled) {
         this.scrolled = true;
@@ -36,15 +33,21 @@ export default {
         setInterval(()=>{this.scrolled = false;},1300)
         
       }
-      
-    });
+      });
+      if ( !this.$cookies.get('cart'))
+        return
+    for ( let i = 0 ; i < Object.keys(this.$cookies.get("cart")).length;i++)
+      {
+        this.cartInfos.push(this.$cookies.get("cart")[Object.keys(this.$cookies.get("cart"))[i]])
+      }  
+    
   },
   methods: {
     showCart(i) {
       this.display = i;
     },
     updateCart(){
-      this.infos = []
+      this.cartInfos = []
       this.computedPrice = 0
       for ( let i = 0 ; i < Object.keys(this.$cookies.get("cart")).length;i++)
       {
@@ -56,7 +59,7 @@ export default {
                 this.computedPrice += currentRestaurant[Object.keys(currentRestaurant)[j]][article].price* currentRestaurant[Object.keys(currentRestaurant)[j]][article].quantity
            }
         }
-        this.infos.push(this.$cookies.get("cart")[Object.keys(this.$cookies.get("cart"))[i]])
+        this.cartInfos.push(this.$cookies.get("cart")[Object.keys(this.$cookies.get("cart"))[i]])
       }
       this.computedPrice = Math.round((this.computedPrice + Number.EPSILON) * 100) / 100
     }

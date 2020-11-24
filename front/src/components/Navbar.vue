@@ -87,6 +87,7 @@ export default {
   name: "Navbar",
   props: {
     restaurants: Array,
+    display:Number
   },
   data() {
     return {
@@ -98,7 +99,10 @@ export default {
   },
   methods: {
     openCart(){
-     
+     if ( !this.display && this.showCart)
+     {
+       this.showCart = false
+     }
       if ( !this.showCart )
       {
         this.$emit('showcart')

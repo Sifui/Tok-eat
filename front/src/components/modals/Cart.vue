@@ -1,8 +1,8 @@
 <template>
-  <div id="cartModal" v-bind:style="{ opacity: display, 'z-index':zIndex}">
-    <h1 class="title">Vos commandes ({{totalPrice}} euros)</h1>
-    <div v-for="item in infos" v-bind:key="item.restaurantId" style="margin-bottom:50px">
-      <h2 class="subheading">{{ item.restaurant.name }}</h2>
+  <div id="cartModal" v-bind:style="{right:right}">
+    <h1 class="title">Vos réservations ({{totalPrice}} euros)</h1>
+    <div v-for="item in infos" v-bind:key="item.restaurantId" style="margin-bottom:40px;padding:30px;box-shadow: 0 0 4px 0 silver">
+      <h2 class="subheading" style="margin-top:0">{{ item.restaurant.name }}</h2>
       <div v-for="offer in item.articles" v-bind:key="offer.id">
                   {{ offer.name }} {{offer.price}}€
         <select v-on:change="updateCartInfos($event.target.value,item.restaurant.id,item.articles.indexOf(offer))">
@@ -11,9 +11,10 @@
                 <option v-else :value=" index" v-bind:key="index">{{ index }}</option>
             </template>
         </select>
+        
       </div>
     </div>
-    <div class="centered">
+    <div class="centered" v-if="price != 0 || totalPrice != 0">
       <md-button> Procéder au paiement</md-button>
     </div>
   </div>
@@ -30,7 +31,8 @@ export default {
   data() {
     return {
         totalPrice:0,
-        zIndex:-1
+        zIndex:-1,
+        right:'-500px'
     };
   },
   created() {
@@ -57,16 +59,11 @@ export default {
   },
   watch:{
     display(){
-      if ( this.display)
-        this.zIndex = 3
+      if ( this.display){
+        this.right = '0px'
+      }
       else{
-        setTimeout(()=>{this.zIndex = -1;
-        if ( this.display && this.zIndex == -1)
-          {
-              this.zIndex = 3
-          }
-        },200)
-        
+          this.right = '-500px'
       }
     },
     price(){
@@ -79,12 +76,11 @@ export default {
 <style scoped>
 #cartModal {
   position: fixed;
-  right: 120px;
   top: 100px;
   box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2);
   padding: 30px;
   background-color: white;
-  transition: opacity 0.2s linear;
+  transition: right 0.5s ease;
 }
 select {
   width: 40px;

@@ -145,6 +145,7 @@ export default {
   margin: auto;
 }
 #map {
+  z-index: 0;
   flex: 1;
   max-height: 75vh;
   min-height: 75vh;

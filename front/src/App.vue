@@ -29,7 +29,6 @@
 body,
 html {
   background-color: white !important;
-  height: 100%;
 }
 #nav {
   padding: 30px;
