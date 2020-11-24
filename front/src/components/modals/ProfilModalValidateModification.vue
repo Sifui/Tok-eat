@@ -29,7 +29,7 @@
 
 <script>
 export default {
-  name: "validateProfilModification",
+  name: "ProfilModalValidateModification",
   props: {
     me: Object,
     modals: Object,

@@ -94,7 +94,7 @@
                 <label for="password">Mot de passe</label>
               </div>
               <div class="profil-but-div-password">
-                <button class="profil-but-password">
+                <button class="profil-but-password" @click="displayModalPasswordModification">
                   Modification du mot de passe
                 </button>
               </div>
@@ -221,6 +221,11 @@
       @reload="reloadPage"
       @close="closeModal"
     />
+    <ProfilModalPassword
+      :user="user"
+      :modals="modals"
+      @close="closeModal"
+    />
     <footerTokEat />
   </div>
 </template>
@@ -232,7 +237,8 @@ import Tab from "@/components/Tab";
 import Tabs from "@/components/Tabs";
 import footerTokEat from "@/components/Footer";
 import UserServices from "../services/userServices";
-import validateProfilModification from "@/components/modals/validateProfilModification";
+import validateProfilModification from "@/components/modals/ProfilModalValidateModification";
+import ProfilModalPassword from "@/components/modals/ProfilModalPasswordModification";
 const regName = /^[^~"#{([|`^\])}=+-/*$£¤%µ!:;,?.§]*$/;
 const regAddress = /^[^~"#{([`^\])}=+-/*$£¤%µ!:;,?.§]*$/;
 const regMail = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,24}))$/;
@@ -245,6 +251,7 @@ export default {
     navbar,
     footerTokEat,
     validateProfilModification,
+    ProfilModalPassword
   },
   data() {
     return {
@@ -258,6 +265,7 @@ export default {
       errorClientMail: false,
       modals: {
         displayModalModification: null,
+        displayProfilModalPassword:null
       },
     };
   },
@@ -274,15 +282,19 @@ export default {
     edit_name() {
       UserServices.edit_name(this.user).then((response) => {
         // this.user=response.data;
-        console.log("VITAAAAA" + response.data);
+        console.log(response.data);
       });
     },
     displayModalValidateModification() {
       this.modals.displayModalModification = true;
     },
+    displayModalPasswordModification() {
+      this.modals.displayProfilModalPassword = true;
+    },
     closeModal() {
       this.modals = {
         displayModalModification: null,
+        displayProfilModalPassword: null
       };
     },
     reloadPage() {
@@ -462,7 +474,7 @@ export default {
 }
 .profil-but-password:hover {
   cursor: pointer;
-  background-color: #6db672;
+  background-color: #dbd95f;
   color: #000000;
 }
 .profil-but-div-validate {

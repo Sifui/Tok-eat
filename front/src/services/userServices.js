@@ -18,5 +18,11 @@ export default {
   },
   async edit_name(data) {
     return http.put("/edit_name", data);
+  },
+  async check_password(data) {
+    return http.post("/check_password", data);
+  },
+  async validate_password(data) {
+    return http.put("/edit_password", data);
   }
 }
