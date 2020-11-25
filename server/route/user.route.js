@@ -163,10 +163,6 @@ router.put('/edit_email', hasToBeAuthenticated, async (req, res) => {
     }
 })
 
-router.put('/edit_password', hasToBeAuthenticated, async (req, res) => {
-    await Client.editPassword(req.body)
-    res.json({ password: true })
-})
 
 router.put('/edit_description', hasToBeAuthenticated, async (req, res) => {
     if (req.session.type == "restaurant") {
@@ -197,6 +193,11 @@ router.put('/edit_address', hasToBeAuthenticated, async (req, res) => {
         const result = await Restaurant.editAddress(req.body)
         res.json(result)
     }
+})
+
+router.put('/edit_password', hasToBeAuthenticated, async (req, res) => {
+    await Client.editPassword(req.body)
+    res.json({ password: true })
 })
 
 module.exports = router

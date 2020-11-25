@@ -30,17 +30,21 @@
                 <label for="">Veuillez saisir votre nouveau mot de passe</label>
               </div>
               <div class="input-div">
-                <input type="password" v-model="newPassword" />
+                <input type="password" v-model="newPassword" @change="isPasswordTheSame" />
               </div>
               <div class="label-div">
                 <label for="">Confirmez votre nouveau mot de passe</label>
               </div>
               <div class="input-div">
-                <input type="password" v-model="newPassword2" />
+                <input type="password" v-model="newPassword2" @change="isPasswordTheSame" />
               </div>
               <div class="label-div">
-                <p class="error" v-show="errorPasswordConfirmation">Mot de passe différents</p>
-                <p class="success" v-show="passwordChangedSuccess">Votre mot de passe à été changer</p>
+                <p class="error" v-show="errorNewPasswordCheck">
+                  Mot de passe différents
+                </p>
+                <p class="success" v-show="passwordChangedSuccess">
+                  Votre mot de passe à été changer
+                </p>
               </div>
             </div>
           </div>
@@ -49,30 +53,37 @@
         <div class="modal__footer">
           <slot name="footer" />
           <div class="but-1">
-            <button class="but-cancel" v-on:click="closeModal" v-show="passwordChangedSuccess"
-            >Terminer</button
-          >
-          <button class="but-cancel" v-on:click="closeModal" v-show="!passwordChangedSuccess"
-            >annuler</button
-          >
+            <button
+              class="but-cancel"
+              v-on:click="closeModal"
+              v-show="passwordChangedSuccess"
+            >
+              Terminer
+            </button>
+            <button
+              class="but-cancel"
+              v-on:click="closeModal"
+              v-show="!passwordChangedSuccess"
+            >
+              annuler
+            </button>
           </div>
           <div class="but-2">
             <button
-            class="but-validation"
-            v-show="!passwordChecked"
-            @click="check_password"
-          >
-            Vérifier
-          </button>
-          <button
-            class="but-validation"
-            v-show="passwordChecked"
-            @click="edit_password"
-          >
-            modifier
-          </button>
+              class="but-validation"
+              v-show="!passwordChecked"
+              @click="check_password"
+            >
+              Vérifier
+            </button>
+            <button
+              class="but-validation"
+              v-show="passwordChecked"
+              @click="edit_password"
+            >
+              modifier
+            </button>
           </div>
-          
         </div>
       </div>
     </div>
@@ -94,21 +105,21 @@ export default {
       errorPasswordCheck: false,
       newPassword: null,
       newPassword2: null,
-      errorPasswordConfirmation: false,
       passwordChangedSuccess: false,
+      errorNewPasswordCheck: false,
     };
   },
   computed: {},
   methods: {
     closeModal() {
-      (this.password = null),
-        (this.passwordChecked = false),
-        (this.errorPasswordCheck = false),
-        (this.newPassword = null),
-        (this.newPassword2 = null),
-        (this.errorPasswordConfirmation = false),
-        (this.passwordChangedSuccess = false),
-        this.$emit("close");
+      this.password = null;
+      this.passwordChecked = false;
+      this.errorPasswordCheck = false;
+      this.newPassword = null;
+      this.newPassword2 = null;
+      this.passwordChangedSuccess = false;
+      this.errorNewPasswordCheck = false;
+      this.$emit("close");
       this.$emit("reload");
     },
     check_password() {
@@ -124,11 +135,18 @@ export default {
       }
     },
     edit_password() {
-      this.user.password=this.newPassword
+      this.user.password = this.newPassword;
       console.log(this.user);
       UserServices.edit_password(this.user).then((response) => {
         this.passwordChangedSuccess = response.data.password;
       });
+    },
+    isPasswordTheSame() {
+      if (this.newPassword === this.newPassword2) {
+        this.errorNewPasswordCheck = false;
+      } else {
+        this.errorNewPasswordCheck = true;
+      }
     },
   },
 };
@@ -141,11 +159,11 @@ export default {
 .error {
   color: red;
 }
-.but-1{
-width: 50%;
+.but-1 {
+  width: 50%;
 }
-.but-2{
-width: 50%;
+.but-2 {
+  width: 50%;
 }
 .but-cancel {
   width: 90%;
@@ -162,7 +180,7 @@ width: 50%;
   background-color: #a82b22;
 }
 .but-validation {
-  margin-left: 10%;;
+  margin-left: 10%;
   width: 90%;
   height: 40px;
   border-radius: 29071992px;
@@ -172,7 +190,7 @@ width: 50%;
   color: aliceblue;
   border: none;
 }
-.but-validation:hover{
+.but-validation:hover {
   cursor: pointer;
   background-color: #57915b;
 }
@@ -270,5 +288,4 @@ width: 50%;
 .fade-leave-to {
   opacity: 0;
 }
-
 </style>
