@@ -1,6 +1,6 @@
 <template>
   <div>
-    <section class="mainframe"> 
+    <div class="mainframe"> 
     <div>
       <div class="md-layout">
         <div class="md-layout-item md-size-3">
@@ -16,7 +16,7 @@
         </div>
       </div>
     </div>
-    </section>
+    </div>
     <section>
     <h2 class="md-display-1 centered">Les sélections Tok'eat</h2>
 
@@ -106,6 +106,7 @@
       </div>
     </div>
     </section>
+    
   </div>
 </template>
 

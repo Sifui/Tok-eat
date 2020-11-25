@@ -2,16 +2,18 @@
   <div id="cartModal" v-bind:style="{right:right}">
     <h1 class="title">Vos réservations ({{totalPrice}} euros)</h1>
     <div v-for="item in infos" v-bind:key="item.restaurantId" style="margin-bottom:40px;padding:30px;box-shadow: 0 0 4px 0 silver">
-      <h2 class="subheading" style="margin-top:0">{{ item.restaurant.name }}</h2>
-      <div v-for="offer in item.articles" v-bind:key="offer.id">
-                  {{ offer.name }} {{offer.price}}€
-        <select v-on:change="updateCartInfos($event.target.value,item.restaurant.id,item.articles.indexOf(offer))">
-          <option value="0">0</option>
+      <h2 class="subheading " style="margin-top:0">{{ item.restaurant.name }}</h2>
+      <div class="item-description flex-container" v-for="offer in item.articles" v-bind:key="offer.id">
+           <select class="quantity-picker" v-on:change="updateCartInfos($event.target.value,item.restaurant.id,item.articles.indexOf(offer))">
+          <option  selected value="0">0</option>
             <template v-for="index in 100" > 
                 <option v-if="index==offer.quantity" selected :value="index" v-bind:key="index">{{ index }}</option>
                 <option v-else :value=" index" v-bind:key="index">{{ index }}</option>
             </template>
         </select>
+                 <span> {{ offer.name }}</span>  
+                 <span style="margin-left:auto"> {{offer.price}}€</span>
+     
         
       </div>
     </div>
@@ -33,7 +35,7 @@ export default {
     return {
         totalPrice:0,
         zIndex:-1,
-        right:'-500px'
+        right:'-520px'
     };
   },
   created() {
@@ -64,7 +66,7 @@ export default {
         this.right = '0px'
       }
       else{
-          this.right = '-500px'
+          this.right = '-520px'
       }
     },
     price(){
@@ -85,7 +87,17 @@ export default {
   overflow: auto;
   max-height:85vh;
 }
+.item-description{
+  font-family: UberMoveText-Medium;
+  font-size:1.18em;
+  margin: 10px 5px 10px 0;
+  
+}
 select {
   width: 40px;
+}
+.quantity-picker{
+
+  margin-right:10px
 }
 </style>

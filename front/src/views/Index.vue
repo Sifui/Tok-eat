@@ -2,7 +2,7 @@
   <div class="index" md-theme="black">
     <cart  :display="display" :infos="cartInfos" :price="computedPrice" style="z-index: 3" />
     <navbar :display="display" style="z-index: 2" v-on:showcart="showCart(1)" v-on:hidecart="showCart(0)" />
-    <router-view style="padding-top: 8%; padding-bottom: 5%; z-index: 1" v-on:updatecart="updateCart"/>
+    <router-view style="padding:8% 0 5% 0; z-index: 1" v-on:updatecart="updateCart"/>
     <footerTokEat style="z-index: 1" />
   </div>
 </template>

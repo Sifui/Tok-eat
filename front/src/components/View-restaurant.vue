@@ -15,7 +15,7 @@
       </div>
       <div id="description">
         <h2>Carte du restaurant</h2>
-        <div v-for="(item, index) in offers" v-bind:key="index" class="offer flex-container">
+        <div v-for="(item, index) in offers.slice(0,4)" v-bind:key="index" class="offer flex-container">
           <div class="offer-name">{{ item.name }}</div>
           <div class="offer-price">{{ item.price }} €</div>
         </div>
@@ -280,7 +280,6 @@ export default {
     OfferServices.getOfferByIdRestaurant(this.$route.query.id).then(
       (offers) => {
         this.offers = [...offers.data];
-        console.log(this.offers)
       }
     );
   },
