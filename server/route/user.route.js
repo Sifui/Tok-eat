@@ -218,7 +218,7 @@ router.put('edit', hasToBeAuthenticated, async (req, res) => {
         }
     }
 
-    if (req.session.type == "restaurant") {
+    if (req.session.type == "restaurant"){
         if (!req.body.name ||
             !req.body.email ||
             !req.body.phoneNumber ||
