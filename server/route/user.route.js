@@ -3,7 +3,6 @@ const bcrypt = require('bcrypt')
 const Client = require("../model/client.model")
 const Restaurant = require("../model/restaurant.model")
 const hasToBeAuthenticated = require('../middlewares/has-to-be-authenticated.middleware')
-const { client } = require("../PostgresStore")
 const Offer = require('../model/offer.model')
 
 router.post('/login', async (req, res) => {
@@ -180,6 +179,76 @@ router.put('/edit_address', hasToBeAuthenticated, async (req, res) => {
     if (req.session.type == "restaurant") {
         const result = await Restaurant.editAddress(req.body)
         res.json(result)
+    }
+
+    
+})
+
+router.put('edit', hasToBeAuthenticated, async (req, res) => {
+    if (req.session.type == "client") {
+        if (!req.body.firstName ||
+            !req.body.lastName ||
+            !req.body.email ||
+            !req.body.phoneNumber ||
+            !req.body.address
+        ) {
+            res.status(400)
+            res.json({ message: "missing form" })
+        }
+        else if (!emailRegex.test(req.body.email)) {
+            res.status(400)
+            res.json({ message: "error invalid mail" })
+        }
+        else if (await Client.findByEmail(req.body.email)) {
+            res.status(401)
+            res.json({ message: "error already used mail" })
+        }
+        else{
+            const result = await Client.editName(req.body)
+            res.json(result)
+
+            const result2 = await Client.editEmail(req.body)
+            res.json(result2)
+
+            const result3 = await Client.editAddress(req.body)
+            res.json(result3)
+
+            const result4 = await Client.editPhone(req.body)
+            res.json(result4)
+        }
+    }
+
+    if (req.session.type == "restaurant") {
+        if (!req.body.name ||
+            !req.body.email ||
+            !req.body.phoneNumber ||
+            !req.body.address ||
+            !req.body.description
+        ) {
+            res.status(400)
+            res.json({ message: "missing form" })
+        }
+        else if (!emailRegex.test(req.body.email)) {
+            res.status(400)
+            res.json({ message: "error invalid mail" })
+        }
+        else if (await Restaurant.findByEmail(req.body.email)) {
+            res.status(401)
+            res.json({ message: "error already used mail" })
+        }
+        else {
+            const result = await Restaurant.editName(req.body)
+            res.json(result)
+
+            const result2 = await Restaurant.editAddress(req.body)
+            res.json(result2)
+
+            const result3 = await Restaurant.editDescription(req.body)
+            res.json(result3)
+
+            const result4 = await Restaurant.editPhone(req.body)
+            res.json(result4)
+        }
     }
 })
 
