@@ -1,6 +1,7 @@
 const PostgresStore = require("../PostgresStore")
 const Client = require('./client.model')
 const Restaurant = require('./restaurant.model')
+const Basket = require('./basket.model')
 
 class Client_Restaurant {
     static toSQLTable() {
@@ -22,11 +23,11 @@ class Client_Restaurant {
 
         const result = await PostgresStore.client.query({
             text: `INSERT INTO ${Client_Restaurant.tableName}
-                    (favorite,grade,grade_date,feedback,id_client,id_restaurant)
+                    (favorite,grade,grade_date,feedback,token,id_client,id_restaurant)
                     VALUES($1,$2,current_timestamp,$3,$4,$5)
                     RETURNING *
             `,
-            values: [fb.favorite, fb.grade, fb.feedback, fb.clientId, fb.restaurantId]
+            values: [fb.favorite, fb.grade, fb.feedback, Number(0), fb.clientId, fb.restaurantId]
         })
         return result.rows[0]
     }
@@ -110,6 +111,16 @@ class Client_Restaurant {
     
             })
         }
+        return result.rows
+    }
+
+    static async tokenInc(){
+        let result = await PostgresStore.client.query({
+            text: `UPDATE ${Client_Restaurant.tableName} as cr, ${Basket.tableName} as b
+            SET cr.token += CAST(b.total)
+            WHERE b.id_client_restaurant = cr.id 
+            AND b.validation = true`
+        })
         return result.rows
     }
 }

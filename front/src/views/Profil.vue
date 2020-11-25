@@ -144,7 +144,28 @@
           </div>
         </Tab>
         <Tab name="token">
-          <div class="token">zizi</div>
+          <div class="token">
+            <md-card>
+            <md-card-header style="display: flex; justify-content: space-between">
+              <h1 id="name_restaurant">{{name}}</h1> <hr />
+              <h2 class="title" id="token">{{token}}</h2>
+            </md-card-header>
+
+            <md-card-content>
+              <md-list>
+                <div class="phone">
+                  <span>{{phone}}</span>
+                </div>
+              </md-list>
+              <md-list>
+                <div class="address">
+                  <span>{{address}}</span>
+                </div>
+              </md-list>
+              <md-button class="voir" v-on:click="$router.push(`/restaurant?id=${idRestaurant}`)">Voir le restaurant</md-button>
+            </md-card-content>
+            </md-card>
+          </div>
         </Tab>
       </Tabs>
     </div>
@@ -154,6 +175,7 @@
 
 <script>
 // @ is an alias to /src
+import axios from "axios";
 import navbar from "../components/Navbar";
 import Tab from "@/components/Tab";
 import Tabs from "@/components/Tabs";
@@ -173,6 +195,12 @@ export default {
       user:null,
       maxH: "0",
       isA: false,
+      token: "0",
+      idRestaurant: 0,
+      name: "",
+      phone: "",
+      address: "",
+      //tok: [],
     };
   },
   methods: {
@@ -201,7 +229,19 @@ export default {
     const res = await UserServices.me()
     this.user = res.data
     // console.log(this.user)
-  }
+  },
+
+  async init_token(){
+    let response = await axios.get(`http://localhost:8080/client-restaurant/${this.$route.query.id}`);
+    this.token = response.data.token;
+    this.idRestaurant = response.data.id_restaurant;
+    //let idClient = response.data.id_client;
+
+    response = await axios.get(`http://localhost:8080/restaurant?id=${this.idRestaurant}`);
+    this.name = response.data.name;
+    this.phone = response.data.phone;
+    this.address = response.data.address;
+  },
 };
 </script>
 

@@ -1,4 +1,5 @@
 const router = require("express").Router()
+const Client_Restaurant = require("../model/client_restaurant.model")
 const ClientRestaurant= require("../model/client_restaurant.model")
 
 router.post('/client-restaurant',async(req,res)=>{
@@ -35,5 +36,9 @@ router.get('/client-restaurant/average/:id', async (req,res)=>{
     res.json({average:result})
 })
 
+router.get('/client-restaurant/token', async (req,res)=>{
+    const result = await ClientRestaurant.getToken(req.params.id_client)
+    res.json(result)
+})
 
 module.exports = router
