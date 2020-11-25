@@ -486,7 +486,7 @@ export default {
 .profil-but-validate {
   width: 100%;
   height: 40px;
-  border-radius: 29071992px;
+  border-radius: 10px;
   text-transform: uppercase;
   letter-spacing: 2px;
   background-color: #6db672;
@@ -496,7 +496,7 @@ export default {
 .profil-but-validate:disabled {
   width: 100%;
   height: 40px;
-  border-radius: 29071992px;
+  border-radius: 10px;
   text-transform: uppercase;
   letter-spacing: 2px;
   background-color: #959b96;
@@ -506,6 +506,8 @@ export default {
 .profil-but-validate:hover {
   cursor: pointer;
   background-color: #57915b;
+  width: 98%;
+  height: 38px;
 }
 .profil-but-validate:hover:disabled {
   cursor: pointer;
@@ -694,8 +696,8 @@ export default {
 
 .button-card-div-update button {
   width: 100%;
-  height: 90%;
-  border-radius: 29071992px;
+  height: 40px;
+  border-radius: 10px;
   text-transform: uppercase;
   letter-spacing: 2px;
   background-color: #6db672;
@@ -706,12 +708,14 @@ export default {
 .button-card-div-update button:hover {
   cursor: pointer;
   background-color: #57915b;
+  width: 98%;
+  height: 38px;
 }
 
 .button-card-div-delete button {
   width: 100%;
-  height: 90%;
-  border-radius: 29071992px;
+  height: 40px;
+  border-radius: 10px;
   text-transform: uppercase;
   letter-spacing: 2px;
   background-color: #b94242;
@@ -722,6 +726,8 @@ export default {
 .button-card-div-delete button:hover {
   cursor: pointer;
   background-color: #d62a2a;
+  width: 98%;
+  height: 38px;
 }
 .payement-add-card-button-div {
   width: 100%;
@@ -781,7 +787,7 @@ export default {
 .payement-add-card-button {
   width: 100%;
   height: 40px;
-  border-radius: 29071992px;
+  border-radius: 10px;
   text-transform: uppercase;
   letter-spacing: 2px;
   background-color: #6db672;
