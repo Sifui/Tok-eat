@@ -16,7 +16,15 @@
               <label>Veuillez saisir votre mot de passe actuel</label>
             </div>
             <div class="input-div">
-              <input type="password" v-model="password" />
+              <input
+                id="actualPassword"
+                ref="actualPassword"
+                type="password"
+                v-model="password"
+              />
+            </div>
+            <div class="label-div">
+              <button @click="showPassword">cacher/montrer</button>
             </div>
             <div class="label-div">
               <p class="error" v-show="errorPasswordCheck">
@@ -30,13 +38,28 @@
                 <label for="">Veuillez saisir votre nouveau mot de passe</label>
               </div>
               <div class="input-div">
-                <input type="password" v-model="newPassword" @change="isPasswordTheSame" />
+                <input
+                  id="newPassword"
+                  ref="newPassword"
+                  type="password"
+                  v-model="newPassword"
+                  @change="isPasswordTheSame"
+                />
               </div>
               <div class="label-div">
                 <label for="">Confirmez votre nouveau mot de passe</label>
               </div>
               <div class="input-div">
-                <input type="password" v-model="newPassword2" @change="isPasswordTheSame" />
+                <input
+                  id="newPassword2"
+                  ref="newPassword2"
+                  type="password"
+                  v-model="newPassword2"
+                  @change="isPasswordTheSame"
+                />
+              </div>
+              <div class="label-div">
+                <button @click="showBothPasswords">cacher/montrer</button>
               </div>
               <div class="label-div">
                 <p class="error" v-show="errorNewPasswordCheck">
@@ -112,9 +135,7 @@ export default {
   },
   computed: {
     isDisabled() {
-      return this.passwordChangedSuccess
-        ? true
-        : false;
+      return this.passwordChangedSuccess ? true : false;
     },
   },
   methods: {
@@ -153,6 +174,22 @@ export default {
         this.errorNewPasswordCheck = false;
       } else {
         this.errorNewPasswordCheck = true;
+      }
+    },
+    showPassword() {
+      if (this.$refs.actualPassword.type === "password") {
+        this.$refs.actualPassword.type = "text";
+      } else if (this.$refs.actualPassword.type === "text") {
+        this.$refs.actualPassword.type = "password";
+      }
+    },
+    showBothPasswords() {
+      if (this.$refs.newPassword.type === "password" && this.$refs.newPassword2.type === "password") {
+        this.$refs.newPassword.type = "text";
+        this.$refs.newPassword2.type = "text";
+      } else if (this.$refs.newPassword.type === "text" && this.$refs.newPassword2.type === "text") {
+        this.$refs.newPassword.type = "password";
+        this.$refs.newPassword2.type = "password";
       }
     },
   },
@@ -217,7 +254,7 @@ export default {
   height: 38px;
 }
 .but-validation:disabled:hover {
-  cursor:pointer;
+  cursor: pointer;
   background-color: #8a928b;
 }
 .modal {
