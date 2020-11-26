@@ -69,7 +69,7 @@
               </div>
               <div class="profil-input-div">
                 <input
-                type="text"
+                  type="text"
                   v-model="user.phone_number"
                   @change="isClientPhoneNumberValid"
                 />
@@ -78,13 +78,12 @@
               <div class="profil-label-div">
                 <label for="email"
                   >E-mail
-                  <span class="error-input" v-show="this.errorClientMail"
+                  <span class="error" v-show="this.errorClientMail"
                     >Email non valide</span
                   >
-                  </label
-                >
+                </label>
               </div>
-              
+
               <div class="profil-input-div">
                 <input
                   type="email"
@@ -92,18 +91,32 @@
                   @change="isClientMailValid"
                 />
               </div>
-              <div class="profil-label-div" v-show="this.errorAlreadyUsedEmail">
-                <span class="error-input" 
-                    > {{errorAlreadyUsedEmailMessage}}</span
-                  >
+              <div
+                class="profil-label-div-error"
+                v-show="this.errorAlreadyUsedEmail"
+              >
+                <span class="error-input">{{
+                  errorAlreadyUsedEmailMessage
+                }}</span>
               </div>
               <div class="profil-label-div">
                 <label for="password">Mot de passe</label>
               </div>
               <div class="profil-but-div-password">
-                <button class="profil-but-password" @click="displayModalPasswordModification">
+                <button
+                  class="profil-but-password"
+                  @click="displayModalPasswordModification"
+                >
                   Modification du mot de passe
                 </button>
+              </div>
+              <div
+                class="profil-label-div-success"
+                v-show="this.successMessage"
+              >
+                <span class="success">
+                  Vos données ont été modifier avec succès
+                </span>
               </div>
               <div class="profil-but-div-validate">
                 <button
@@ -228,11 +241,7 @@
       @reload="reloadPage"
       @close="closeModal"
     />
-    <ProfilModalPassword
-      :user="user"
-      :modals="modals"
-      @close="closeModal"
-    />
+    <ProfilModalPassword :user="user" :modals="modals" @close="closeModal" />
     <footerTokEat />
   </div>
 </template>
@@ -258,7 +267,7 @@ export default {
     navbar,
     footerTokEat,
     validateProfilModification,
-    ProfilModalPassword
+    ProfilModalPassword,
   },
   data() {
     return {
@@ -270,11 +279,12 @@ export default {
       errorClientAddress: false,
       errorClientPhoneNumber: false,
       errorClientMail: false,
-      errorAlreadyUsedEmail:false,
-      errorAlreadyUsedEmailMessage:null,
+      errorAlreadyUsedEmail: false,
+      errorAlreadyUsedEmailMessage: null,
+      successMessage: false,
       modals: {
         displayModalModification: null,
-        displayProfilModalPassword:null
+        displayProfilModalPassword: null,
       },
     };
   },
@@ -289,13 +299,19 @@ export default {
       }
     },
     update_client_data() {
-      console.log(this.user);
+      // console.log(this.user);
       UserServices.update_client_data(this.user).then((response) => {
-        if(response.data.message){
-          this.errorAlreadyUsedEmail=true
-          this.errorAlreadyUsedEmailMessage=response.data.message;
-        }else{
-          this.errorAlreadyUsedEmail=false
+        if (response.data.message) {
+          this.errorAlreadyUsedEmail = true;
+          this.errorAlreadyUsedEmailMessage = response.data.message;
+        } else {
+          this.errorAlreadyUsedEmail = false;
+          this.successMessage = true;
+          setTimeout(function () {
+            this.successMessage = false;
+            console.log(this.successMessage);
+            window.location.reload();
+          }, 2500);
         }
       });
     },
@@ -308,7 +324,7 @@ export default {
     closeModal() {
       this.modals = {
         displayModalModification: null,
-        displayProfilModalPassword: null
+        displayProfilModalPassword: null,
       };
     },
     reloadPage() {
@@ -361,7 +377,7 @@ export default {
         this.errorClientFirstName ||
         this.errorClientMail ||
         this.errorClientPhoneNumber ||
-        this.errorClientAddress 
+        this.errorClientAddress
         ? true
         : false;
     },
@@ -388,6 +404,29 @@ export default {
 }
 .md-toolbar {
   position: relative;
+}
+.profil-label-div-success {
+  width: 100%;
+  height: 45px;
+  background-color: #afc0b162;
+}
+.profil-label-div-error {
+  width: 100%;
+  height: 45px;
+  background-color: #afc0b162;
+}
+.profil-label-div-error .error {
+  color: red;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial,
+    sans-serif, Apple Color Emoji, Segoe UI Emoji;
+  font-size: large;
+}
+.profil-label-div-success .success {
+  color: #6db672;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial,
+    sans-serif, Apple Color Emoji, Segoe UI Emoji;
+  font-size: large;
+  margin-left: 25%;
 }
 #home {
   /* background-color: rgb(184, 63, 63); */

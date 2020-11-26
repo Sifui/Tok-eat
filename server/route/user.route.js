@@ -209,7 +209,7 @@ router.put('/update_client_data', hasToBeAuthenticated, async (req, res) => {
             const result = Client.updateClientDataExceptPassword(req.body)
             res.json(result)
         } else {
-            res.json({ message: "erreur - email déjà utilisé" })
+            res.json({ message: " Erreur - email déjà utilisé " })
         }
     }
     else {
