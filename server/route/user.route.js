@@ -195,9 +195,30 @@ router.put('/edit_address', hasToBeAuthenticated, async (req, res) => {
     }
 })
 
+/////////////// Setra code début ////////////////////////////////////////
+
 router.put('/edit_password', hasToBeAuthenticated, async (req, res) => {
     await Client.editPassword(req.body)
     res.json({ password: true })
 })
+
+router.put('/update_client_data', hasToBeAuthenticated, async (req, res) => {
+    let mail = await Client.findByEmail(req.body.email)
+    if (mail) {
+        if (mail.id === req.body.id) {
+            const result = Client.updateClientDataExceptPassword(req.body)
+            res.json(result)
+        } else {
+            res.json({ message: "erreur - email déjà utilisé" })
+        }
+    }
+    else {
+        const result = Client.updateClientDataExceptPassword(req.body)
+        res.json(result)
+    }
+
+})
+
+////////////////////// Setra code fin ///////////////////////////////////////////
 
 module.exports = router

@@ -69,7 +69,7 @@
               </div>
               <div class="profil-input-div">
                 <input
-                  type="text"
+                type="text"
                   v-model="user.phone_number"
                   @change="isClientPhoneNumberValid"
                 />
@@ -80,15 +80,22 @@
                   >E-mail
                   <span class="error-input" v-show="this.errorClientMail"
                     >Email non valide</span
-                  ></label
+                  >
+                  </label
                 >
               </div>
+              
               <div class="profil-input-div">
                 <input
                   type="email"
                   v-model="user.email"
                   @change="isClientMailValid"
                 />
+              </div>
+              <div class="profil-label-div" v-show="this.errorAlreadyUsedEmail">
+                <span class="error-input" 
+                    > {{errorAlreadyUsedEmailMessage}}</span
+                  >
               </div>
               <div class="profil-label-div">
                 <label for="password">Mot de passe</label>
@@ -217,7 +224,7 @@
     </div>
     <validateProfilModification
       :modals="modals"
-      @validate="edit_name"
+      @validate="update_client_data"
       @reload="reloadPage"
       @close="closeModal"
     />
@@ -263,6 +270,8 @@ export default {
       errorClientAddress: false,
       errorClientPhoneNumber: false,
       errorClientMail: false,
+      errorAlreadyUsedEmail:false,
+      errorAlreadyUsedEmailMessage:null,
       modals: {
         displayModalModification: null,
         displayProfilModalPassword:null
@@ -279,10 +288,15 @@ export default {
         this.isA = false;
       }
     },
-    edit_name() {
-      UserServices.edit_name(this.user).then((response) => {
-        // this.user=response.data;
-        console.log(response.data);
+    update_client_data() {
+      console.log(this.user);
+      UserServices.update_client_data(this.user).then((response) => {
+        if(response.data.message){
+          this.errorAlreadyUsedEmail=true
+          this.errorAlreadyUsedEmailMessage=response.data.message;
+        }else{
+          this.errorAlreadyUsedEmail=false
+        }
       });
     },
     displayModalValidateModification() {
@@ -347,7 +361,7 @@ export default {
         this.errorClientFirstName ||
         this.errorClientMail ||
         this.errorClientPhoneNumber ||
-        this.errorClientAddress
+        this.errorClientAddress 
         ? true
         : false;
     },
