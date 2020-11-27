@@ -11,7 +11,17 @@
                 src="../assets/profil.jpg"
                 alt="profil-image"
               />
-              <input type="file" />
+              <md-field >
+                <label class="profil-input-image-label" for="profil-input-image">Photo du profil</label>
+                <md-file
+                  type="file"
+                  id="profil-input-image"
+                  name="profil-input-image"
+                  accept="image/x-png,image/gif,image/jpeg,image/tiff"
+                  v-model="user.image"
+                  @change="isImageValid"
+                />
+              </md-field>
             </div>
             <div class="profil-content">
               <div class="profil-label-div">
@@ -397,6 +407,7 @@ export default {
 /* #main-home{
   background-color: yellow;
 } */
+
 .error-input {
   color: red;
   text-align: right;
