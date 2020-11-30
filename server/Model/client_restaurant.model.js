@@ -67,7 +67,6 @@ class Client_Restaurant {
             values = [ f.grade, f.feedback, f.clientId, f.restaurantId]
         }
         else {
-            console.log(f)
             query = `UPDATE ${Client_Restaurant.tableName}
             set favorite = $1
             WHERE id_client = $2

@@ -49,6 +49,7 @@ export default {
     updateCart(){
       this.cartInfos = []
       this.computedPrice = 0
+      setTimeout(()=>{
       for ( let i = 0 ; i < Object.keys(this.$cookies.get("cart")).length;i++)
       {
         let currentRestaurant = this.$cookies.get("cart")[Object.keys(this.$cookies.get("cart"))[i]]
@@ -62,6 +63,7 @@ export default {
         this.cartInfos.push(this.$cookies.get("cart")[Object.keys(this.$cookies.get("cart"))[i]])
       }
       this.computedPrice = Math.round((this.computedPrice + Number.EPSILON) * 100) / 100
+      },0)
     }
   },
   watch: {

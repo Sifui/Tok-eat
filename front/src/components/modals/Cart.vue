@@ -1,20 +1,18 @@
 <template>
   <div id="cartModal" v-bind:style="{right:right}">
-    <h1 class="title">Vos réservations ({{totalPrice}} euros)</h1>
-    <div v-for="item in infos" v-bind:key="item.restaurantId" style="margin-bottom:40px;padding:30px;box-shadow: 0 0 4px 0 silver">
-      <h2 class="subheading " style="margin-top:0">{{ item.restaurant.name }}</h2>
+    <h1 class="title">Vos réservations ({{formatPrice(totalPrice)}} €)</h1>
+    <div v-for="item in infos" v-bind:key="item.restaurantId" style="margin-bottom:40px;padding:20px;box-shadow: 0 0 4px 0 silver">
+      <h2 class="subheading">{{ item.name }}</h2>
       <div class="item-description flex-container" v-for="offer in item.articles" v-bind:key="offer.id">
-           <select class="quantity-picker" v-on:change="updateCartInfos($event.target.value,item.restaurant.id,item.articles.indexOf(offer))">
-          <option  selected value="0">0</option>
-            <template v-for="index in 100" > 
+           <select class="quantity-picker" v-on:change="updateCartInfos($event.target.value,item.id,item.articles.indexOf(offer))" v-if="render">
+          <option  value="0">0</option>
+            <template v-for="index in 100"> 
                 <option v-if="index==offer.quantity" selected :value="index" v-bind:key="index">{{ index }}</option>
-                <option v-else :value=" index" v-bind:key="index">{{ index }}</option>
+                <option v-else :value="index" v-bind:key="index">{{ index }}</option>
             </template>
         </select>
-                 <span> {{ offer.name }}</span>  
-                 <span style="margin-left:auto"> {{offer.price}}€</span>
-     
-        
+          <span class="offer-name"> {{ offer.name }}</span>  
+          <span class="offer-price"> {{offer.price}}€</span>
       </div>
     </div>
     <div class="centered" v-if="price != 0 || totalPrice != 0">
@@ -29,13 +27,14 @@ export default {
   props: {
     display: Number,
     infos: Array,
-    price:Number
+    price:Number,
   },
   data() {
     return {
         totalPrice:0,
         zIndex:-1,
-        right:'-520px'
+        right:'-520px',
+        render:true
     };
   },
   created() {
@@ -51,13 +50,16 @@ export default {
   methods:{
       updateCartInfos(valeur,restaurant,offre)
       {
-        this.$cookies.get('cart')[restaurant]['articles'][offre]['quantity'] = valeur
         let p = this.$cookies.get('cart')
         this.totalPrice -= p[restaurant]['articles'][offre]['price'] * p[restaurant]['articles'][offre]['quantity']
         this.totalPrice += valeur * p[restaurant]['articles'][offre]['price'] 
         this.totalPrice = Math.round((this.totalPrice + Number.EPSILON) * 100) / 100
         p[restaurant]['articles'][offre]['quantity'] = valeur
         this.$cookies.set('cart',p)
+      },
+      formatPrice(num)
+      {
+        return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1 ')
       }
   },
   watch:{
@@ -71,6 +73,13 @@ export default {
     },
     price(){
       this.totalPrice = this.price
+    },
+    infos(){
+      this.render = false
+         this.$nextTick(() => {
+        this.render = true;
+      });
+      //this.updateCartInfos()
     }
   }
 };
@@ -91,13 +100,11 @@ export default {
   font-family: UberMoveText-Medium;
   font-size:1.18em;
   margin: 10px 5px 10px 0;
-  
 }
-select {
-  width: 40px;
+.offer-name{
+  margin-left:10px
 }
-.quantity-picker{
-
-  margin-right:10px
+.offer-price{
+  margin-left:auto
 }
 </style>

@@ -177,21 +177,18 @@ export default {
         `http://localhost:8081/client-restaurant/${this.$route.query.id}`
       );
       this.feedbacks = [...response.data];
-
-      if (this.feedbacks.length > 0) {
-        this.hasAlreadyFeedBack = true;
-      }
-      if (this.user) {
-        this.feedbacks = this.feedbacks.filter((el) => el.feedback);
-        if (this.feedbacks.find((e) => e.id_client == this.user.id)) {
+      this.feedbacks = this.feedbacks.filter((el) => el.feedback);
+      if ( this.user){
+      if (this.feedbacks.find((e) => e.id_client == this.user.id)) {
           this.showForm = false;
+            this.hasAlreadyFeedBack = true;
+
         }
       }
-
       response = await axios.get(
         `http://localhost:8081/client-restaurant/average/${this.$route.query.id}`
       );
-      this.restaurant.average = Math.round(response.data.average.avg);
+      this.restaurant.average = response.data.average.avg ? parseFloat(response.data.average.avg).toFixed(1) : 0;
     },
     sendFeedback() {
       if (this.grade && this.feedback.length > 0) {

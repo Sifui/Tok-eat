@@ -87,7 +87,8 @@ export default {
         this.$cookies.set("cart", {
           [this.restaurant.id]: {
             articles: filteredArticles,
-            restaurant: this.restaurant,
+            id:this.restaurant.id,
+            name:this.restaurant.name,
           },
         });
       } else {
@@ -96,10 +97,10 @@ export default {
           ...this.$cookies.get("cart"),
           [this.restaurant.id]: {
             articles: filteredArticles,
-            restaurant: this.restaurant,
+            id:this.restaurant.id,
+            name:this.restaurant.name,
           },
         });
-        console.log('cookies:',this.$cookies.get('cart'))
         let p = this.$cookies.get("cart");
         let found = false;
         for (let i = 0; i < filteredArticles.length; i++) {
@@ -138,7 +139,6 @@ export default {
     this.offersClone = [[]];
 
     for (let i = 0; i < clone.length - 1; i++) {
-      console.log(clone[i]);
       this.offersClone[this.offersClone.length - 1].push(clone[i]);
       if (clone[i].idcategory != clone[i + 1].idcategory) {
         this.offersClone.push([]);
