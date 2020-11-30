@@ -113,8 +113,17 @@ input[type="email"] {
   width: 50%;
   padding: 12px 20px;
   margin: 20px 0 10px 100px;
-  border: 1px #ccc;
-  border-radius: 4px;
+  /* border: 1px #ccc; */
+  border: solid;
+  border-width: 1px;
+  border-color: rgb(77, 112, 112);
+  border-radius: 10px;
+}
+input[type="email"]:focus {
+  outline: none;
+  box-shadow: var(--color-state-focus-shadow);
+  box-shadow: 0 0 5px rgb(39, 122, 145);
+  border: 1px solid rgba(39, 122, 145, 1);
 }
 button {
   width: 30%;
@@ -125,6 +134,12 @@ button {
   justify-content: center;
   cursor: pointer;
   color: #ffffff;
+  border: none;
+  border-radius: 10px;
+}
+button:hover {
+  cursor: pointer;
+  background-color: #57915b;
 }
 .footer {
   /* background-color: brown; */

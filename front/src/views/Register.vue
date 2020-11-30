@@ -190,6 +190,7 @@
             <md-file
               type="file"
               id="restaurantImage"
+              ref="restaurantImage"
               name="restaurantImage"
               accept="image/x-png,image/gif,image/jpeg,image/tiff"
               v-model="restaurant.image"
@@ -511,18 +512,17 @@ export default {
       }
     },
     isRestaurantImageValid() {
-      // console.log(document.getElementById('restaurantImage').value.substr(12));
-      // console.log(regImage.test(document.getElementById('restaurantImage').value.substr(12)));
+      // console.log(this.$refs.restaurantImage.$data.localValue.target.files[0].name)
       if (
         regImage.test(
-          document.getElementById("restaurantImage").value.substr(12)
+          this.$refs.restaurantImage.$data.localValue.target.files[0].name
         )
       ) {
         this.errorRestaurantImage = false;
-        console.log("Ratesh is caca");
+        // console.log("Ratesh is caca");
       } else {
         this.errorRestaurantImage = true;
-        console.log("Ratesh is pipi");
+        // console.log("Ratesh is pipi");
       }
     },
     isPasswordTheSame() {
