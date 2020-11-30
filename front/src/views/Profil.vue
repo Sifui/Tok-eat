@@ -8,11 +8,13 @@
             <div class="profil-picture">
               <img
                 class="profil-image"
-                src="../assets/profil.jpg"
+                src="@/assets/profil.jpg"
                 alt="profil-image"
               />
-              <md-field >
-                <label class="profil-input-image-label" for="profil-input-image">Photo du profil</label>
+              <md-field>
+                <label class="profil-input-image-label" for="profil-input-image"
+                  >Photo du profil</label
+                >
                 <md-file
                   type="file"
                   id="profil-input-image"
@@ -22,6 +24,13 @@
                   @change="isImageValid"
                 />
               </md-field>
+              <!-- <input
+                type="file"
+                name="profil-input-image"
+                id="profil-input-image"
+                accept="image/x-png,image/gif,image/jpeg,image/tiff"
+                @change="isImageValid"
+              /> -->
             </div>
             <div class="profil-content">
               <div class="profil-label-div">

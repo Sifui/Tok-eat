@@ -12,7 +12,7 @@ class Client {
                 email TEXT,
                 phone_number TEXT,
                 address TEXT,
-                image BYTEA,
+                image TEXT,
                 is_admin BOOLEAN,
                 password TEXT
             )

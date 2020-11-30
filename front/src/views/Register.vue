@@ -513,6 +513,7 @@ export default {
     },
     isRestaurantImageValid() {
       // console.log(this.$refs.restaurantImage.$data.localValue.target.files[0].name)
+      // console.log(this.$refs.restaurantImage)
       if (
         regImage.test(
           this.$refs.restaurantImage.$data.localValue.target.files[0].name

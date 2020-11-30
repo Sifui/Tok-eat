@@ -12,7 +12,7 @@ class Restaurant {
                 phone_number TEXT,
                 address TEXT,
                 description TEXT,
-                image BYTEA,
+                image TEXT,
                 password TEXT,
                 schedule INTEGER REFERENCES ${Schedule.tableName}(id)
             )
