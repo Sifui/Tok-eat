@@ -1,5 +1,5 @@
 <template>
-  <md-toolbar md-elevation="1">
+  <md-toolbar v-bind:style='{background:transparent}' v-bind:md-elevation="Number(this.showSearchField)">
     <div class="flex-container" style="width: 100%; flex-wrap: no-wrap">
       <div class="flex-container" id="parent">
         <img
@@ -10,7 +10,7 @@
         />
         <div class="nav-elements" v-bind:style="{ display: collapse }">
           <div style="flex: 0.45" id="navbar-search">
-            <md-field>
+            <md-field v-if="showSearchField">
               <label>Chercher un restaurant</label>
               <md-input
                 v-model="query"
@@ -33,12 +33,10 @@
               </div>
             </md-field>
           </div>
-          <div class="" v-if="!user" style="flex: 0.55; padding: 10px 0 0 0">
-            <md-button class="nav-button" v-on:click="$router.push('/login')"
-              >Connexion</md-button
-            >
+          <div  v-if="!user" style="flex: 0.55; padding: 10px 0 0 0">
+            <md-button v-bind:class="{'text-white':!showSearchField}" class="nav-button" v-on:click="$router.push('/login')">Connexion</md-button>
 
-            <md-button class="nav-button" v-on:click="$router.push('/register')"
+            <md-button v-bind:class="{'text-white':!showSearchField}" class="nav-button" v-on:click="$router.push('/register')"
               >Inscription</md-button
             >
             <md-speed-dial md-event="hover" md-direction="bottom">
@@ -47,7 +45,7 @@
               </md-speed-dial-target>
             </md-speed-dial>
           </div>
-          <div v-else style="flex: 0.55;padding: 10px 0 0 0">
+          <div v-else style="flex: 0.55; padding: 10px 0 0 0">
             <md-speed-dial md-event="hover" md-direction="bottom">
               <md-speed-dial-target v-on:click="openCart">
                 <md-icon>shopping_cart</md-icon>
@@ -98,6 +96,8 @@ export default {
   props: {
     restaurants: Array,
     display: Number,
+    showSearchField: Boolean,
+
   },
   data() {
     return {
@@ -108,6 +108,7 @@ export default {
       collapse: "flex",
       hamburgerState: "unset",
       windowWidth: window.innerWidth,
+      transparent:'transparent !important'
     };
   },
   methods: {
@@ -160,6 +161,11 @@ export default {
     },
   },
   created() {
+     if (window.scrollY < 800 && this.$route.name == "display-restaurants") {
+        this.showSearchField = false;
+      } else {
+        this.showSearchField = true;
+      }
     window.onresize = () => {
       if (window.innerWidth > 900) {
         this.collapse = "flex";
@@ -180,6 +186,23 @@ export default {
       .catch(() => {
         console.log("not connected...");
       });
+  },
+  watch: {
+    $route() {
+      if (window.scrollY < 800 && this.$route.name == "display-restaurants") {
+        this.showSearchField = false;
+      } else {
+        this.showSearchField = true;
+      }
+    },
+    showSearchField(){
+      if ( this.showSearchField)
+        this.transparent = ''
+      else{
+                this.transparent = 'transparent !important'
+
+      }
+    }
   },
 };
 </script>
@@ -203,7 +226,10 @@ export default {
   margin-top: 15px;
   margin-bottom: 15px;
 }
-
+.text-white
+{
+  color:white !important
+}
 .nav-elements {
   text-align: right;
   margin-left: 10%;
@@ -268,13 +294,14 @@ p.search-result {
   button[type="button"],
   .md-speed-dial {
     display: block;
+    color:black !important
   }
   #navbar-search {
     max-width: 300px;
   }
-  #search-result-container{
+  #search-result-container {
     position: fixed;
-    left:60%;
+    left: 60%;
   }
 }
 </style>

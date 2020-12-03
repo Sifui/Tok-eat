@@ -1,8 +1,8 @@
 <template>
   <div class="index" md-theme="black">
     <cart  :display="display" :infos="cartInfos" :price="computedPrice" style="z-index: 3" />
-    <navbar :display="display" style="z-index: 2" v-on:showcart="showCart(1)" v-on:hidecart="showCart(0)" />
-    <router-view style="padding:8% 0 5% 0; z-index: 1" v-on:updatecart="updateCart"/>
+    <navbar :showSearchField="showSearchField" :display="display" style="z-index: 2;" v-on:showcart="showCart(1)" v-on:hidecart="showCart(0)" />
+    <router-view style="z-index:1;padding-bottom:5%" v-bind:class="{router:active}" v-on:updatecart="updateCart"/>
     <footerTokEat style="z-index: 1" />
   </div>
 </template>
@@ -21,12 +21,22 @@ export default {
       display: 0,
       scrolled: false,
       cartInfos: [],
-      computedPrice: 0
+      computedPrice: 0,
+      active:true,
+      showSearchField:false
     };
   },
   created() {
-    
+    if ( this.$route.name == 'display-restaurants')
+    this.active = false
+    else
+          this.active = true
     window.addEventListener("scroll", () => {
+      if (window.scrollY < window.innerHeight && this.$route.name == "display-restaurants") {
+        this.showSearchField = false;
+      } else {
+        this.showSearchField = true;
+      }
       if (!this.scrolled) {
         this.scrolled = true;
         this.display = 0;
@@ -69,6 +79,10 @@ export default {
   watch: {
     async $route() {
       window.scrollTo(0, 0);
+    if ( this.$route.name == 'display-restaurants')
+    this.active = false
+    else
+          this.active = true
     },
   },
 };
@@ -89,5 +103,23 @@ export default {
 
 .index {
   height: 100%;
+}
+
+.router
+{
+  padding-top:8%;
+}
+
+@media screen and (max-width: 1600px) {
+
+  .router{
+    padding-top:10%
+  }
+}
+@media screen and (max-width: 1300px) {
+
+  .router{
+    padding-top:15%
+  }
 }
 </style>

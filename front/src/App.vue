@@ -11,21 +11,23 @@
       format("woff"),
     url(https://s3.amazonaws.com/uber-static/emails/2018/global/fonts/UberMove/UberMoveText-Bold.ttf)
       format("truetype");
- // font-weight: 400 !important;
-  //font-style: normal !important;
-  //  mso-font-alt: "Arial";
 }
 @font-face {
-        font-family:UberMoveText-Medium; 
-        src: url("//db.onlinewebfonts.com/t/7530190cfa46223bb3db0ba0ddde0d37.eot"); 
-        src: url("//db.onlinewebfonts.com/t/7530190cfa46223bb3db0ba0ddde0d37.eot?#iefix") format("embedded-opentype"),
-         url("//db.onlinewebfonts.com/t/7530190cfa46223bb3db0ba0ddde0d37.woff2") format("woff2"), 
-         url("//db.onlinewebfonts.com/t/7530190cfa46223bb3db0ba0ddde0d37.woff") format("woff"), 
-         url("//db.onlinewebfonts.com/t/7530190cfa46223bb3db0ba0ddde0d37.ttf") format("truetype"), 
-         url("//db.onlinewebfonts.com/t/7530190cfa46223bb3db0ba0ddde0d37.svg#Uber Move Medium") format("svg");
+  font-family: UberMoveText-Medium;
+  src: url("//db.onlinewebfonts.com/t/7530190cfa46223bb3db0ba0ddde0d37.eot");
+  src: url("//db.onlinewebfonts.com/t/7530190cfa46223bb3db0ba0ddde0d37.eot?#iefix")
+      format("embedded-opentype"),
+    url("//db.onlinewebfonts.com/t/7530190cfa46223bb3db0ba0ddde0d37.woff2")
+      format("woff2"),
+    url("//db.onlinewebfonts.com/t/7530190cfa46223bb3db0ba0ddde0d37.woff")
+      format("woff"),
+    url("//db.onlinewebfonts.com/t/7530190cfa46223bb3db0ba0ddde0d37.ttf")
+      format("truetype"),
+    url("//db.onlinewebfonts.com/t/7530190cfa46223bb3db0ba0ddde0d37.svg#Uber Move Medium")
+      format("svg");
 }
-:root{
-  font-size:16px
+:root {
+  font-size: 16px;
 }
 #app {
   -webkit-font-smoothing: antialiased;
@@ -71,7 +73,7 @@ html {
 .flex-container {
   display: flex;
 }
-.flex-wrap{
+.flex-wrap {
   flex-wrap: wrap;
 }
 .label {
@@ -83,10 +85,11 @@ html {
   background-color: rgb(185, 248, 143);
 }
 
-.background-green{
-  background-color:green !important
+.background-green {
+  background-color: green !important;
 }
-div[class^='md'], div[class*=' md']{
-    z-index: 1;
+div[class^="md"],
+div[class*=" md"] {
+  z-index: 1;
 }
 </style>

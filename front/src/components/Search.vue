@@ -139,7 +139,6 @@ export default {
 
 <style scoped>
 #searchPage {
-  padding: 9% 0 0 0;
   justify-content: space-between;
   max-width: 80%;
   margin: auto;

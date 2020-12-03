@@ -1,21 +1,11 @@
 <template>
   <div>
-    <div class="mainframe"> 
-    <div>
-      <div class="md-layout">
-        <div class="md-layout-item md-size-3">
-          <div id="slogan">
+    <div class="mainframe flex-container"> 
+     <div style="margin: auto">
+       <div id="slogan">
             Decouvrez et reservez le meilleur restaurant grâce à Tok'eat
           </div>
-        </div>
-        <div class="md-layout-item md-size-3">
-          <img
-            src="https://c.tfstatic.com/w_689,h_538,c_fill,g_auto:subject,q_auto,f_auto/tf-product/homepage-hero/fr-FR"
-            alt=""
-          />
-        </div>
-      </div>
-    </div>
+     </div>
     </div>
     <section>
     <h2 class="md-display-1 centered">Les sélections Tok'eat</h2>
@@ -157,13 +147,14 @@ export default {
   flex-wrap: wrap !important;
 }
 #slogan {
-  color: #000;
+  color: #FFFF;
   font-weight: 700;
-  font-size: 2.125rem;
+  font-size: 3.125rem;
   line-height: 3.125rem;
   padding: 0 1rem;
   position: relative;
-  top: 30%;
+  max-width: 1200px;
+  text-align: center;
 }
 .restaurant:hover {
   cursor: pointer;
@@ -179,8 +170,11 @@ export default {
 }
 
 .mainframe {
-  margin-right: 10%;
-  margin-left: 10%;
+  background: linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url('https://namburestaurant.ca/wp-content/uploads/2019/03/gst-background-placeholder-1-6.jpg') fixed;
+  background-size: cover;
+  background-repeat: no-repeat;
+  
+  height:100vh;
 }
 .md-card {
   margin: 20px;
