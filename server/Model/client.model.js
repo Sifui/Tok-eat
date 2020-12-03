@@ -82,6 +82,16 @@ class Client {
         })
         return result.rows[0]
     }
+
+    static async editImage(imageName,client){
+        const result = await PostgresStore.client.query({
+            text: `UPDATE ${Client.tableName}
+            SET image=$1
+            WHERE id=$2 RETURNING *`,
+            values: [imageName, Number(client.id)]
+        })
+        return result.rows[0]
+    }
 //////////////////  Setra code fin //////////////////////////////////////////////////////
 
     static async editEmail(client){

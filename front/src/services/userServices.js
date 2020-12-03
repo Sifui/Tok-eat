@@ -27,5 +27,9 @@ export default {
   },
   async edit_password(data) {
     return http.put("/edit_password", data);
-  }
+  },
+  async upload_profil_image(data) {
+    return http.post("/upload_profil_image", data);
+  },
+
 }

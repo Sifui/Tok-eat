@@ -8,7 +8,7 @@
             <div class="profil-picture">
               <img
                 class="profil-image"
-                src="@/assets/profil.jpg"
+                v-bind:src="user.image"
                 alt="profil-image"
               />
               <md-field>
@@ -18,10 +18,10 @@
                 <md-file
                   type="file"
                   id="profil-input-image"
+                  ref="file"
                   name="profil-input-image"
                   accept="image/x-png,image/gif,image/jpeg,image/tiff"
-                  v-model="user.image"
-                  @change="isImageValid"
+                  @change="onFileSelected"
                 />
               </md-field>
               <!-- <input
@@ -31,6 +31,9 @@
                 accept="image/x-png,image/gif,image/jpeg,image/tiff"
                 @change="isImageValid"
               /> -->
+              <div>
+                <button @click="edit_profil_image">modifier image</button>
+              </div>
             </div>
             <div class="profil-content">
               <div class="profil-label-div">
@@ -293,6 +296,7 @@ export default {
       user: null,
       maxH: "0",
       isA: false,
+      image: null,
       errorClientName: false,
       errorClientFirstName: false,
       errorClientAddress: false,
@@ -386,6 +390,41 @@ export default {
         this.boxColorErrorFunction();
       }
     },
+    onFileSelected(event) {
+      // console.log(event.target.files[0])
+      this.image = event.target.files[0];
+    },
+    returnPromiseforImageURL() {
+      let image = this.image;
+      return new Promise((res) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(image);
+        reader.onload = function (e) {
+          res(e.target.result);
+        };
+      });
+    },
+    async edit_profil_image() {
+      // console.log(this.image)
+      // console.log(this.image.name)
+      let url = await this.returnPromiseforImageURL();
+      // console.log(url);
+      const data = {
+        url,
+        name: this.image.name,
+        client: this.user,
+      };
+      // console.log('name==>');
+      // console.log(data.name);
+      UserServices.upload_profil_image(data).then((response) => {
+        // console.log(response.data);
+        let url = "http://localhost:8081/profil-images/";
+        let imageName = response.data.image;
+        let format = ".png";
+        this.user.image = url.concat(imageName, format);
+        // console.log(this.user.image);
+      });
+    },
   },
   computed: {
     computedHeight() {
@@ -403,8 +442,14 @@ export default {
   },
   async created() {
     const res = await UserServices.me();
+    let url = "http://localhost:8081/profil-images/";
+    let format = ".png";
+    res.data.toBeDeletedImage=res.data.image;
+    res.data.image = url.concat(res.data.image, format);
     this.user = res.data;
+    // console.log('--');
     // console.log(this.user)
+    // console.log('--');
   },
 };
 </script>

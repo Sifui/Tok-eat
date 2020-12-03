@@ -1,10 +1,12 @@
 const router = require("express").Router()
 const bcrypt = require('bcrypt')
+const fs = require('fs')
 const Client = require("../model/client.model")
 const Restaurant = require("../model/restaurant.model")
 const hasToBeAuthenticated = require('../middlewares/has-to-be-authenticated.middleware')
 const { client } = require("../PostgresStore")
 const Offer = require('../model/offer.model')
+const http = require('http');
 
 router.post('/login', async (req, res) => {
     // console.log('HERE ===> ' + req.body);
@@ -216,8 +218,36 @@ router.put('/update_client_data', hasToBeAuthenticated, async (req, res) => {
         const result = Client.updateClientDataExceptPassword(req.body)
         res.json(result)
     }
-
 })
+
+router.post('/upload_profil_image', hasToBeAuthenticated, async (req, res) => {
+    // console.log(req.body.client);
+    let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
+    let randomChars = ''
+    for (var i = 0; i < 5; i++) {
+        randomChars += chars.charAt(Math.floor(Math.random() * randomChars.length));
+    }
+    // let path = `./assets/profil-images/${req.body.client.toBeDeletedImage}.png`
+    // console.log(path);
+    // fs.unlink(path, (err) => {
+    //     if (err) {
+    //         console.error(err)
+    //     }
+    //     //file removed
+    // })
+
+    let randomNumber = (Math.floor(Math.random() * 999999999999999) + 11).toString();
+    let imageName = randomChars.concat(randomNumber)
+    console.log(imageName);
+    let result = await Client.editImage(imageName, req.body.client)
+
+    let base64Data = req.body.url.replace(/^data:image\/(png|jpeg);base64,/, "");
+    fs.writeFile(`./assets/profil-images/${imageName}.png`, base64Data, 'base64', function (err) {
+        console.log(err);
+    });
+    res.status(200).json(result)
+})
+
 
 ////////////////////// Setra code fin ///////////////////////////////////////////
 
