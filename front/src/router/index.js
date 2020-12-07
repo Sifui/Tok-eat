@@ -96,7 +96,12 @@ const routes = [
     path: '/logout',
     name: 'Logout',
     component: () => import(/* webpackChunkName: "about" */ '../views/Logout.vue')
-  }
+  },
+  {
+    path: '/payement',
+    name: 'Payement',
+    component: () => import(/* webpackChunkName: "about" */ '../views/Payement.vue')
+  },
 ]
 
 const router = new VueRouter({
