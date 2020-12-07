@@ -1,6 +1,6 @@
 <template>
   <div>
-    <displayOffers :me="me" :offers="offers" @reload="creatData()"/>
+    <displayOffers :me="me" :offers="offers" :categories="categories" @reload="creatData" @deleteOffer="deleteOffer" @createCategory="createCategory" @orderCategory="orderCategory"/>
   </div>
 </template>
 
@@ -17,7 +17,8 @@ export default {
     return {
       action:"",
       me:{},
-      offers:[]
+      offers:[],
+      categories:[]
     };
   },
   components: {
@@ -33,16 +34,40 @@ export default {
       let me = await userServices.me()
       this.me = me.data
     },
-    async initOffer()
+    async initOffers()
     {
       let offers = await offerServices.getOfferByIdRestaurant(this.me.id)
       this.offers = offers.data
     },
+    async initCategories()
+    {
+      this.categories = (await offerServices.getCategoryByIdRestaurant(this.me.id)).data
+    },
     async creatData()
     {
       await this.initMe()
-      await this.initOffer()
+      await this.initOffers()
+      await this.initCategories()
+    },
+    async deleteOffer(offer)
+    {
+        await offerServices.deleteOffer(offer)
+        this.creatData()
+    },
+    async createCategory(category)
+    {
+        await offerServices.creatCategory(category)
+        this.creatData()
+    },
+    async orderCategory(categories)
+    {
+        categories.forEach((category,index) => {
+            category.priority=index
+        });
+        await offerServices.updateCategories(categories)
+        this.creatData()
     }
+    
   }
 };
 </script>

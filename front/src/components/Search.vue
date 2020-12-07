@@ -27,9 +27,9 @@
             />
           </div>
           <div class="description">
-            <div class="label yellow">
+           <!-- <div class="label yellow">
               TOKEN X{{ Math.round(Math.random() * 5 + 1) }}
-            </div>
+            </div>-->
             <div class="bold">{{ item.name }}</div>
             <div class="subheading">{{ item.address }}</div>
             <div class="subheading">{{ item.phone_number }}</div>

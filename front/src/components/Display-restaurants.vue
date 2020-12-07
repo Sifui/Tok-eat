@@ -24,11 +24,11 @@
       <md-card
         v-for="(item, index) in restaurants"
         v-bind:key="index"
-        class="restaurant"
+        class="restaurant" @click.native="$router.push(`/restaurant?id=${item.id}`)"
       >
         <md-card-media>
           <img
-            v-on:click="$router.push(`/restaurant?id=${item.id}`)"
+            
             src="https://res.cloudinary.com/tf-lab/image/upload/w_600,h_337,c_fill,g_auto:subject,q_auto,f_auto/restaurant/4a0d9e27-5789-480a-ae60-37f37c4a310e/6950719d-8878-495a-8d0a-8acbecff56d3.jpg"
             alt="People"
           />
@@ -50,11 +50,11 @@
         <md-card
           v-for="(item, index) in favoritesRestaurants"
           v-bind:key="index"
-          class="restaurant"
+          class="restaurant" @click.native="$router.push(`/restaurant?id=${item.id}`)"
         >
           <md-card-media>
             <img
-              v-on:click="$router.push(`/restaurant?id=${item.id}`)"
+              
               src="https://res.cloudinary.com/tf-lab/image/upload/w_600,h_337,c_fill,g_auto:subject,q_auto,f_auto/restaurant/4a0d9e27-5789-480a-ae60-37f37c4a310e/6950719d-8878-495a-8d0a-8acbecff56d3.jpg"
               alt="People"
             />
@@ -71,12 +71,11 @@
 
 <section>
     <div
-      class="disclaimer-container"
       style="max-width: 880px; margin: auto; font-size: 0.9rem;"
     >
       <h2 class="">Êtes-vous un restaurateur ?</h2>
-      <div class="disclaimer" style="display: flex;flex-wrap:wrap">
-        <img style="flex:1;height:auto;max-height:254px"
+      <div class="flex-container flex-wrap" >
+        <img id="disclaimer-img"
           src="https://c.tfstatic.com/w_800,h_508,c_fill,g_auto:subject,q_auto,f_auto/w_400/tf-product/ContactPage/contactpage_background.png"
           alt=""
         />
@@ -193,5 +192,10 @@ export default {
 }
 section{
   margin: 100px 0 0 0
+}
+#disclaimer-img{
+  flex:1;
+  height:auto;
+  max-height:254px
 }
 </style>

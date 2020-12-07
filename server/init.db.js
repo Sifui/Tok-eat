@@ -70,7 +70,7 @@ async function createFakeData () {
         offerSample = generateOffer(restaurantInDb.id,3)
         
         category = await Category.create({
-            name:"other",
+            name:"autre",
             priority:0,
             idRestaurant:restaurantInDb.id
         })
