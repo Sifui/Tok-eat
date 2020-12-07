@@ -224,7 +224,7 @@ router.post('/upload_profil_image', hasToBeAuthenticated, async (req, res) => {
     // console.log(req.body.client);
     let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
     let randomChars = ''
-    for (var i = 0; i < 5; i++) {
+    for (var i = 0; i < 15; i++) {
         randomChars += chars.charAt(Math.floor(Math.random() * randomChars.length));
     }
     // let path = `./assets/profil-images/${req.body.client.toBeDeletedImage}.png`

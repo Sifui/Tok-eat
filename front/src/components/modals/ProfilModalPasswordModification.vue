@@ -24,7 +24,7 @@
               />
             </div>
             <div class="label-div">
-              <button @click="showPassword">cacher/montrer</button>
+              <button @click="showPassword"  ><i class="fas fa-eye"></i> / <i class="fas fa-eye-slash"></i></button>
             </div>
             <div class="label-div">
               <p class="error" v-show="errorPasswordCheck">

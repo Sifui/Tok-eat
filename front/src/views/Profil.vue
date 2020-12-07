@@ -31,8 +31,19 @@
                 accept="image/x-png,image/gif,image/jpeg,image/tiff"
                 @change="isImageValid"
               /> -->
-              <div>
-                <button @click="edit_profil_image">modifier image</button>
+              <div class="profil-picture-button-div">
+                <button
+                  class="profil-picture-button-validate"
+                  @click="edit_profil_image"
+                >
+                  modifier
+                </button>
+                <button
+                  class="profil-picture-button-cancel"
+                  @click="cancel_edit_profil_image"
+                >
+                  annuler
+                </button>
               </div>
             </div>
             <div class="profil-content">
@@ -129,7 +140,8 @@
                   class="profil-but-password"
                   @click="displayModalPasswordModification"
                 >
-                  Modification du mot de passe
+                  <i class="fas fa-cog"></i>
+                   Modification du mot de passe
                 </button>
               </div>
               <div
@@ -425,6 +437,9 @@ export default {
         // console.log(this.user.image);
       });
     },
+    cancel_edit_profil_image() {
+      this.reloadPage();
+    },
   },
   computed: {
     computedHeight() {
@@ -444,7 +459,7 @@ export default {
     const res = await UserServices.me();
     let url = "http://localhost:8081/profil-images/";
     let format = ".png";
-    res.data.toBeDeletedImage=res.data.image;
+    res.data.toBeDeletedImage = res.data.image;
     res.data.image = url.concat(res.data.image, format);
     this.user = res.data;
     // console.log('--');
@@ -631,6 +646,64 @@ export default {
   cursor: pointer;
   background-color: #525252;
   color: #e78f8f;
+}
+
+.profil-picture-button-div {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.profil-picture-button-validate {
+  width: 25%;
+  height: 25px;
+  border-radius: 5px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  background-color: #ffffff;
+  color: #6db672;
+  border-width: thin;
+  border-color: #6db672;
+  font-size: 70%;
+  margin-right: 5%;
+}
+.profil-picture-button-validate:hover {
+  width: 28%;
+  height: 28px;
+  border-radius: 5px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  background-color: #57915b;
+  color: rgb(255, 255, 255);
+  border: none;
+  font-size: 70%;
+  margin-right: 5%;
+  cursor: pointer;
+}
+.profil-picture-button-cancel {
+  width: 25%;
+  height: 25px;
+  border-radius: 5px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  background-color: #ffffff;
+  color: #b94242;
+  border-width: thin;
+  border-color: #b94242;
+  font-size: 70%;
+  /* border-color: #0c0c0c; */
+}
+.profil-picture-button-cancel:hover {
+  width: 28%;
+  height: 28px;
+  border-radius: 5px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  background-color: #d62a2a;
+  color: rgb(255, 255, 255);
+  border: none;
+  font-size: 70%;
+  cursor: pointer;
 }
 
 .separator {
