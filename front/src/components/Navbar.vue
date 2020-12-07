@@ -162,9 +162,9 @@ export default {
   },
   created() {
      if (window.scrollY < 800 && this.$route.name == "display-restaurants") {
-        this.showSearchField = false;
+        this.transparent = 'transparent !important';
       } else {
-        this.showSearchField = true;
+        this.transparent = '';
       }
     window.onresize = () => {
       if (window.innerWidth > 900) {
@@ -188,13 +188,6 @@ export default {
       });
   },
   watch: {
-    $route() {
-      if (window.scrollY < 800 && this.$route.name == "display-restaurants") {
-        this.showSearchField = false;
-      } else {
-        this.showSearchField = true;
-      }
-    },
     showSearchField(){
       if ( this.showSearchField)
         this.transparent = ''

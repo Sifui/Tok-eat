@@ -1,6 +1,6 @@
 <template>
   <div class="index" md-theme="black">
-    <cart  :display="display" :infos="cartInfos" :price="computedPrice" style="z-index: 3" />
+    <cart  :display="display" :infos="cartInfos" :price="computedPrice" style="z-index: 3" v-on:clearcookie="$cookies.set('cart',{});cartInfos=[]" />
     <navbar :showSearchField="showSearchField" :display="display" style="z-index: 2;" v-on:showcart="showCart(1)" v-on:hidecart="showCart(0)" />
     <router-view style="z-index:1;padding-bottom:5%" v-bind:class="{router:active}" v-on:updatecart="updateCart"/>
     <footerTokEat style="z-index: 1" />
@@ -27,12 +27,18 @@ export default {
     };
   },
   created() {
+     if (window.scrollY < (window.innerHeight*100)/100 && this.$route.name == "display-restaurants") {
+        this.showSearchField = false;
+      } else {
+        this.showSearchField = true;
+      }
     if ( this.$route.name == 'display-restaurants')
     this.active = false
     else
           this.active = true
     window.addEventListener("scroll", () => {
-      if (window.scrollY < window.innerHeight && this.$route.name == "display-restaurants") {
+
+      if (window.scrollY < (window.innerHeight*100)/100 && this.$route.name == "display-restaurants") {
         this.showSearchField = false;
       } else {
         this.showSearchField = true;
@@ -83,7 +89,14 @@ export default {
     this.active = false
     else
           this.active = true
+
+          if (window.scrollY < 800 && this.$route.name == "display-restaurants") {
+        this.showSearchField = false;
+      } else {
+        this.showSearchField = true;
+      }
     },
+    
   },
 };
 </script>

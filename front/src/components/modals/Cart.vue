@@ -18,6 +18,9 @@
     <div class="centered" v-if="price != 0 || totalPrice != 0">
       <md-button> Procéder au paiement</md-button>
     </div>
+     <div class="centered" v-if="$cookies.get('cart')">
+      <md-button v-on:click="$emit('clearcookie')"> Vider le panier</md-button>
+    </div>
   </div>
 </template>
 

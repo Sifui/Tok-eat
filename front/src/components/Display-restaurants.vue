@@ -173,6 +173,7 @@ export default {
   background: linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url('https://namburestaurant.ca/wp-content/uploads/2019/03/gst-background-placeholder-1-6.jpg') fixed;
   background-size: cover;
   background-repeat: no-repeat;
+  background-position: center;
   
   height:100vh;
 }
