@@ -30,7 +30,7 @@ class Client_Restaurant {
     }
     static async get(restaurant_id) {
         const result = await PostgresStore.client.query({
-            text: `SELECT first_name,last_name,feedback,grade,grade_date,favorite  from ${Client_Restaurant.tableName} as cl,${Restaurant.tableName} as r,client as c  
+            text: `SELECT id_client,first_name,last_name,feedback,grade,grade_date,favorite  from ${Client_Restaurant.tableName} as cl,${Restaurant.tableName} as r,client as c  
             WHERE r.id = cl.id_restaurant
             AND cl.id_client = c.id
                 AND r.id = $1
@@ -57,17 +57,16 @@ class Client_Restaurant {
         let values = []
         if (f.feedback) {
             query = `UPDATE ${Client_Restaurant.tableName}
-            set favorite = $1,
-            grade = $2,
-            feedback = $3
-            WHERE id_client = $4
-            and id_restaurant = $5
+             set grade = $1,
+            feedback = $2
+            WHERE id_client = $3
+            and id_restaurant = $4
             RETURNING *
                 `
-            values = [f.favorite, f.grade, f.feedback, f.clientId, f.restaurantId]
+            
+            values = [ f.grade, f.feedback, f.clientId, f.restaurantId]
         }
         else {
-            console.log(f)
             query = `UPDATE ${Client_Restaurant.tableName}
             set favorite = $1
             WHERE id_client = $2

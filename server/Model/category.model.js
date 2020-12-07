@@ -35,6 +35,15 @@ class Category {
         })
         return result.rows
     }
+    static async get (categoryId) {
+        const result = await PostgresStore.client.query({
+            text: `SELECT id,name,priority,id_restaurant FROM ${Category.tableName}
+            WHERE id = $1`,
+            values: [categoryId]
+        })
+        return result.rows[0]
+    }
+
 
     static async update(category){
         const result = await PostgresStore.client.query({

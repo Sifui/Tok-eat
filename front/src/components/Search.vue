@@ -5,11 +5,11 @@
         <div class="pagination-item">&laquo;</div>
         <div
           v-on:click="test(i - 1)"
-          class="pagination-item"
           v-for="i in results.length > 3 ? parseInt(results.length / 3) + 1 : 1"
-          v-bind:key="i"
-        >
+          v-bind:key="i" v-bind:class="{active:activeItem[i-1]}" class="pagination-item">
           {{ i }}
+         
+          
         </div>
 
         <div class="pagination-item">&raquo;</div>
@@ -27,7 +27,7 @@
             />
           </div>
           <div class="description">
-           <!-- <div class="label yellow">
+            <!-- <div class="label yellow">
               TOKEN X{{ Math.round(Math.random() * 5 + 1) }}
             </div>-->
             <div class="bold">{{ item.name }}</div>
@@ -36,8 +36,6 @@
           </div>
         </div>
       </div>
-
-      
     </div>
     <div id="map" ref="mapElement" style="width: 500px"></div>
   </div>
@@ -55,6 +53,7 @@ export default {
   props: {},
   data() {
     return {
+      activeItem: [true],
       results: [],
       temp: [],
       map: null,
@@ -67,6 +66,8 @@ export default {
     async $route() {
       this.coords = [];
       this.results = [];
+                  this.activeItem= [true]
+
       for (const m of this.markers) {
         this.map.removeLayer(m);
       }
@@ -79,16 +80,12 @@ export default {
     test(index) {
       // (0,3) (3,6) (6,9) ...
       this.pagination = index;
-      console.log(this.pagination);
       this.temp = this.results.slice(3 * index, 3 * index + 3);
-      for ( let i = 0 ; i < document.getElementsByClassName('pagination-item').length;i++)
-      {
-        document.getElementsByClassName('pagination-item')[i].className= "pagination-item"
-      }
-      document.getElementsByClassName('pagination-item')[index+1].className+= " active"
-    },
+            this.activeItem= []
+
+      this.activeItem[index] = true
+     },
     flyToCoords(index) {
-      console.log(index);
       if (!(this.coords[index] && this.markers[index])) return;
       this.map.flyTo(this.coords[index]);
       this.markers[index].openPopup();
@@ -116,7 +113,7 @@ export default {
     },
   },
   mounted() {
-    
+   
     this.map = new L.map(this.$refs["mapElement"]).setView(
       [48.8534, 2.3488],
       12
@@ -130,7 +127,11 @@ export default {
       this.map.invalidateSize();
     }, 500);
     this.initData();
-            document.getElementsByClassName('pagination-item')[1].className+= " active"
+ this.activeItem[0] = true
+    for ( let i = 1 ; i <  parseInt(this.results.length / 3) + 1 ;i++ )
+    {
+      this.activeItem[i] =false
+    }
 
   },
 };
@@ -138,12 +139,12 @@ export default {
 
 <style scoped>
 #searchPage {
-  padding: 9% 0 0 0;
   justify-content: space-between;
   max-width: 80%;
   margin: auto;
 }
 #map {
+  z-index: 0;
   flex: 1;
   max-height: 75vh;
   min-height: 75vh;
@@ -191,9 +192,9 @@ img {
 }
 
 .pagination .pagination-item.active {
-  background-color: #4CAF50;
+  background-color: #4caf50;
   color: white;
-  border: 1px solid #4CAF50;
+  border: 1px solid #4caf50;
 }
 
 .pagination .pagination-item:hover:not(.active) {

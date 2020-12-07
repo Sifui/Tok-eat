@@ -1,5 +1,5 @@
 <template>
-  <div class="conteneur">
+  <div class="conteneur flex-container">
     <div id="preview">
       <div id="restaurant-image">
         <img
@@ -7,7 +7,7 @@
           alt="People"
         />
       </div>
-      <div id="reviewSection">
+      <div id="reviewSection" class="flex-container">
         <a href="#menus">Menus</a>
         <a href="#promos">Promos</a>
         <a herf="#feedbacks">Avis</a>
@@ -15,23 +15,29 @@
       </div>
       <div id="description">
         <h2>Carte du restaurant</h2>
-        <div v-for="(item,index) in offers" v-bind:key="index" class="offer">
-
-          <div class="offer-name">{{item.name}}</div>
-          <div class="offer-price">{{item.price}} €</div>
+        <div v-for="(item, index) in offers.slice(0,4)" v-bind:key="index" class="offer flex-container">
+          <div class="offer-name">{{ item.name }}</div>
+          <div class="offer-price">{{ item.price }} €</div>
         </div>
-        <br>
+        <br />
         <h2>Description</h2>
         <p class="bold" id="description-content">
-          Chef Valentin Thompson. Tutiac, les premiers vignerons en France à
-          ouvrir leur bistro ! épicuriens venez profiter de la cuisine gourmande
-          du Chef et laissez vous guider par notre Chef Sommelier
+          {{ restaurant.description }}
         </p>
       </div>
       <div class="centered">
-        <md-button class="danger" v-on:click="$router.push({name:'Offers',params:{offers,restaurantId:parseInt($route.query.id)}})">Consulter les repas</md-button>
+        <md-button
+          class="danger"
+          v-on:click="
+            $router.push({
+              name: 'Offers',
+              params: { offers, restaurant: restaurant },
+            })
+          "
+          >Consulter les repas</md-button
+        >
       </div>
-      <div id="form">
+      <div id="form" v-if="showForm">
         <select
           name="notes"
           id="selection-note"
@@ -66,14 +72,22 @@
           class="feedback-container"
         >
           <div v-if="item.feedback">
-            <div class="header">
+            <div class="header flex-container">
               <div><img width="40" src="../assets/profil.jpg" alt="" /></div>
               <div class="metadata-wrapper">
                 <div class="metadata">
                   <div class="author">
                     {{ item.first_name }} {{ item.last_name }}
                   </div>
-                  <div class="date">{{ item.grade_date.substr(0,10).split('-').reverse().join('/') }}</div>
+                  <div class="date">
+                    {{
+                      item.grade_date
+                        .substr(0, 10)
+                        .split("-")
+                        .reverse()
+                        .join("/")
+                    }}
+                  </div>
                 </div>
                 <div class="grade">{{ item.grade }}/5</div>
               </div>
@@ -87,16 +101,18 @@
     </div>
     <div id="side-description">
       <md-card>
-        <md-card-header style="display: flex; justify-content: space-between">
-          <h1 class="title" id="name"></h1>
-          <h2 id="grade"></h2>
+        <md-card-header class="flex-container" style="justify-content: space-between">
+          <h1 class="title" id="name">{{ restaurant.name }}</h1>
+          <h2 id="grade">
+            {{ restaurant.average }}/<span style="font-size: 16px">5</span>
+          </h2>
         </md-card-header>
 
         <md-card-content>
-          <div class="subheading" id="address"></div>
-          <div class="subheading" id="phone"></div>
+          <div class="subheading" id="address">{{ restaurant.address }}</div>
+          <div class="subheading" id="phone">{{ restaurant.phone }}</div>
           <br />
-          <div id="addFavorite">
+          <div id="addFavorite" v-if="user">
             <label for="favorite">
               Ajouter à vos favoris
               <input
@@ -123,14 +139,23 @@ export default {
   props: {},
   data() {
     return {
-      user:null,
+      showForm: true,
+      user: null,
       grade: 1,
       feedback: "",
       feedbacks: [],
       favorite: false,
       hasAlreadyFeedBack: false,
       average: 0,
-      offers:[]
+      offers: [],
+      restaurant: {
+        id:null,
+        name: null,
+        description: null,
+        address: null,
+        phone: null,
+        average: null,
+      },
     };
   },
   methods: {
@@ -138,39 +163,37 @@ export default {
       let response = await axios.get(
         `http://localhost:8081/restaurants/${this.$route.query.id}`
       );
-      if ( !response.data){
-        this.$router.push({path:'/'})
-        return
+      if (!response.data) {
+        this.$router.push({ path: "/" });
+        return;
       }
-      document.getElementById("name").innerText = response.data.name;
-      document.getElementById("description-content").innerText = response.data.description;
-      document.getElementById("address").innerText = response.data.address;
-      document.getElementById("phone").innerText = response.data.phone_number;
+      this.restaurant.id = response.data.id;
+      this.restaurant.name = response.data.name;
+      this.restaurant.description = response.data.description;
+      this.restaurant.address = response.data.address;
+      this.restaurant.phone = response.data.phone_number;
 
       response = await axios.get(
         `http://localhost:8081/client-restaurant/${this.$route.query.id}`
       );
       this.feedbacks = [...response.data];
-
-      if (this.feedbacks.length > 0) {
-        this.hasAlreadyFeedBack = true;
-        if (this.feedbacks[0].feedback)
-        if ( document.getElementById("form"))
-          document.getElementById("form").style.display = "none";
-      }
       this.feedbacks = this.feedbacks.filter((el) => el.feedback);
+      if ( this.user){
+      if (this.feedbacks.find((e) => e.id_client == this.user.id)) {
+          this.showForm = false;
+            this.hasAlreadyFeedBack = true;
 
+        }
+      }
       response = await axios.get(
         `http://localhost:8081/client-restaurant/average/${this.$route.query.id}`
       );
-      this.average = Math.round(response.data.average.avg);
-      document.getElementById(
-        "grade"
-      ).innerHTML = `${this.average}/<span style="font-size:16px">5</span>`;
+      this.restaurant.average = response.data.average.avg ? parseFloat(response.data.average.avg).toFixed(1) : 0;
     },
     sendFeedback() {
       if (this.grade && this.feedback.length > 0) {
         const idRestaurant = this.$route.query.id;
+        this.showForm = false;
         if (this.hasAlreadyFeedBack) {
           axios
             .put(
@@ -180,12 +203,11 @@ export default {
                 restaurantId: idRestaurant,
                 grade: this.grade,
                 feedback: this.feedback,
-                favorite: this.favorite,
               }
             )
             .then((response) => {
               this.feedbacks.unshift({
-                clientId:  this.user.id,
+                clientId: this.user.id,
                 restaurantId: idRestaurant,
                 grade: response.data.grade,
                 grade_date: response.data.grade_date,
@@ -193,13 +215,9 @@ export default {
                 favorite: response.data.favorite,
               });
             });
-                    if ( document.getElementById("form"))
-
-          document.getElementById("form").style.display = "none";
 
           return;
         }
-        document.getElementById("form").style.display = "none";
         axios
           .post("http://localhost:8081/client-restaurant", {
             clientId: this.user.id,
@@ -222,15 +240,18 @@ export default {
       const idRestaurant = this.$route.query.id;
 
       if (this.hasAlreadyFeedBack) {
-        console.log('modification........',this.favorite)
-        axios.put(
-          `http://localhost:8081/client-restaurant/${this.$route.query.id}`,
-          {
-            favorite: this.favorite,
-            clientId:  this.user.id,
-            restaurantId: idRestaurant,
-          }
-        ).then((r)=>{console.log(r)}).catch((e)=>{console.log('error',e)});
+        axios
+          .put(
+            `http://localhost:8081/client-restaurant/${this.$route.query.id}`,
+            {
+              favorite: this.favorite,
+              clientId: this.user.id,
+              restaurantId: idRestaurant,
+            }
+          )
+          .catch((e) => {
+            console.log("error", e);
+          });
       } else {
         axios.post("http://localhost:8081/client-restaurant", {
           clientId: this.user.id,
@@ -246,26 +267,22 @@ export default {
   },
   async mounted() {
     UserServices.me()
-    .then((user)=>{
-      console.log('vous etes deja connecté !')
-      this.user =user.data
-    })
-    .
-    catch(() => {
-      const addFavorite = document.getElementById("addFavorite");
-      const form = document.getElementById("form");
-      form.parentNode.removeChild(form);
-      addFavorite.parentNode.removeChild(addFavorite);
-    });
-    OfferServices.getOfferByIdRestaurant(this.$route.query.id).then((offers)=>{
-      console.log(offers)
-      this.offers = [...offers.data]
-    })
+      .then((user) => {
+        console.log("vous etes deja connecté !");
+        this.user = user.data;
+      })
+      .catch(() => {
+        this.showForm = false
+      });
+    OfferServices.getOfferByIdRestaurant(this.$route.query.id).then(
+      (offers) => {
+        this.offers = [...offers.data];
+      }
+    );
   },
   watch: {
     async $route() {
       this.hasAlreadyFeedBack = false;
-      document.getElementById("form").style.display = "block";
       await this.initData();
     },
   },
@@ -274,12 +291,10 @@ export default {
 
 <style scoped>
 .conteneur {
-  display: flex;
   max-width: 950px;
   margin: auto;
 }
-.conteneur > div {
-}
+
 .feedback-container {
   border: 1px solid silver;
   padding: 30px;
@@ -288,7 +303,6 @@ export default {
 }
 
 .header {
-  display: flex;
   flex-direction: row;
 }
 
@@ -297,11 +311,9 @@ export default {
   flex: 1;
 }
 .metadata-wrapper {
-  display: flex;
   margin-left: 10px;
   flex: 1;
 }
-
 
 #preview {
   flex: 60%;
@@ -312,20 +324,17 @@ export default {
 }
 #reviewSection {
   font-weight: 500;
-  display: flex;
   justify-content: space-between;
   padding: 20px;
 }
 #reviewSection a {
   color: inherit;
 }
-.offer{
-  display:flex;
+.offer {
   margin-bottom: 20px;
 }
-.offer .offer-name{
-  border-bottom : 1px  dotted;
-  flex:1
+.offer .offer-name {
+  border-bottom: 1px dotted;
+  flex: 1;
 }
-
 </style>

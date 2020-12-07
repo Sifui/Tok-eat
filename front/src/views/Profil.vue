@@ -1,6 +1,5 @@
 <template>
   <div id="main-home">
-    <navbar />
     <div id="home">
       <Tabs>
         <Tab name="profil" selected="true">
@@ -281,10 +280,8 @@
 
 <script>
 // @ is an alias to /src
-import navbar from "../components/Navbar";
 import Tab from "@/components/Tab";
 import Tabs from "@/components/Tabs";
-import footerTokEat from "@/components/Footer";
 import UserServices from "../services/userServices";
 import validateProfilModification from "@/components/modals/ProfilModalValidateModification";
 import ProfilModalPassword from "@/components/modals/ProfilModalPasswordModification";
@@ -297,8 +294,6 @@ export default {
   components: {
     Tab,
     Tabs,
-    navbar,
-    footerTokEat,
     validateProfilModification,
     ProfilModalPassword,
   },
