@@ -42,16 +42,20 @@
         <span class="offer-price"> {{ offer.price }}€</span>
       </div>
     </div>
-    <div class="centered" v-if="price != 0 || totalPrice != 0">
-      <md-button @click="payement"> Procéder au paiement</md-button>
+    <div class="centered" v-if="totalPrice != 0">
+      <md-button v-on:click="goToPayement"> Procéder au paiement</md-button>
     </div>
-    <div class="centered" v-if="$cookies.get('cart')">
-      <md-button v-on:click="$emit('clearcookie')"> Vider le panier</md-button>
+     <div class="centered" v-if="totalPrice != 0">
+      <md-button v-on:click="$emit('clearcookie');totalPrice=0"> Vider le panier</md-button>
     </div>
   </div>
 </template>
 
 <script>
+import axios from 'axios'
+
+      var stripe = window.Stripe('pk_test_51HvkwYLjW8CJv9Axomn1cYBMLuvJ6hVBb002isuzWJTJ7beBM347sA1AZhVi4skpiiHmrl3wL1OPQ2J0InSSSF01004lSOoVFE');
+
 export default {
   name: "Cart",
   props: {
@@ -80,7 +84,8 @@ export default {
     this.totalPrice =
       Math.round((this.totalPrice + Number.EPSILON) * 100) / 100;
   },
-  methods: {
+    
+  methods:{
     updateCartInfos(valeur, restaurant, offre) {
       let p = this.$cookies.get("cart");
       this.totalPrice -=
@@ -98,6 +103,32 @@ export default {
     payement() {
       this.$router.push("/payement")
     },
+    goToPayement(){
+      console.log(this.totalPrice)
+      if ( !this.totalPrice)
+        return
+      console.log('infos',this.infos)
+        axios.post('http://localhost:8081/payement',{cart:this.infos}).then(function(session) {
+          console.log(session)
+          return stripe.redirectToCheckout({ sessionId: session.data.id });
+        }).catch(()=>{
+          console.log('error lors de la creation de la session de paiement')
+        })
+    },
+      updateCartInfos(valeur,restaurant,offre)
+      {
+        let p = this.$cookies.get('cart')
+        this.totalPrice -= p[restaurant]['articles'][offre]['price'] * p[restaurant]['articles'][offre]['quantity']
+        this.totalPrice += valeur * p[restaurant]['articles'][offre]['price'] 
+        this.totalPrice = Math.round((this.totalPrice + Number.EPSILON) * 100) / 100
+        p[restaurant]['articles'][offre]['quantity'] = valeur
+        this.$cookies.set('cart',p)
+        this.$emit('updatecartinfos')
+      },
+      formatPrice(num)
+      {
+        return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1 ')
+      }
   },
   watch: {
     display() {
