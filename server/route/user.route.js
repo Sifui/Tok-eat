@@ -4,10 +4,9 @@ const fs = require('fs')
 const Client = require("../model/client.model")
 const Restaurant = require("../model/restaurant.model")
 const hasToBeAuthenticated = require('../middlewares/has-to-be-authenticated.middleware')
-const { client } = require("../PostgresStore")
 const Offer = require('../model/offer.model')
-const http = require('http');
-
+const {private_key} = require('../server.config').stripe
+const stripe = require('stripe')(private_key)
 router.post('/login', async (req, res) => {
     const client = await Client.findByEmail(req.body.email)
 
@@ -197,6 +196,7 @@ router.put('/edit_address', hasToBeAuthenticated, async (req, res) => {
     }
 })
 
+
 /////////////// Setra code début ////////////////////////////////////////
 
 router.put('/edit_password', hasToBeAuthenticated, async (req, res) => {
@@ -250,5 +250,36 @@ router.post('/upload_profil_image', hasToBeAuthenticated, async (req, res) => {
 
 
 ////////////////////// Setra code fin ///////////////////////////////////////////
+router.post('/payement',async(req,res)=>{
 
+    console.log('payement',req.body.cart)
+    let items = []
+    for ( let i = 0 ; i < req.body.cart.length;i++)
+    {
+        let restaurant = req.body.cart[i]
+        for ( let j = 0 ; j < restaurant.articles.length;j++)
+        {
+            if (parseInt(restaurant.articles[j].quantity)>0)
+                items.push({
+                    price_data: {
+                        currency: 'eur',
+                        product_data: {
+                        name: restaurant.articles[j].name,
+                        },
+                        unit_amount: Math.floor(restaurant.articles[j].price)*100,
+                    },
+                    quantity: restaurant.articles[j].quantity,
+                })
+        }
+    }
+    console.log('items:',items)
+  const session = await stripe.checkout.sessions.create({
+    payment_method_types: ['card'],
+    line_items: items,
+    mode: 'payment',
+    success_url: 'http://localhost:8080/success',
+    cancel_url: 'http://localhost:8080',
+  });
+  res.json({ id: session.id });
+})
 module.exports = router
