@@ -31,17 +31,39 @@ router.delete('/offer', hasToBeAuthenticated, async (req,res)=>{
     res.json(result)
 })
 
-router.put('/offer', hasToBeAuthenticated, async (req,res)=>{
-    const result = await Offer.modif(req.body)
+router.delete('/category', hasToBeAuthenticated, async (req,res)=>{
+
+    const result = await Category.delete(req.body.id)
+    res.json(result)
+})
+
+router.put('/offers', hasToBeAuthenticated, async (req,res)=>{
+    let result = []
+    for(let offer of req.body.offers)
+    {
+        result.push(await Offer.modif(offer))
+    }
     res.json(result)
 })
 
 router.put('/categories', hasToBeAuthenticated, async (req,res)=>{
     let result = []
-    for(offer of req.body.categories)
+    for(category of req.body.categories)
     {
-        result.push(await Category.update(offer))
+        result.push(await Category.update(category))
     }
+    res.json(result)
+})
+
+router.put('/category', hasToBeAuthenticated, async (req,res)=>{
+
+    let result = await Category.update(req.body.category)
+    res.json(result)
+})
+
+router.put('/offer', hasToBeAuthenticated, async (req,res)=>{
+
+    let result = await Offer.modif(req.body.offer)
     res.json(result)
 })
 

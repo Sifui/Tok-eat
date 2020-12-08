@@ -3,17 +3,25 @@
         <draggable v-model="listOffers" ghost-class="ghost" :group="{ name: 'offers', pull: 'clone' }">
             <transition-group type ="transition" name="flip-list">
                 <div class="sortable" :id="offer.id" v-for="offer in listOffers" :key="offer.id">
-                    name: {{offer.name}}<br>
-                    priority: {{offer.priority}}<br>
-                    idcategory: {{offer.idcategory}}
+                    {{offer.name}}<br>
+                    {{offer.description}}<br>
+                    {{offer.price}}€
+                    <div class="flex">
+                        <updateOffer :oldOffer="offer" @updateOffer="updateOffer"/>
+                        <deleteOffer :data="offer" :deleteType="'offer'" @deleteOffer="deleteOffer"/>
+                    </div>
                 </div>
+                <p v-if="listOffers.length==0" key="4711">Déplacer une offre ici</p>
             </transition-group>
         </draggable>
   </div>
 </template>
 
 <script>
-import draggable from 'vuedraggable'
+
+import deleteOffer from './modals/DeleteConfirm.vue';
+import updateOffer from './modals/UpdateOffer.vue';
+import draggable from 'vuedraggable';
 export default {
     name:'offersInDisplay',
     props:
@@ -23,15 +31,14 @@ export default {
     },
     components: 
     {
-        draggable
+        draggable,
+        deleteOffer,
+        updateOffer
     },
     data() {
         return {
             categorieStart:null
         };
-    },
-    created() {
-        this.categorieStart = JSON.parse(JSON.stringify(this.category))
     },
     computed: {
         listOffers: {
@@ -40,23 +47,31 @@ export default {
                 return this.offers 
             },
             set (offers) {
-                //console.log(offer)
-                //console.log(this.category)
                 let data = {
                     offers:offers,
                     category:this.category,
-                    categoryStart:this.categorieStart
                 }
                 this.$emit("orderOffer",data)
-                //this.categorieStart = this.category
-            }
+            },
         }
     },
+    methods:{
+        deleteOffer(offer)
+        {
+            this.$emit("deleteOffer",offer)
+        },
+        updateOffer(offer)
+        {
+            this.$emit("updateOffer",offer)
+        }
+    }
 }
 </script>
 
 <style lang="scss" scoped>
-
+.flex{
+    display: flex;
+}
 .sortable{
     width: 100%;
     background:white;
