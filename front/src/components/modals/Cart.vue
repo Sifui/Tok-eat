@@ -86,20 +86,20 @@ export default {
   },
     
   methods:{
-    updateCartInfos(valeur, restaurant, offre) {
-      let p = this.$cookies.get("cart");
-      this.totalPrice -=
-        p[restaurant]["articles"][offre]["price"] *
-        p[restaurant]["articles"][offre]["quantity"];
-      this.totalPrice += valeur * p[restaurant]["articles"][offre]["price"];
-      this.totalPrice =
-        Math.round((this.totalPrice + Number.EPSILON) * 100) / 100;
-      p[restaurant]["articles"][offre]["quantity"] = valeur;
-      this.$cookies.set("cart", p);
-    },
-    formatPrice(num) {
-      return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 ");
-    },
+    // updateCartInfos(valeur, restaurant, offre) {
+    //   let p = this.$cookies.get("cart");
+    //   this.totalPrice -=
+    //     p[restaurant]["articles"][offre]["price"] *
+    //     p[restaurant]["articles"][offre]["quantity"];
+    //   this.totalPrice += valeur * p[restaurant]["articles"][offre]["price"];
+    //   this.totalPrice =
+    //     Math.round((this.totalPrice + Number.EPSILON) * 100) / 100;
+    //   p[restaurant]["articles"][offre]["quantity"] = valeur;
+    //   this.$cookies.set("cart", p);
+    // },
+    // formatPrice(num) {
+    //   return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 ");
+    // },
     payement() {
       this.$router.push("/payement")
     },
