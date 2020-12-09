@@ -44,6 +44,8 @@ router.put('/edit', hasToBeAuthenticated, async (req,res)=>{
     else {
         res.json(result)
     }
+})
+
 router.delete('/category', hasToBeAuthenticated, async (req,res)=>{
 
     const result = await Category.delete(req.body.id)
@@ -81,4 +83,3 @@ router.put('/offer', hasToBeAuthenticated, async (req,res)=>{
 })
 
 module.exports = router
-
