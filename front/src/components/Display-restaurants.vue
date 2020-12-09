@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="mainframe flex-container"> 
+    <div class="mainframe flex-container" v-bind:style="{background}"> 
      <div style="margin: auto">
        <div id="slogan">
             Decouvrez et reservez le meilleur restaurant grâce à Tok'eat
@@ -112,9 +112,13 @@ export default {
       user: null,
       favoritesRestaurants: [],
       restaurants: [],
+      background:`linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url('https://namburestaurant.ca/wp-content/uploads/2019/03/gst-background-placeholder-1-6.jpg')`
     };
   },
   created() {
+    setTimeout(()=>{
+      this.background = `linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url('https://www.gettyimages.fr/gi-resources/images/500px/983794168.jpg')`
+    },3000)
     axios
       .get("http://localhost:8081/client-restaurant/top-rated")
       .then((response) => {
@@ -170,12 +174,12 @@ export default {
 }
 
 .mainframe {
-  background: linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url('https://namburestaurant.ca/wp-content/uploads/2019/03/gst-background-placeholder-1-6.jpg') fixed;
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
-  
+  background-attachment: fixed;
   height:100vh;
+  transition:background 10s ease-in-out;
 }
 .md-card {
   margin: 20px;
