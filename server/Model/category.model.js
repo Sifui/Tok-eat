@@ -56,6 +56,15 @@ class Category {
         return result.rows[0]
     }
 
+    static async delete(id){
+        const result = await PostgresStore.client.query({
+            text: `DELETE FROM ${Category.tableName}
+            WHERE id=$1`,
+            values: [Number(id)]
+        })
+        return result.rows[0]
+    }
+
 }
 
 /** @type {String} */

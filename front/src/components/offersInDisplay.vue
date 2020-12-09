@@ -1,37 +1,77 @@
 <template>
   <div>
-        <draggable v-model="offers" ghost-class="ghost" >
+        <draggable v-model="listOffers" ghost-class="ghost" :group="{ name: 'offers', pull: 'clone' }">
             <transition-group type ="transition" name="flip-list">
-                <div class="sortable" :id="offer.id" v-for="offer in offers" :key="offer.id">
-                    name: {{offer.name}}<br>
-                    priority: {{offer.priority}}
+                <div class="sortable" :id="offer.id" v-for="offer in listOffers" :key="offer.id">
+                    {{offer.name}}<br>
+                    {{offer.description}}<br>
+                    {{offer.price}}€
+                    <div class="flex">
+                        <updateOffer :oldOffer="offer" @updateOffer="updateOffer"/>
+                        <deleteOffer :data="offer" :deleteType="'offer'" @deleteOffer="deleteOffer"/>
+                    </div>
                 </div>
+                <p v-if="listOffers.length==0" key="4711">Déplacer une offre ici</p>
             </transition-group>
         </draggable>
   </div>
 </template>
 
 <script>
-import draggable from 'vuedraggable'
+
+import deleteOffer from './modals/DeleteConfirm.vue';
+import updateOffer from './modals/UpdateOffer.vue';
+import draggable from 'vuedraggable';
 export default {
     name:'offersInDisplay',
     props:
     {
-        offers:Array
+        offers:Array,
+        category:Object
     },
     components: 
     {
-        draggable
+        draggable,
+        deleteOffer,
+        updateOffer
     },
-    data()
-    {
-
+    data() {
+        return {
+            categorieStart:null
+        };
+    },
+    computed: {
+        listOffers: {
+            get () {
+                
+                return this.offers 
+            },
+            set (offers) {
+                let data = {
+                    offers:offers,
+                    category:this.category,
+                }
+                this.$emit("orderOffer",data)
+            },
+        }
+    },
+    methods:{
+        deleteOffer(offer)
+        {
+            this.$emit("deleteOffer",offer)
+        },
+        updateOffer(offer)
+        {
+            this.$emit("updateOffer",offer)
+        }
     }
 }
 </script>
 
 <style lang="scss" scoped>
-
+.flex{
+    display: flex;
+}
 .sortable{
     width: 100%;
     background:white;
