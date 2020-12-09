@@ -112,12 +112,12 @@ export default {
       user: null,
       favoritesRestaurants: [],
       restaurants: [],
-      background:`linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url('https://namburestaurant.ca/wp-content/uploads/2019/03/gst-background-placeholder-1-6.jpg')`
+      background:` url('https://namburestaurant.ca/wp-content/uploads/2019/03/gst-background-placeholder-1-6.jpg')`
     };
   },
   created() {
     setTimeout(()=>{
-      this.background = `linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url('https://www.gettyimages.fr/gi-resources/images/500px/983794168.jpg')`
+      this.background = `url('https://www.teahub.io/photos/full/41-419298_background-image-for-restaurant-website.jpg')`
     },3000)
     axios
       .get("http://localhost:8081/client-restaurant/top-rated")
@@ -179,7 +179,7 @@ export default {
   background-position: center;
   background-attachment: fixed;
   height:100vh;
-  transition:background 10s ease-in-out;
+  transition:background 1s ease-in-out;
 }
 .md-card {
   margin: 20px;
