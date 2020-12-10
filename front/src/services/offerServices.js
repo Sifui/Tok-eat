@@ -45,6 +45,16 @@ export default {
           })
         return res
       },
+      async updateOffers(offers) {
+        let res = await axios({
+            method: 'put',
+            url: 'http://localhost:8081/offers',
+            data: {
+                offers
+            }
+          })
+        return res
+      },
       async updateCategory(category) {
         let res = await axios({
             method: 'put',
