@@ -8,7 +8,6 @@ var bodyParser = require("body-parser")
 var logger = require('morgan')
 const session = require('express-session')
 var cors = require("cors")
-var app = express()
 var port = 8081
 
 var userRouter = require('./route/user.route')
@@ -19,6 +18,8 @@ var basketRouter = require('./route/basket.route')
 var categoryRouter = require('./route/category.route')
 
 var app = express()
+app.use(express.static('img'))
+
 app.use(session({
     secret: 'ZSW58:]kn/=c9Xp&',
     resave: false,

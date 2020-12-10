@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="mainframe flex-container" v-bind:style="{background}"> 
+    <div class="mainframe flex-container" v-bind:style="{'background-image':background}"> 
      <div style="margin: auto">
        <div id="slogan">
             Decouvrez et reservez le meilleur restaurant grâce à Tok'eat
@@ -112,13 +112,16 @@ export default {
       user: null,
       favoritesRestaurants: [],
       restaurants: [],
-      background:` url('https://namburestaurant.ca/wp-content/uploads/2019/03/gst-background-placeholder-1-6.jpg')`
+      images:['http://localhost:8081/1.jpg','http://localhost:8081/2.jpg','http://localhost:8081/3.jpg'],
+      background:`url(http://localhost:8081/1.jpg)`
     };
   },
   created() {
-    setTimeout(()=>{
-      this.background = `url('https://www.teahub.io/photos/full/41-419298_background-image-for-restaurant-website.jpg')`
-    },3000)
+    setInterval(()=>{
+      const firstImage = this.images.shift()
+      this.images.push(firstImage)
+      this.background = `url(${this.images[0]})`
+    },5000)
     axios
       .get("http://localhost:8081/client-restaurant/top-rated")
       .then((response) => {
@@ -174,12 +177,13 @@ export default {
 }
 
 .mainframe {
+  height:100vh;
+  background-attachment: fixed;
+  background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
-  background-position: center;
-  background-attachment: fixed;
-  height:100vh;
-  transition:background 1s ease-in-out;
+  transition:background-image 1s ease-in-out;
+  background-color:black ;
 }
 .md-card {
   margin: 20px;
