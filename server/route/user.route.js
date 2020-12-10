@@ -248,8 +248,6 @@ router.post('/upload_profil_image', hasToBeAuthenticated, async (req, res) => {
     res.status(200).json(result)
 })
 
-
-////////////////////// Setra code fin ///////////////////////////////////////////
 router.post('/payement',async(req,res)=>{
 
     console.log('payement',req.body.cart)
@@ -282,4 +280,8 @@ router.post('/payement',async(req,res)=>{
   });
   res.json({ id: session.id });
 })
+
+////////////////////// Setra code fin ///////////////////////////////////////////
+
+
 module.exports = router

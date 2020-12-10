@@ -67,9 +67,9 @@ class Client {
     static async updateClientDataExceptPassword(client){
         const result = await PostgresStore.client.query({
             text: `UPDATE ${Client.tableName}
-            SET first_name=$1, last_name=$2 , address=$3, phone_number=$4 , email=$5, image=$6
-            WHERE id=$7 RETURNING *`,
-            values: [client.first_name, client.last_name, client.address,client.phone_number,client.email, client.image, Number(client.id)]
+            SET first_name=$1, last_name=$2 , address=$3, phone_number=$4 , email=$5
+            WHERE id=$6 RETURNING *`,
+            values: [client.first_name, client.last_name, client.address,client.phone_number,client.email, Number(client.id)]
         })
         return result.rows[0]
     }
