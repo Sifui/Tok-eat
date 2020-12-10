@@ -1,5 +1,5 @@
 <template>
-    <div class="margin">
+    <div>
         <createCategory @createCategory="createCategory"/> 
         <draggable v-model="listCategories" ghost-class="ghost" >
             <transition-group type ="transition" name="flip-list">

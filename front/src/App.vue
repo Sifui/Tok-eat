@@ -90,6 +90,6 @@ html {
 }
 div[class^="md"],
 div[class*=" md"] {
-  z-index: 1;
+  /*z-index: 1;*/
 }
 </style>
