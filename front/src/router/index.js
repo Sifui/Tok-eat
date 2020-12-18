@@ -43,15 +43,13 @@ const routes = [
         name: 'profil',
         component:()=> import('../views/Profil.vue'),
       },
+      {
+        path: '/RestaurantDashBoard',
+        name: 'RestaurantDashBoard',
+        component: () => import('../views/RestaurantDashBoard.vue'),
+      }
     ]
   },
-  
-  {
-    path: '/RestaurantDashBoard',
-    name: 'RestaurantDashBoard',
-    component: () => import('../views/RestaurantDashBoard.vue'),
-  },
-
   {
     path: '/home',
     name: 'Home',
