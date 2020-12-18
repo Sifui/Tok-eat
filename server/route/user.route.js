@@ -264,7 +264,7 @@ router.post('/payement',async(req,res)=>{
                         product_data: {
                         name: restaurant.articles[j].name,
                         },
-                        unit_amount: Math.floor(restaurant.articles[j].price)*100,
+                        unit_amount_decimal: Math.ceil((restaurant.articles[j].price)*100),
                     },
                     quantity: restaurant.articles[j].quantity,
                 })
