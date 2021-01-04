@@ -198,7 +198,7 @@ router.post('/payement',async(req,res)=>{
                         product_data: {
                         name: restaurant.articles[j].name,
                         },
-                        unit_amount_decimal: (restaurant.articles[j].price)*100,
+                        unit_amount_decimal: Math.ceil((restaurant.articles[j].price)*100),
                     },
                     quantity: restaurant.articles[j].quantity,
                 })
@@ -209,10 +209,24 @@ router.post('/payement',async(req,res)=>{
     payment_method_types: ['card'],
     line_items: items,
     mode: 'payment',
-    success_url: 'http://localhost:8080/success',
+    success_url: `http://localhost:8080?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: 'http://localhost:8080',
   });
 
   res.json({ id: session.id });
+})
+router.post('/session-id',async(req,res)=>{
+    const session = await stripe.checkout.sessions.retrieve(
+        req.body.sessionId
+      );
+      if (session)
+      {
+          res.json({payment:'success'})
+      }
+      else
+      {
+        res.json({payment:'error'})
+
+      }
 })
 module.exports = router

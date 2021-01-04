@@ -26,7 +26,7 @@
 
 <script>
 import axios from 'axios'
-
+import UserServices from '../../services/userServices'
       var stripe = window.Stripe('pk_test_51HvkwYLjW8CJv9Axomn1cYBMLuvJ6hVBb002isuzWJTJ7beBM347sA1AZhVi4skpiiHmrl3wL1OPQ2J0InSSSF01004lSOoVFE');
 
 export default {
@@ -42,9 +42,22 @@ export default {
         zIndex:-1,
         right:'-520px',
         render:true
-    };
+    }
   },
   created() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const myParam = urlParams.get('session_id');
+    if (myParam)
+    {
+      axios.post('http://localhost:8081/session-id',{sessionId:myParam}).then((response)=>{
+        if (response.data.payment=="success")
+        {
+          this.$emit('clearcookie');
+          window.location.href = "http://localhost:8080";
+        }
+      })
+    }
+   
       const infosKeys = Object.keys(this.infos)
       for ( let i = 0 ; i < infosKeys.length;i++)
       {
@@ -55,10 +68,18 @@ export default {
       this.totalPrice = Math.round((this.totalPrice + Number.EPSILON) * 100) / 100
   },
   methods:{
-    goToPayement(){
+   async goToPayement(){
       console.log(this.totalPrice)
       if ( !this.totalPrice)
         return
+
+      try{
+        await UserServices.me()
+      }
+      catch(e){
+        this.$router.push({ path: "/login" });
+        return
+      }
       console.log('infos',this.infos)
         axios.post('http://localhost:8081/payement',{cart:this.infos}).then(function(session) {
           console.log(session)

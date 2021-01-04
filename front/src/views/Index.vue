@@ -1,8 +1,8 @@
 <template>
   <div class="index" md-theme="black">
-    <cart  :display="display" :infos="cartInfos" :price="computedPrice" style="z-index: 3" v-on:clearcookie="$cookies.set('cart',{});cartInfos=[]" v-on:updatecartinfos="updateCart" />
+    <cart  :display="display" :infos="cartInfos" :price="computedPrice" style="z-index: 7" v-on:clearcookie="$cookies.set('cart',{});cartInfos=[]" v-on:updatecartinfos="updateCart" />
     <navbar :showSearchField="showSearchField" :display="display" style="z-index: 6;" v-on:showcart="showCart(1)" v-on:hidecart="showCart(0)" />
-    <router-view style="z-index:1;padding-bottom:5%" v-bind:class="{router:active}" v-on:updatecart="updateCart"/>
+    <router-view style="z-index:1;padding-bottom:5%" v-bind:class="{router:active}" v-on:updatecart="updateCart" v-on:clearcookie="$cookies.set('cart',{});cartInfos=[];computedPrice=0"/>
     <footerTokEat style="z-index: 1" />
   </div>
 </template>

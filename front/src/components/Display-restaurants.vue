@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="mainframe flex-container" v-bind:style="{'background-image':background}"> 
+    <div class="mainframe flex-container" v-bind:style="{ backgroundImage: 'url(' + background + ')' }"> 
      <div style="margin: auto">
        <div id="slogan">
             Decouvrez et reservez le meilleur restaurant grâce à Tok'eat
@@ -103,6 +103,9 @@
 <script>
 import axios from "axios";
 import UserServices from "../services/userServices";
+import one from '../assets/1.jpg'
+import two from '../assets/2.jpg'
+import three from '../assets/3.jpg'
 
 export default {
   name: "Display-restaurants",
@@ -112,15 +115,15 @@ export default {
       user: null,
       favoritesRestaurants: [],
       restaurants: [],
-      images:['http://localhost:8081/1.jpg','http://localhost:8081/2.jpg','http://localhost:8081/3.jpg'],
-      background:`url(http://localhost:8081/1.jpg)`
+      images:[one,two,three],
+      background:one
     };
   },
   created() {
     setInterval(()=>{
       const firstImage = this.images.shift()
       this.images.push(firstImage)
-      this.background = `url(${this.images[0]})`
+      this.background = this.images[0]
     },5000)
     axios
       .get("http://localhost:8081/client-restaurant/top-rated")
@@ -184,6 +187,7 @@ export default {
   background-repeat: no-repeat;
   transition:background-image 1s ease-in-out;
   background-color:black ;
+  z-index:1;
 }
 .md-card {
   margin: 20px;

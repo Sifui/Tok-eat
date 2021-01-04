@@ -18,7 +18,6 @@ var basketRouter = require('./route/basket.route')
 var categoryRouter = require('./route/category.route')
 
 var app = express()
-app.use(express.static('img'))
 
 app.use(session({
     secret: 'ZSW58:]kn/=c9Xp&',
