@@ -3,6 +3,7 @@ const Offer = require("../model/offer.model")
 const Category = require("../model/category.model")
 const PostgresStore = require("../PostgresStore")
 const hasToBeAuthenticated = require('../middlewares/has-to-be-authenticated.middleware')
+const fs = require('fs')
 
 router.get('/offer/:id', async (req,res)=>{
     const result = await Offer.getByIdRestaurant(req.params.id)
@@ -15,8 +16,27 @@ router.get('/category/:id', async (req,res)=>{
 })
 
 router.post('/offer', hasToBeAuthenticated, async (req,res)=>{
-    const result = await Offer.create(req.body)
-    res.json(result)
+    let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
+    let randomChars = ''
+    for (var i = 0; i < 15; i++) {
+        randomChars += chars.charAt(Math.floor(Math.random() * randomChars.length));
+    }
+    let randomNumber = (Math.floor(Math.random() * 999999999999999) + 11).toString();
+    let imageName = randomChars.concat(randomNumber)
+    //console.log(imageName);
+    //let result = await Client.editImage(imageName, req.body.client)
+
+    let base64Data = req.body.image.replace(/^data:image\/(png|jpeg);base64,/, "");
+    fs.writeFile(`./assets/offerImage/${imageName}.png`, base64Data, 'base64', function (err) {
+        console.log(err);
+    });
+
+    let offer = req.body
+    const result = await Offer.create(offer)
+
+
+    res.status(200).json(result)
+
 })
 
 router.post('/category', hasToBeAuthenticated, async (req,res)=>{
@@ -83,4 +103,3 @@ router.put('/offer', hasToBeAuthenticated, async (req,res)=>{
 })
 
 module.exports = router
-

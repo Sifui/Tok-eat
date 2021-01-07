@@ -4,6 +4,30 @@
         <md-dialog-title>Ajouter une offre</md-dialog-title>
 
         <md-dialog-content>
+            <div v-if="offer.image">
+                <img
+                    class="offer-image"
+                    v-bind:src="offer.image"
+                    alt="offer-image"
+                />
+            </div>
+
+            <div v-else>
+                <img class="offer-image" src="./../../assets/defaultOffer.png">
+            </div>
+
+            <md-field>
+                <label class="profil-input-image-label" for="profil-input-image">Photo du profil</label>
+                <md-file
+                    type="file"
+                    id="offer-input-image"
+                    ref="file"
+                    name="offer-input-image"
+                    accept="image/x-png,image/gif,image/jpeg,image/tiff"
+                    @change="onFileChange(offer, $event)"
+                />
+            </md-field>
+
             <md-field>
                 <label>Nom de l'offre</label>
                 <md-input v-model="offer.name" @change="isNameValid" type="text"></md-input>
@@ -17,10 +41,11 @@
             <span class="error" v-show="this.offerError.price">Prix invalide</span>
             
             <md-field>
-                <label>Nom de l'offre</label>
+                <label>Déscription</label>
                 <md-textarea v-model="offer.description" @change="isDescriptionValid" type="text"></md-textarea>
             </md-field>
             <span class="error" v-show="this.offerError.description">3 à 500 caractères</span>
+
         </md-dialog-content>
 
         <md-dialog-actions>
@@ -103,6 +128,24 @@
           this.$emit('createOffer',this.offer)
           this.reset()
         },
+        onFileChange(offer, event)
+        {
+            var file = event.target.files[0];
+            if(!file)
+            {
+                return
+            }
+            this.createImage(offer, file)
+        },
+        createImage(offer, file)
+        {
+            var reader = new FileReader();
+
+            reader.onload = (e) => {
+                offer.image = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        },
         reset()
         {
             this.active = false,
@@ -127,7 +170,12 @@
 </script>
 
 <style lang="scss" scoped>
-  .error {
-    color: red;
-  }
+    .error {
+        color: red;
+    };
+    .offer-image{
+        display:     block;
+        width:       225px;
+        height:      225px;
+    }
 </style>

@@ -17,7 +17,7 @@
             <span class="error" v-show="this.offerError.price">Prix invalide</span>
             
             <md-field>
-                <label>Nom de l'offre</label>
+                <label>Déscription</label>
                 <md-textarea v-model="offer.description" @change="isDescriptionValid" type="text"></md-textarea>
             </md-field>
             <span class="error" v-show="this.offerError.description">3 à 500 caractères</span>

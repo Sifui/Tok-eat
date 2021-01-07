@@ -11,7 +11,7 @@ class Offer {
                 price FLOAT,
                 description TEXT,
                 priority INTEGER,
-                image BYTEA,
+                image TEXT,
                 id_category INTEGER REFERENCES ${Category.tableName}(id) ON DELETE CASCADE,
                 id_promo INTEGER REFERENCES ${Promo.tableName}(id) ON DELETE CASCADE
 
