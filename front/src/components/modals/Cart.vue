@@ -19,7 +19,7 @@
       <md-button v-on:click="goToPayement"> Procéder au paiement</md-button>
     </div>
      <div class="centered" v-if="totalPrice != 0">
-      <md-button v-on:click="$emit('clearcookie');totalPrice=0"> Vider le panier</md-button>
+      <md-button v-on:click="clearCart()"> Vider le panier</md-button>
     </div>
   </div>
 </template>
@@ -101,6 +101,10 @@ export default {
       formatPrice(num)
       {
         return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1 ')
+      },
+      clearCart(){
+        this.$emit('clearcookie');
+        this.totalPrice=0;
       }
   },
   watch:{

@@ -33,9 +33,9 @@ export default {
         this.showSearchField = true;
       }
     if ( this.$route.name == 'display-restaurants')
-    this.active = false
+      this.active = false
     else
-          this.active = true
+      this.active = true
     window.addEventListener("scroll", () => {
 
       if (window.scrollY < (window.innerHeight*100)/100 && this.$route.name == "display-restaurants") {

@@ -5,8 +5,8 @@ import userServices from '../services/userServices'
 
 Vue.use(VueRouter)
 function isAuthenticated() {
-  return userServices.me().then(() => {
-    return true
+  return userServices.me().then((res) => {
+    return res.data
   }).catch(() => {
     return false
   })
@@ -42,6 +42,19 @@ const routes = [
         path: '/profil',
         name: 'profil',
         component:()=> import('../views/Profil.vue'),
+      },
+      {
+        path: '/reservations',
+        name: 'reservations',
+        component:()=> import('../components/Reservations.vue'),
+        async beforeEnter(to, from, next) {
+          let isAuth = await isAuthenticated()
+          if (isAuth && isAuth.type == 'restaurant') {
+            next();
+          } else {
+            next(false);
+          }
+        }
       },
     ]
   },

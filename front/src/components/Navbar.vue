@@ -46,6 +46,11 @@
             </md-speed-dial>
           </div>
           <div v-else style="flex: 0.55; padding: 10px 0 0 0">
+            <md-speed-dial v-if="user.type=='restaurant'" md-event="hover" md-direction="bottom">
+              <md-speed-dial-target v-on:click="$router.push({path:'/reservations'})">
+                <md-icon>book_online</md-icon>
+              </md-speed-dial-target>
+            </md-speed-dial>
             <md-speed-dial md-event="hover" md-direction="bottom">
               <md-speed-dial-target v-on:click="openCart">
                 <md-icon>shopping_cart</md-icon>
@@ -66,7 +71,7 @@
 
                 <md-button
                   class="md-icon-button"
-                  v-on:click="$router.push('/logout')"
+                  v-on:click="$router.push('/logout');$cookies.set('cart',{})"
                 >
                   <md-icon>exit_to_app</md-icon>
                 </md-button>
