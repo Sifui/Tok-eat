@@ -16,6 +16,14 @@ const routes = [
     path: '/',
     name: 'Index',
     component: () => import(/* webpackChunkName: "about" */ '../views/Index.vue'),
+    async beforeEnter(to, from, next) {
+      let isAuth = await isAuthenticated()
+      if ((isAuth && isAuth.type != 'restaurant') || !isAuth) {
+        next();
+      } else {
+        next(false);
+      }
+    },
     children: [
       {
         path: '',
@@ -58,13 +66,23 @@ const routes = [
       },
     ]
   },
-  
   {
-    path: '/RestaurantDashBoard',
-    name: 'RestaurantDashBoard',
-    component: () => import('../views/RestaurantDashBoard.vue'),
+    path:'/Index2',
+    name:'Index2',
+    component:()=>import('../views/Index2.vue'),
+    children:[
+      {
+        path: '/Index2',
+        name: 'RestaurantDashBoard',
+        component: () => import('../views/RestaurantDashBoard.vue'),
+      },
+      {
+        path: '/profile',
+        name: 'profil',
+        component:()=> import('../views/Profil.vue'),
+      },
+    ]
   },
-
   {
     path: '/home',
     name: 'Home',

@@ -112,7 +112,7 @@ export default {
             {
               this.$router.push({ path: "/" });
             } else if (user.data.type === "restaurant") {
-              this.$router.push({ path: "/RestaurantDashBoard" });
+              this.$router.push({ path: "/Index2" });
             }
           }
         })
