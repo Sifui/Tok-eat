@@ -46,14 +46,14 @@
       <md-button v-on:click="goToPayement"> Procéder au paiement</md-button>
     </div>
      <div class="centered" v-if="totalPrice != 0">
-      <md-button v-on:click="$emit('clearcookie');totalPrice=0"> Vider le panier</md-button>
+      <md-button v-on:click="clearCart()"> Vider le panier</md-button>
     </div>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
-
+import UserServices from '../../services/userServices'
       var stripe = window.Stripe('pk_test_51HvkwYLjW8CJv9Axomn1cYBMLuvJ6hVBb002isuzWJTJ7beBM347sA1AZhVi4skpiiHmrl3wL1OPQ2J0InSSSF01004lSOoVFE');
 
 export default {
@@ -65,48 +65,49 @@ export default {
   },
   data() {
     return {
-      totalPrice: 0,
-      zIndex: -1,
-      right: "-520px",
-      render: true,
-    };
+        totalPrice:0,
+        zIndex:-1,
+        right:'-520px',
+        render:true
+    }
   },
   created() {
-    const infosKeys = Object.keys(this.infos);
-    for (let i = 0; i < infosKeys.length; i++) {
-      const currentRestaurantArticles = this.infos[Object.keys(this.infos)[i]]
-        .articles;
-      for (let j = 0; j < currentRestaurantArticles.length; j++)
-        this.totalPrice +=
-          currentRestaurantArticles[j].quantity *
-          currentRestaurantArticles[j].price;
+    const urlParams = new URLSearchParams(window.location.search);
+    const myParam = urlParams.get('session_id');
+    if (myParam)
+    {
+      axios.post('http://localhost:8081/session-id',{sessionId:myParam}).then((response)=>{
+        if (response.data.payment=="success")
+        {
+          this.$emit('clearcookie');
+          window.location.href = "http://localhost:8080";
+        }
+      })
     }
-    this.totalPrice =
-      Math.round((this.totalPrice + Number.EPSILON) * 100) / 100;
+   
+      const infosKeys = Object.keys(this.infos)
+      for ( let i = 0 ; i < infosKeys.length;i++)
+      {
+          const currentRestaurantArticles = this.infos[Object.keys(this.infos)[i]].articles
+          for ( let j = 0 ; j  < currentRestaurantArticles.length;j++)
+              this.totalPrice += currentRestaurantArticles[j].quantity * currentRestaurantArticles[j].price
+      }
+      this.totalPrice = Math.round((this.totalPrice + Number.EPSILON) * 100) / 100
   },
     
   methods:{
-    // updateCartInfos(valeur, restaurant, offre) {
-    //   let p = this.$cookies.get("cart");
-    //   this.totalPrice -=
-    //     p[restaurant]["articles"][offre]["price"] *
-    //     p[restaurant]["articles"][offre]["quantity"];
-    //   this.totalPrice += valeur * p[restaurant]["articles"][offre]["price"];
-    //   this.totalPrice =
-    //     Math.round((this.totalPrice + Number.EPSILON) * 100) / 100;
-    //   p[restaurant]["articles"][offre]["quantity"] = valeur;
-    //   this.$cookies.set("cart", p);
-    // },
-    // formatPrice(num) {
-    //   return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 ");
-    // },
-    payement() {
-      this.$router.push("/payement")
-    },
-    goToPayement(){
+   async goToPayement(){
       console.log(this.totalPrice)
       if ( !this.totalPrice)
         return
+
+      try{
+        await UserServices.me()
+      }
+      catch(e){
+        this.$router.push({ path: "/login" });
+        return
+      }
       console.log('infos',this.infos)
         axios.post('http://localhost:8081/payement',{cart:this.infos}).then(function(session) {
           console.log(session)
@@ -128,6 +129,10 @@ export default {
       formatPrice(num)
       {
         return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1 ')
+      },
+      clearCart(){
+        this.$emit('clearcookie');
+        this.totalPrice=0;
       }
   },
   watch: {

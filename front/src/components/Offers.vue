@@ -1,8 +1,15 @@
 <template>
-  <div class="flex-container"  style="min-height: 100vh;justify-content:center">
-    <div class="flex-container" style="flex-direction:column;flex:0.9" v-if="categories.length">
+  <div
+    class="flex-container"
+    style="min-height: 100vh; justify-content: center"
+  >
+    <div
+      class="flex-container"
+      style="flex-direction: column; flex: 0.9"
+      v-if="categories.length"
+    >
       <div v-for="(cat, ind) in offersClone" v-bind:key="ind">
-        <h1 class="title" style="margin-left:20px"  v-if="categories[ind]">
+        <h1 class="title" style="margin-left: 20px" v-if="categories[ind]">
           {{ categories[ind] }}
         </h1>
         <div class="flex-container flex-wrap">
@@ -30,20 +37,21 @@
         </div>
       </div>
       <div align="left">
-      <md-button
-        type="button"
-        v-on:click="passerReservation"
-        style="border: 1px solid silver"
-      >
-        ajouter une nouvelle réservation
-      </md-button>
+        <md-button
+          type="button"
+          v-on:click="passerReservation"
+          style="border: 1px solid silver"
+        >
+          ajouter une nouvelle réservation
+        </md-button>
+      </div>
     </div>
-    </div>
-    
   </div>
 </template>
 
 <script>
+import axios from "axios";
+import UserServices from "../services/userServices";
 export default {
   name: "Offers",
   props: {
@@ -52,6 +60,7 @@ export default {
   },
   data() {
     return {
+      user: null,
       offersClone: this.offers,
       articlesCount: 0,
       categories: [],
@@ -70,6 +79,13 @@ export default {
       this.offersClone[cat][index].quantity = event.target.value;
     },
     async passerReservation() {
+      if (
+        Object.keys(this.$cookies.get("cart")).length == 1 ||
+        this.$cookies.get("cart")[this.restaurant.id]
+      ) {
+        alert("vous avez deja une reservation en cours");
+        return;
+      }
       if (!this.articlesCount) {
         alert("veuillez selectionner au moins un article...");
         return;
@@ -83,47 +99,39 @@ export default {
         filteredArticles = filteredArticles.concat(temp);
       });
 
-      if (!this.$cookies.get("cart")) {
-        this.$cookies.set("cart", {
-          [this.restaurant.id]: {
-            articles: filteredArticles,
-            id:this.restaurant.id,
-            name:this.restaurant.name,
-          },
-        });
-      } else {
-        //if ( !this.$cookies.get("cart")[this.restaurant.id])
-        this.$cookies.set("cart", {
-          ...this.$cookies.get("cart"),
-          [this.restaurant.id]: {
-            articles: filteredArticles,
-            id:this.restaurant.id,
-            name:this.restaurant.name,
-          },
-        });
-        let p = this.$cookies.get("cart");
-        let found = false;
-        for (let i = 0; i < filteredArticles.length; i++) {
-          for (let j = 0; j < p[this.restaurant.id]["articles"].length; j++) {
-            if (
-              p[this.restaurant.id]["articles"][j].id == filteredArticles[i].id
-            ) {
-              p[this.restaurant.id]["articles"][j].quantity =
-                filteredArticles[i].quantity;
-              found = true;
-            }
-          }
-          if (!found) {
-            p[this.restaurant.id]["articles"].push(filteredArticles[i]);
-          }
-          found = false;
-        }
-        this.$cookies.set("cart", p);
-      }
+      this.$cookies.set("cart", {
+        ...this.$cookies.get("cart"),
+        [this.restaurant.id]: {
+          articles: filteredArticles,
+          id: this.restaurant.id,
+          name: this.restaurant.name,
+        },
+      });
+      
       this.$emit("updatecart");
+      if (this.user) {
+        const currentBasket = await axios.post("http://localhost:8081/basket", {
+          clientId: this.user.id,
+        });
+
+        for (let i = 0; i < filteredArticles.length; i++) {
+          console.log(filteredArticles[i]);
+          await axios.post("http://localhost:8081/ordered_product", {
+            quantity: filteredArticles[i].quantity,
+            idBasket: currentBasket.data.id,
+            idOffer: filteredArticles[i].id,
+          });
+        }
+      }
     },
   },
-  async created() {
+  created() {
+    UserServices.me().then((user) => {
+      console.log(user);
+      this.user = user.data;
+    });
+    console.log(this.user);
+
     if (!this.offers) {
       this.$router.go(-1);
       return;
@@ -153,7 +161,6 @@ export default {
 </script>
 
 <style scoped>
-
 .md-card {
   margin: 10px;
   flex: 1 1 16%;

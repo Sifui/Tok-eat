@@ -6,12 +6,19 @@ import 'vue-material/dist/vue-material.min.css'
 import 'vue-material/dist/theme/default.css'
 import router from './router'
 import VueCookies from 'vue-cookies'
+import VueSocketIO from 'vue-socket.io'
+import SocketIO from 'socket.io-client'
 
 Vue.use(VueRouter)
 Vue.use(VueCookies)
 Vue.$cookies.config('7d')
 
 Vue.use(VueMaterial)
+Vue.use(new VueSocketIO({
+  debug: true,
+  connection: SocketIO('http://localhost:8081'),
+
+}))
 Vue.config.productionTip = false
 
 new Vue({

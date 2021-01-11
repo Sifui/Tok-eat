@@ -19,7 +19,7 @@ class Basket {
         const result = await PostgresStore.client.query({
             text: `INSERT INTO ${Basket.tableName}
                     (validation, on_site, order_date,meal_date,id_client)
-                    VALUES (false, true, new Date(),new Date(),$1)
+                    VALUES (false, true, CURRENT_DATE,CURRENT_DATE,$1)
                      RETURNING *`,
                     values : [
                         basket.clientId
