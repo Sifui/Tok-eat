@@ -24,8 +24,6 @@ app.use(express.static(__dirname + '/assets'));
 
 let orderedProduct = require('./route/ordered_product.route')
 
-let app = express()
-
 app.use(session({
     secret: 'ZSW58:]kn/=c9Xp&',
     resave: false,
@@ -44,7 +42,7 @@ app.use(cors({
 app.use(express.urlencoded({ extended: true }))
 app.use(logger('dev'))
 
-app.listen(port, () => {
+let server = app.listen(port, () => {
     console.log('Server is listening on port '+port)
 });
 let io = require("socket.io")(server,{

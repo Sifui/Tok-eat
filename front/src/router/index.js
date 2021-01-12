@@ -73,13 +73,18 @@ const routes = [
     children:[
       {
         path: '/Index2',
+        name: 'test',
+        component: () => import('../views/Test.vue'),
+      },
+      {
+        path: '/Dashboard',
         name: 'RestaurantDashBoard',
         component: () => import('../views/RestaurantDashBoard.vue'),
       },
       {
-        path: '/profile',
-        name: 'profil',
-        component:()=> import('../views/Profil.vue'),
+        path: '/ProfilRestaurant',
+        name: 'ProfilRestaurant',
+        component:()=> import('../views/ProfilRestaurant.vue'),
       },
     ]
   },
