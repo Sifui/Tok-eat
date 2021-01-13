@@ -66,11 +66,10 @@ export default {
       this.user = await UserServices.me()
       this.user = this.user.data
       let currentBasket = await axios.get(`http://localhost:8081/basket/${this.user.id}`)
-      console.log('currentBasket',currentBasket.data)
-      if (!currentBasket.data && this.$cookies.get('cart'))
+      currentBasket = currentBasket.data
+      if (currentBasket.validation)
         this.pending = false
-      
-      console.log(this.pending)
+      console.log(currentBasket)
       const infosKeys = Object.keys(this.infos)
       for ( let i = 0 ; i < infosKeys.length;i++)
       {
@@ -98,12 +97,12 @@ export default {
     },
       updateCartInfos(valeur,restaurant,offre)
       {
-        let p = this.$cookies.get('cart')
-        this.totalPrice -= p[restaurant]['articles'][offre]['price'] * p[restaurant]['articles'][offre]['quantity']
-        this.totalPrice += valeur * p[restaurant]['articles'][offre]['price'] 
+        let cart = this.$cookies.get('cart')
+        this.totalPrice -= cart[restaurant]['articles'][offre]['price'] * cart[restaurant]['articles'][offre]['quantity']
+        this.totalPrice += valeur * cart[restaurant]['articles'][offre]['price'] 
         this.totalPrice = Math.round((this.totalPrice + Number.EPSILON) * 100) / 100
-        p[restaurant]['articles'][offre]['quantity'] = valeur
-        this.$cookies.set('cart',p)
+        cart[restaurant]['articles'][offre]['quantity'] = valeur
+        this.$cookies.set('cart',cart)
         this.$emit('updatecartinfos')
       },
       formatPrice(num)
@@ -114,8 +113,7 @@ export default {
         this.$emit('clearcookie');
         this.totalPrice=0;
         this.pending = true
-        console.log(this.infos)
-        this.$socket.emit('cancel',{clientId:this.user.id,restaurantId:this.infos[Object.keys(this.infos)[0]].id})
+        //this.$socket.emit('cancel',{clientId:this.user.id,restaurantId:this.infos[Object.keys(this.infos)[0]].id})
       }
   },
   watch:{
@@ -143,7 +141,6 @@ export default {
   },
   sockets:{
     validation(id){
-      console.log('client:',id,this.user)
       if ( this.user.id != id)
         return
       console.log('votre panier a été validé')

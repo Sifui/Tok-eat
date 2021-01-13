@@ -94,16 +94,13 @@ export default {
       this.cartInfos = [];
       this.computedPrice = 0;
       setTimeout(() => {
-        console.log("cart", this.$cookies.get("cart"));
         const reservations = Object.keys(this.$cookies.get("cart"))
         for (let i = 0;i < reservations.length;i++) {
           let currentRestaurant = this.$cookies.get("cart")[
             reservations[i]
           ];
-          console.log("current", currentRestaurant.articles);
 
           for (let article of currentRestaurant.articles) {
-            console.log(article);
             this.computedPrice += article.price * article.quantity;
           }
 

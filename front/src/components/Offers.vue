@@ -123,7 +123,6 @@ export default {
       });
       
       this.$emit("updatecart");
-      console.log(this.$cookies.get("cart"))
       }
 
       

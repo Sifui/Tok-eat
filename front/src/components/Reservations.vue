@@ -52,7 +52,6 @@ export default {
       `http://localhost:8081/ordered_products/restaurant/${this.user.id}`
     );
     const temp = result.data;
-    console.log(temp)
     if (!temp.length)
       return
     let index = 0;
@@ -69,11 +68,10 @@ export default {
   async created() {
     
     this.refreshData()
-    console.log(this.reservations)
   },
   sockets:{
     notification(){
-      //alert('une reservation a été passé chez vous !')
+      alert('une reservation a été passé chez vous !')
           this.refreshData()
      //  this.render = false;
 

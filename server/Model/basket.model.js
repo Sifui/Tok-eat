@@ -30,7 +30,11 @@ class Basket {
     static async getById(id)
     {
         const result = await PostgresStore.client.query({
-            text: `SELECT * FROM ${Basket.tableName} WHERE id_client = $1 AND validation = false`,
+            text: `SELECT * 
+                    FROM ${Basket.tableName} 
+                    WHERE id_client = $1
+                    order by id desc
+					limit 1`,
                     values : [id]
         })
         return result.rows[0]

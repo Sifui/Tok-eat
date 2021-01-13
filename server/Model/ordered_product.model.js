@@ -34,19 +34,18 @@ class Ordered_Product {
                                 o.priority,
                                 op.quantity,
                                 b.id_client
-                        FROM Basket AS b
-                        LEFT JOIN ordered_product AS op ON b.id = op.id_basket
+                        FROM ${Basket.tableName} AS b
+                        LEFT JOIN ${Ordered_Product.tableName} AS op ON b.id = op.id_basket
                         INNER JOIN
                         (SELECT DISTINCT ON (id_client) id
-                            FROM basket
+                            FROM ${Basket.tableName}
                             ORDER BY id_client DESC, id DESC) AS req ON op.id_basket = req.id
-                        LEFT JOIN Offer AS o ON op.id_offer = o.id
-                        LEFT JOIN Category AS c ON o.id_category = c.id
-                        LEFT JOIN Restaurant AS r ON c.id_restaurant = r.id
+                        LEFT JOIN ${Offer.tableName} AS o ON op.id_offer = o.id
+                        LEFT JOIN ${Category.tableName} AS c ON o.id_category = c.id
+                        LEFT JOIN ${Restaurant.tableName} AS r ON c.id_restaurant = r.id
                         WHERE r.id = $1
                         AND validation = FALSE
-                        order by id_client desc
-            `,
+                        ORDER BY id_client desc`,
                     values : [idRestaurant]
         })
         return result.rows
