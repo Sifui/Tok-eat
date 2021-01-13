@@ -377,7 +377,6 @@ export default {
         .register(this.client)
         .then((response) => {
           this.entity = response.data;
-          console.log(this.entity.user);
           if (this.entity.message) {
             setTimeout(() => {
               this.loading = false;
@@ -404,7 +403,6 @@ export default {
         .register(this.restaurant)
         .then((response) => {
           this.entity = response.data;
-          console.log(this.entity.user);
           if (this.entity.message) {
             setTimeout(() => {
               this.loading = false;
@@ -517,10 +515,8 @@ export default {
         )
       ) {
         this.errorRestaurantImage = false;
-        console.log("Ratesh is caca");
       } else {
         this.errorRestaurantImage = true;
-        console.log("Ratesh is pipi");
       }
     },
     isPasswordTheSame() {

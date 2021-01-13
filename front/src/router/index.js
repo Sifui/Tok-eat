@@ -51,25 +51,20 @@ const routes = [
         name: 'profil',
         component:()=> import('../views/Profil.vue'),
       },
-      {
-        path: '/reservations',
-        name: 'reservations',
-        component:()=> import('../components/Reservations.vue'),
-        async beforeEnter(to, from, next) {
-          let isAuth = await isAuthenticated()
-          if (isAuth && isAuth.type == 'restaurant') {
-            next();
-          } else {
-            next(false);
-          }
-        }
-      },
     ]
   },
   {
     path:'/Index2',
     name:'Index2',
     component:()=>import('../views/Index2.vue'),
+    async beforeEnter(to, from, next) {
+          let isAuth = await isAuthenticated()
+          if (isAuth && isAuth.type == 'restaurant') {
+            next();
+          } else {
+            next(false);
+          }
+    },
     children:[
       {
         path: '/Index2',
@@ -78,8 +73,13 @@ const routes = [
       },
       {
         path: '/profile',
-        name: 'profil',
+        name: 'profile',
         component:()=> import('../views/Profil.vue'),
+      },
+      {
+        path: '/reservations',
+        name: 'reservations',
+        component:()=> import('../components/Reservations.vue'),
       },
     ]
   },
@@ -127,7 +127,8 @@ const routes = [
     path: '/logout',
     name: 'Logout',
     component: () => import(/* webpackChunkName: "about" */ '../views/Logout.vue')
-  }
+  },
+  
 ]
 
 const router = new VueRouter({

@@ -118,7 +118,6 @@ export default {
         })
         .catch(() => {
           this.loading = false;
-          console.log("error");
         });
     },
     onEnter: function () {
@@ -146,7 +145,6 @@ export default {
         })
         .catch(() => {
           this.loading = false;
-          console.log("error");
         });
     },
     isEmailValid() {

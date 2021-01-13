@@ -4,7 +4,7 @@
           id="logo"
           src="../assets/logo.png"
           width="100"
-          v-on:click="$router.push('/').catch(() => {})"
+          v-on:click="$router.push('/Index2').catch(() => {})"
         />
     <md-speed-dial md-event="hover" md-direction="bottom">
               <md-speed-dial-target>
@@ -14,11 +14,17 @@
               <md-speed-dial-content>
                 <md-button
                   class="md-icon-button"
+                  v-on:click="$router.push({path:'/reservations'})"
+
+                >
+                  <md-icon>book_online</md-icon>
+                </md-button>
+                <md-button
+                  class="md-icon-button"
                   v-on:click="$router.push('/profile')"
                 >
                   <md-icon>account_circle</md-icon>
                 </md-button>
-
                 <md-button
                   class="md-icon-button"
                   v-on:click="$router.push('/logout');$cookies.set('cart',{})"
@@ -73,5 +79,11 @@ img{
 }
 .md-icon.md-icon-font.md-theme-default {
   color: black !important;
+}
+
+@media screen and (max-width: 900px) {
+  nav {
+    position: sticky;
+  }
 }
 </style>

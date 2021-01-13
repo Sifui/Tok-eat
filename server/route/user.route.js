@@ -184,7 +184,6 @@ router.put('/edit_address', hasToBeAuthenticated, async (req, res) => {
 })
 router.post('/payement',async(req,res)=>{
 
-    console.log('payement',req.body.cart)
     let items = []
     for ( let i = 0 ; i < req.body.cart.length;i++)
     {

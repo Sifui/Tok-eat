@@ -99,38 +99,41 @@ export default {
         filteredArticles = filteredArticles.concat(temp);
       });
 
-      this.$cookies.set("cart", {
+    if (this.user) {
+        let currentBasket = await axios.post("http://localhost:8081/basket", {
+          clientId: this.user.id,
+        });
+        currentBasket = currentBasket.data
+        for (let i = 0; i < filteredArticles.length; i++) {
+          await axios.post("http://localhost:8081/ordered_product", {
+            quantity: filteredArticles[i].quantity,
+            idBasket: currentBasket.id,
+            idOffer: filteredArticles[i].id,
+          });
+        }
+        this.$socket.emit('reservation',this.restaurant.id)
+        this.$cookies.set("cart", {
         ...this.$cookies.get("cart"),
         [this.restaurant.id]: {
           articles: filteredArticles,
           id: this.restaurant.id,
           name: this.restaurant.name,
+          idBasket:currentBasket.id
         },
       });
       
       this.$emit("updatecart");
-      if (this.user) {
-        const currentBasket = await axios.post("http://localhost:8081/basket", {
-          clientId: this.user.id,
-        });
-
-        for (let i = 0; i < filteredArticles.length; i++) {
-          console.log(filteredArticles[i]);
-          await axios.post("http://localhost:8081/ordered_product", {
-            quantity: filteredArticles[i].quantity,
-            idBasket: currentBasket.data.id,
-            idOffer: filteredArticles[i].id,
-          });
-        }
+      console.log(this.$cookies.get("cart"))
       }
+
+      
+      
     },
   },
   created() {
     UserServices.me().then((user) => {
-      console.log(user);
       this.user = user.data;
     });
-    console.log(this.user);
 
     if (!this.offers) {
       this.$router.go(-1);

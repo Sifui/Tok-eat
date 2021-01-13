@@ -9,7 +9,7 @@
 <script>
 import navbar from "../components/Navbar2";
 import footerTokEat from "../components/Footer";
-
+import userServices from '../services/userServices'
 export default {
   name: "Index",
   props: {},
@@ -19,12 +19,15 @@ export default {
       
     };
   },
-  created() {
-    
+  async created() {
+    const user = await userServices.me()
+    this.$socket.emit('submitId',user.data.id)
+
   },
   methods: {
     
   },
+  
 
    
 };

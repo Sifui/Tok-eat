@@ -189,7 +189,6 @@ export default {
         this.user = res.data;
       })
       .catch(() => {
-        console.log("not connected...");
       });
   },
   watch: {

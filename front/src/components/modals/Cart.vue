@@ -4,7 +4,7 @@
     <div v-for="item in infos" v-bind:key="item.restaurantId" style="margin-bottom:40px;padding:20px;box-shadow: 0 0 4px 0 silver">
       <h2 class="subheading">{{ item.name }}</h2>
       <div class="item-description flex-container" v-for="offer in item.articles" v-bind:key="offer.id">
-           <select class="quantity-picker" v-on:change="updateCartInfos($event.target.value,item.id,item.articles.indexOf(offer))" v-if="render">
+           <select disabled class="quantity-picker" v-on:change="updateCartInfos($event.target.value,item.id,item.articles.indexOf(offer))" v-if="render">
           <option  value="0">0</option>
             <template v-for="index in 100"> 
                 <option v-if="index==offer.quantity" selected :value="index" v-bind:key="index">{{ index }}</option>
@@ -14,12 +14,15 @@
           <span class="offer-name"> {{ offer.name }}</span>  
           <span class="offer-price"> {{offer.price}}€</span>
       </div>
+         <span align="center" v-if="pending" style="color:red">En attente</span> 
+         <span align="center" v-else style="color:green">Validé</span>
+
     </div>
-    <div class="centered" v-if="totalPrice != 0">
+    <div class="centered" v-if="totalPrice != 0 && !pending">
       <md-button v-on:click="goToPayement"> Procéder au paiement</md-button>
     </div>
      <div class="centered" v-if="totalPrice != 0">
-      <md-button v-on:click="clearCart()"> Vider le panier</md-button>
+      <md-button v-on:click="clearCart()"> Annuler la réservation</md-button>
     </div>
   </div>
 </template>
@@ -27,7 +30,7 @@
 <script>
 import axios from 'axios'
 import UserServices from '../../services/userServices'
-      var stripe = window.Stripe('pk_test_51HvkwYLjW8CJv9Axomn1cYBMLuvJ6hVBb002isuzWJTJ7beBM347sA1AZhVi4skpiiHmrl3wL1OPQ2J0InSSSF01004lSOoVFE');
+var stripe = window.Stripe('pk_test_51HvkwYLjW8CJv9Axomn1cYBMLuvJ6hVBb002isuzWJTJ7beBM347sA1AZhVi4skpiiHmrl3wL1OPQ2J0InSSSF01004lSOoVFE');
 
 export default {
   name: "Cart",
@@ -41,10 +44,13 @@ export default {
         totalPrice:0,
         zIndex:-1,
         right:'-520px',
-        render:true
+        render:true,
+        pending:true,
+        user:null,
+        basket:null
     }
   },
-  created() {
+  async created() {
     const urlParams = new URLSearchParams(window.location.search);
     const myParam = urlParams.get('session_id');
     if (myParam)
@@ -57,34 +63,36 @@ export default {
         }
       })
     }
-   
+      this.user = await UserServices.me()
+      this.user = this.user.data
+      let currentBasket = await axios.get(`http://localhost:8081/basket/${this.user.id}`)
+      console.log('currentBasket',currentBasket.data)
+      if (!currentBasket.data && this.$cookies.get('cart'))
+        this.pending = false
+      
+      console.log(this.pending)
       const infosKeys = Object.keys(this.infos)
       for ( let i = 0 ; i < infosKeys.length;i++)
       {
-          const currentRestaurantArticles = this.infos[Object.keys(this.infos)[i]].articles
-          for ( let j = 0 ; j  < currentRestaurantArticles.length;j++)
+        this.$socket.emit('submitId',this.infos[i].id)
+          const currentRestaurantArticles = this.infos[infosKeys[i]].articles
+          for ( let j = 0; j < currentRestaurantArticles.length;j++)
               this.totalPrice += currentRestaurantArticles[j].quantity * currentRestaurantArticles[j].price
       }
       this.totalPrice = Math.round((this.totalPrice + Number.EPSILON) * 100) / 100
   },
   methods:{
    async goToPayement(){
-      console.log(this.totalPrice)
       if ( !this.totalPrice)
         return
 
-      try{
-        await UserServices.me()
-      }
-      catch(e){
+      if(!this.user){
         this.$router.push({ path: "/login" });
         return
       }
-      console.log('infos',this.infos)
-        axios.post('http://localhost:8081/payement',{cart:this.infos}).then(function(session) {
-          console.log(session)
-          return stripe.redirectToCheckout({ sessionId: session.data.id });
-        }).catch(()=>{
+        axios.post('http://localhost:8081/payement',{cart:this.infos})
+        .then((session) => stripe.redirectToCheckout({ sessionId: session.data.id }))
+        .catch(()=>{
           console.log('error lors de la creation de la session de paiement')
         })
     },
@@ -105,6 +113,9 @@ export default {
       clearCart(){
         this.$emit('clearcookie');
         this.totalPrice=0;
+        this.pending = true
+        console.log(this.infos)
+        this.$socket.emit('cancel',{clientId:this.user.id,restaurantId:this.infos[Object.keys(this.infos)[0]].id})
       }
   },
   watch:{
@@ -120,13 +131,26 @@ export default {
       this.totalPrice = this.price
     },
     infos(){
+            this.pending = true
+
       this.render = false
          this.$nextTick(() => {
         this.render = true;
       });
       //this.updateCartInfos()
+    },
+   
+  },
+  sockets:{
+    validation(id){
+      console.log('client:',id,this.user)
+      if ( this.user.id != id)
+        return
+      console.log('votre panier a été validé')
+      this.pending = false
     }
   }
+  
 };
 </script>
 

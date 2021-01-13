@@ -268,7 +268,6 @@ export default {
   async mounted() {
     UserServices.me()
       .then((user) => {
-        console.log("vous etes deja connecté !");
         this.user = user.data;
       })
       .catch(() => {

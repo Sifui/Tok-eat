@@ -1,8 +1,33 @@
 <template>
   <div class="index" md-theme="black">
-    <cart  :display="display" :infos="cartInfos" :price="computedPrice" style="z-index: 7" v-on:clearcookie="$cookies.set('cart',{});cartInfos=[]" v-on:updatecartinfos="updateCart" />
-    <navbar :showSearchField="showSearchField" :display="display" style="z-index: 6;" v-on:showcart="showCart(1)" v-on:hidecart="showCart(0)" />
-    <router-view style="z-index:1;padding-bottom:5%" v-bind:class="{router:active}" v-on:updatecart="updateCart" v-on:clearcookie="$cookies.set('cart',{});cartInfos=[];computedPrice=0"/>
+    <cart
+      :display="display"
+      :infos="cartInfos"
+      :price="computedPrice"
+      style="z-index: 7"
+      v-on:clearcookie="
+        $cookies.set('cart', {});
+        cartInfos = [];
+      "
+      v-on:updatecartinfos="updateCart"
+    />
+    <navbar
+      :showSearchField="showSearchField"
+      :display="display"
+      style="z-index: 6"
+      v-on:showcart="showCart(1)"
+      v-on:hidecart="showCart(0)"
+    />
+    <router-view
+      style="z-index: 1; padding-bottom: 5%"
+      v-bind:class="{ router: active }"
+      v-on:updatecart="updateCart"
+      v-on:clearcookie="
+        $cookies.set('cart', {});
+        cartInfos = [];
+        computedPrice = 0;
+      "
+    />
     <footerTokEat style="z-index: 1" />
   </div>
 </template>
@@ -22,23 +47,26 @@ export default {
       scrolled: false,
       cartInfos: [],
       computedPrice: 0,
-      active:true,
-      showSearchField:false
+      active: true,
+      showSearchField: false,
     };
   },
   created() {
-     if (window.scrollY < (window.innerHeight*100)/100 && this.$route.name == "display-restaurants") {
-        this.showSearchField = false;
-      } else {
-        this.showSearchField = true;
-      }
-    if ( this.$route.name == 'display-restaurants')
-      this.active = false
-    else
-      this.active = true
+    if (
+      window.scrollY < (window.innerHeight * 100) / 100 &&
+      this.$route.name == "display-restaurants"
+    ) {
+      this.showSearchField = false;
+    } else {
+      this.showSearchField = true;
+    }
+    if (this.$route.name == "display-restaurants") this.active = false;
+    else this.active = true;
     window.addEventListener("scroll", () => {
-
-      if (window.scrollY < (window.innerHeight*100)/100 && this.$route.name == "display-restaurants") {
+      if (
+        window.scrollY < (window.innerHeight * 100) / 100 &&
+        this.$route.name == "display-restaurants"
+      ) {
         this.showSearchField = false;
       } else {
         this.showSearchField = true;
@@ -46,66 +74,68 @@ export default {
       if (!this.scrolled) {
         this.scrolled = true;
         this.display = 0;
-        setInterval(()=>{this.scrolled = false;},1300)
-        
+        setInterval(() => {
+          this.scrolled = false;
+        }, 1300);
       }
-      });
-      if ( !this.$cookies.get('cart'))
-        return
-    for ( let i = 0 ; i < Object.keys(this.$cookies.get("cart")).length;i++)
-      {
-        this.cartInfos.push(this.$cookies.get("cart")[Object.keys(this.$cookies.get("cart"))[i]])
-      }  
-    
+    });
+    if (!this.$cookies.get("cart")) return;
+    const reservations = Object.keys(this.$cookies.get("cart"));
+    for (let i = 0; i < reservations.length; i++) {
+      const currentReservation = this.$cookies.get("cart")[reservations[i]];
+      this.cartInfos.push(currentReservation);
+    }
   },
   methods: {
     showCart(i) {
       this.display = i;
     },
-    updateCart(){
-      this.cartInfos = []
-      this.computedPrice = 0
-      setTimeout(()=>{
-      for ( let i = 0 ; i < Object.keys(this.$cookies.get("cart")).length;i++)
-      {
-        let currentRestaurant = this.$cookies.get("cart")[Object.keys(this.$cookies.get("cart"))[i]]
-        for ( let j = 0 ; j < Object.keys(currentRestaurant).length-1;j++)
-        {
-           for( let article in currentRestaurant[Object.keys(currentRestaurant)[j]] )
-           {
-                this.computedPrice += currentRestaurant[Object.keys(currentRestaurant)[j]][article].price* currentRestaurant[Object.keys(currentRestaurant)[j]][article].quantity
-           }
+    updateCart() {
+      this.cartInfos = [];
+      this.computedPrice = 0;
+      setTimeout(() => {
+        console.log("cart", this.$cookies.get("cart"));
+        const reservations = Object.keys(this.$cookies.get("cart"))
+        for (let i = 0;i < reservations.length;i++) {
+          let currentRestaurant = this.$cookies.get("cart")[
+            reservations[i]
+          ];
+          console.log("current", currentRestaurant.articles);
+
+          for (let article of currentRestaurant.articles) {
+            console.log(article);
+            this.computedPrice += article.price * article.quantity;
+          }
+
+          this.cartInfos.push(
+            this.$cookies.get("cart")[reservations[i]]
+          );
         }
-        this.cartInfos.push(this.$cookies.get("cart")[Object.keys(this.$cookies.get("cart"))[i]])
-      }
-      this.computedPrice = Math.round((this.computedPrice + Number.EPSILON) * 100) / 100
-      },0)
-    }
+
+        this.computedPrice =
+          Math.round((this.computedPrice + Number.EPSILON) * 100) / 100;
+        console.log("price:", this.computedPrice);
+      }, 0);
+    },
   },
   watch: {
     async $route() {
       window.scrollTo(0, 0);
-    if ( this.$route.name == 'display-restaurants')
-    this.active = false
-    else
-          this.active = true
+      if (this.$route.name == "display-restaurants") this.active = false;
+      else this.active = true;
 
-          if (window.scrollY < 800 && this.$route.name == "display-restaurants") {
+      if (window.scrollY < 800 && this.$route.name == "display-restaurants") {
         this.showSearchField = false;
       } else {
         this.showSearchField = true;
       }
     },
-    
   },
-   sockets: {
-        connect() {
-            console.log('socket connected')
-
-
-        },
-       
+  sockets: {
+    connect() {
+      console.log("socket connected");
     },
+  },
 };
 </script>
 
@@ -126,21 +156,18 @@ export default {
   height: 100%;
 }
 
-.router
-{
-  padding-top:8%;
+.router {
+  padding-top: 8%;
 }
 
 @media screen and (max-width: 1600px) {
-
-  .router{
-    padding-top:10%
+  .router {
+    padding-top: 10%;
   }
 }
 @media screen and (max-width: 1300px) {
-
-  .router{
-    padding-top:15%
+  .router {
+    padding-top: 15%;
   }
 }
 </style>

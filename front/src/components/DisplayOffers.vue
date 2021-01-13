@@ -159,7 +159,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .border{
     display: flex;
     flex: 1 1 auto;

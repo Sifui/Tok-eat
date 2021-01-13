@@ -21,7 +21,6 @@ async function dropEverything () {
     )
     
     for (const row of result.rows) {
-        console.log(row.query)
         await PostgresStore.client.query(row.query)
     }
 

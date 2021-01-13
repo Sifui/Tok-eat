@@ -44,13 +44,27 @@ let io = require("socket.io")(server,{
       },
      
 })
-
+let restaurants = {}
 io.on('connection',(socket)=>{
     console.log('user connected')
     socket.on('disconnect', () => {
         console.log('user disconnected');
     });
-     
+    socket.on('reservation',(id)=>{
+        io.to(id).emit('notification')
+        socket.join(id)
+        console.log('notification emise !')
+    })
+    socket.on('submitId',(id)=>{
+        socket.join(id)
+    }) 
+    socket.on('validation',(basket)=>{
+        io.to(basket.restaurantId).emit('validation',basket.clientId)
+    }) 
+    socket.on('cancel',(basket)=>{
+        io.to(basket.restaurantId).emit('cancel',basket.clientId)
+
+    })
 })
 
 app.use('/', userRouter);

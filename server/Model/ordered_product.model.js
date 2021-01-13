@@ -28,15 +28,24 @@ class Ordered_Product {
     static async getByRestaurantId(idRestaurant){
 
         const result = await PostgresStore.client.query({
-            text: `SELECT op.id_basket,o.name,o.price,o.priority 
-                    FROM ${Basket.tableName} as b 
-                        LEFT JOIN ${Ordered_Product.tableName} as op ON b.id = op.id_basket
-                        LEFT JOIN ${Offer.tableName} as o on op.id_offer = o.id 
-                        LEFT JOIN ${Category.tableName} as c on o.id_category = c.id  
-                        LEFT JOIN ${Restaurant.tableName} as r on c.id_restaurant = r.id
-                    WHERE  r.id = $1
-                    AND validation = false
-                    GROUP BY op.id_basket,o.name,o.price,o.priority
+            text: `SELECT op.id_basket,
+                                o.name,
+                                o.price,
+                                o.priority,
+                                op.quantity,
+                                b.id_client
+                        FROM Basket AS b
+                        LEFT JOIN ordered_product AS op ON b.id = op.id_basket
+                        INNER JOIN
+                        (SELECT DISTINCT ON (id_client) id
+                            FROM basket
+                            ORDER BY id_client DESC, id DESC) AS req ON op.id_basket = req.id
+                        LEFT JOIN Offer AS o ON op.id_offer = o.id
+                        LEFT JOIN Category AS c ON o.id_category = c.id
+                        LEFT JOIN Restaurant AS r ON c.id_restaurant = r.id
+                        WHERE r.id = $1
+                        AND validation = FALSE
+                        order by id_client desc
             `,
                     values : [idRestaurant]
         })

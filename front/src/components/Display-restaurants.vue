@@ -134,7 +134,6 @@ export default {
     UserServices.me()
       .then((user) => {
         this.user = user.data;
-        console.log("utilisateur:",this.user)
         axios
           .get(
             `http://localhost:8081/client-restaurant/favorites/${this.user.id}`

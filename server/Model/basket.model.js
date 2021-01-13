@@ -27,6 +27,22 @@ class Basket {
         })
         return result.rows[0]
     }
+    static async getById(id)
+    {
+        const result = await PostgresStore.client.query({
+            text: `SELECT * FROM ${Basket.tableName} WHERE id_client = $1 AND validation = false`,
+                    values : [id]
+        })
+        return result.rows[0]
+    }
+    static async validateById(id)
+    {
+        const result = await PostgresStore.client.query({
+            text: `UPDATE ${Basket.tableName} SET validation = true WHERE id = $1 RETURNING *`,
+                    values : [id]
+        })
+        return result.rows
+    }
 }
 
 /** @type {String} */
