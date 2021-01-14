@@ -79,11 +79,11 @@ export default {
         }, 1300);
       }
     });
-    if (!this.$cookies.get("cart")) return;
-    const reservations = Object.keys(this.$cookies.get("cart"));
-    for (let i = 0; i < reservations.length; i++) {
-      const currentReservation = this.$cookies.get("cart")[reservations[i]];
-      this.cartInfos.push(currentReservation);
+    if (!this.$cookies.get("cart")) return
+    const reservations = this.$cookies.get("cart")
+    for (const item in reservations) {
+      const currentReservation = this.$cookies.get("cart")[item]
+      this.cartInfos.push(currentReservation)
     }
   },
   methods: {

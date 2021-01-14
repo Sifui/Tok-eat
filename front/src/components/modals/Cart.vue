@@ -113,7 +113,7 @@ export default {
         this.$emit('clearcookie');
         this.totalPrice=0;
         this.pending = true
-        //this.$socket.emit('cancel',{clientId:this.user.id,restaurantId:this.infos[Object.keys(this.infos)[0]].id})
+        this.$socket.emit('cancel',{clientId:this.user.id,restaurantId:this.infos[Object.keys(this.infos)[0]].id})
       }
   },
   watch:{

@@ -1,9 +1,13 @@
 <template>
-<div>
-  <div v-if="render && reservations[0].length" class="flex-container" style="overflow:auto;max-width:500px;max-height:70vh;margin:auto;flex-direction:column">
+<div style="height:80vh">
+  <div class="flex-container" style="overflow:auto;max-width:500px;max-height:70vh;margin:auto;">
+   <div class="column">
+     <div style="text-align:center">Reservations en cours</div>
+                <div v-if="reservations[0].length">
+
     <div
       v-for="item in reservations"
-      :key="item.id" v-bind:class="{success:item.validated}"
+      :key="item.id" v-bind:class="{success:item.validated=='validated',cancel:item.validated=='cancel'}"
       style="border: 1px solid black; margin: 10px; padding: 20px;"
     >
       {{ item.id_client }}
@@ -12,12 +16,30 @@
         {{article.name}}
         {{article.price}}€
       </div>
-      <button type="button" v-on:click="validateReservation(item);item.validated = true">Valider</button>
+      <button v-if="!item.validated" type="button" v-on:click="validateReservation(item);item.validated = 'validated'">Valider</button>
     </div>
+            </div>
+
+        </div>
+  <div class="column">
+    
+    <div style="text-align:center">Reservations annulées</div>
+    <div
+       v-for="item in cancellations"
+      :key="item.id"
+      style="border: 1px solid black; margin: 10px; padding: 20px;" class="cancel"
+    >
+      {{ item.id_client }}
+      <div v-for="article in item" :key="article.id">
+        {{article.quantity}}
+        {{article.name}}
+        {{article.price}}€
+      </div>
+    </div>
+        </div>
+
   </div>
-  <div v-else>
-    Aucune reservation en cours...
-  </div>
+
   </div>
 </template>
 
@@ -32,7 +54,8 @@ export default {
     return {
       user: null,
       reservations: [[]],
-      render:true
+      render:true,
+      cancellations:[]
     };
   },
   methods: {
@@ -66,12 +89,12 @@ export default {
     }
   },
   async created() {
-    
     this.refreshData()
+    console.log(this.reservations)
   },
   sockets:{
     notification(){
-      alert('une reservation a été passé chez vous !')
+      //alert('une reservation a été passé chez vous !')
           this.refreshData()
      //  this.render = false;
 
@@ -80,6 +103,29 @@ export default {
         //  this.render = true;
         });
 
+    },
+    cancel(id){
+      //this.refreshData()
+      console.log(id)
+      console.log('r',this.reservations)
+      for ( let i = 0 ; i < this.reservations.length;i++)
+      {
+        console.log('r',this.reservations[i])
+        if ( this.reservations[i][0].id_client == id)
+        {
+          this.reservations[i].validated = 'cancel'
+          console.log('prout')
+          this.$forceUpdate();
+          this.cancellations.push(this.reservations[i])
+          this.reservations.splice(i,1)
+          if ( !this.reservations.length)
+            this.reservations.push([]);
+
+          break;
+        }
+        
+      }
+      console.log('reserv',this.reservations)
     }
   }
 };
@@ -88,5 +134,13 @@ export default {
 <style>
 .success{
   background-color:green
+}
+.cancel{
+  background-color:orange
+}
+.column
+{
+  padding:10px;
+  border:1px solid black
 }
 </style>

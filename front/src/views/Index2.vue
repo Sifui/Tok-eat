@@ -1,7 +1,7 @@
 <template>
   <div class="index" md-theme="black">
     <navbar  style="z-index: 6;"/>
-    <router-view style="z-index:1;padding-bottom:5%;padding-top:8%"/>
+    <router-view style="z-index:1;padding-bottom:5%;padding-top:10%"/>
     <footerTokEat style="z-index: 1" />
   </div>
 </template>

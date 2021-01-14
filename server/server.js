@@ -62,7 +62,7 @@ io.on('connection',(socket)=>{
         io.to(basket.restaurantId).emit('validation',basket.clientId)
     }) 
     socket.on('cancel',(basket)=>{
-        //io.to(basket.restaurantId).emit('cancel',basket.clientId)
+        io.to(basket.restaurantId).emit('cancel',basket.clientId)
 
     })
 })
