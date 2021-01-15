@@ -5,6 +5,7 @@
         <img
           class="logo"
           src="../assets/logo.png"
+          v-on:click="$router.push('/').catch(() => {})"
           v-show="!this.register.type"
         />
         <!-- <div class="md-title font-title">Tok' eat</div> -->
@@ -574,6 +575,7 @@ md-input {
   }
   .logo {
     border-radius: 2px;
+    cursor: pointer;
   }
   .actions {
     .md-button {
