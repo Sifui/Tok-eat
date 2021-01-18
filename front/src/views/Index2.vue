@@ -1,7 +1,7 @@
 <template>
   <div class="index" md-theme="black">
     <navbar  style="z-index: 6;"/>
-    <router-view style="z-index:1;padding-bottom:5%;padding-top:8%"/>
+    <router-view style="z-index:1;padding-bottom:5%;padding-top:6%"/>
     <!-- <menuDash style="z-index:6" /> -->
     <footerTokEat style="z-index: 1" />
   </div>
@@ -47,6 +47,7 @@ export default {
 
 .index {
   height: 100%;
+  background-color: rgb(240, 240, 240);
 }
 
 
