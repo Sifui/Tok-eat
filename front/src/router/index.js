@@ -1,15 +1,10 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import userServices from '../services/userServices'
 // import Home from '../views/Home.vue'
-
+import store from '../store'
 Vue.use(VueRouter)
 function isAuthenticated() {
-  return userServices.me().then((res) => {
-    return res.data
-  }).catch(() => {
-    return false
-  })
+  return store.state.user != null ? store.state.user : false
 }
 const routes = [
   {

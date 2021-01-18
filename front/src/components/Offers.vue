@@ -51,7 +51,6 @@
 
 <script>
 import axios from "axios";
-import UserServices from "../services/userServices";
 export default {
   name: "Offers",
   props: {
@@ -79,6 +78,8 @@ export default {
       this.offersClone[cat][index].quantity = event.target.value;
     },
     async passerReservation() {
+      if ( !this.$cookies.get("cart"))
+        this.$cookies.set("cart",{})
       if (
         Object.keys(this.$cookies.get("cart")).length == 1 ||
         this.$cookies.get("cart")[this.restaurant.id]
@@ -130,9 +131,8 @@ export default {
     },
   },
   created() {
-    UserServices.me().then((user) => {
-      this.user = user.data;
-    });
+        this.user = this.$store.state.user
+
 
     if (!this.offers) {
       this.$router.go(-1);

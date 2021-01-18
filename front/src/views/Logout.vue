@@ -1,3 +1,8 @@
+<template>
+    <div>
+        
+    </div>
+</template>
 <script>
 import userServices from "../services/userServices";
 export default {

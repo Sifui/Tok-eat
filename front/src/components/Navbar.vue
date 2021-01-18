@@ -71,7 +71,7 @@
 
                 <md-button
                   class="md-icon-button"
-                  v-on:click="$router.push('/logout');$cookies.set('cart',{})"
+                  v-on:click="$store.commit('disconnectUser');$router.push('/logout');$cookies.set('cart',{})"
                 >
                   <md-icon>exit_to_app</md-icon>
                 </md-button>
@@ -95,7 +95,6 @@
 
 <script>
 import axios from "axios";
-import UserServices from "../services/userServices";
 export default {
   name: "Navbar",
   props: {
@@ -166,6 +165,7 @@ export default {
     },
   },
   created() {
+    this.user = this.$store.state.user
      if (window.scrollY < 800 && this.$route.name == "display-restaurants") {
         this.transparent = 'transparent !important';
       } else {
@@ -184,12 +184,7 @@ export default {
       }
       this.windowWidth = window.innerWidth;
     };
-    UserServices.me()
-      .then((res) => {
-        this.user = res.data;
-      })
-      .catch(() => {
-      });
+   
   },
   watch: {
     showSearchField(){
@@ -199,7 +194,9 @@ export default {
                 this.transparent = 'transparent !important'
 
       }
-    }
+    },
+    
+   
   },
 };
 </script>

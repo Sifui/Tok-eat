@@ -8,6 +8,8 @@ import router from './router'
 import VueCookies from 'vue-cookies'
 import VueSocketIO from 'vue-socket.io'
 import SocketIO from 'socket.io-client'
+import 'es6-promise/auto'
+import store from './store'
 
 Vue.use(VueRouter)
 Vue.use(VueCookies)
@@ -23,6 +25,7 @@ Vue.config.productionTip = false
 
 new Vue({
   router,
+  store,
   render: h => h(App)
 }).$mount('#app')
 

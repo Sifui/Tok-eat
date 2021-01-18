@@ -131,7 +131,6 @@
 
 <script>
 import axios from "axios";
-import UserServices from "../services/userServices";
 import OfferServices from "../services/offerServices";
 
 export default {
@@ -263,16 +262,13 @@ export default {
     },
   },
   async created() {
+    this.user = this.$store.state.user
     await this.initData();
   },
   async mounted() {
-    UserServices.me()
-      .then((user) => {
-        this.user = user.data;
-      })
-      .catch(() => {
+    if ( !this.user) 
         this.showForm = false
-      });
+      
     OfferServices.getOfferByIdRestaurant(this.$route.query.id).then(
       (offers) => {
         this.offers = [...offers.data];

@@ -107,7 +107,10 @@ export default {
             setTimeout(() => {
               this.loading = false;
             }, 1000);
+                            this.$store.commit('update')
+
             const user = await userServices.me()
+
             if(user.data.type === "client")
             {
               this.$router.push({ path: "/" });

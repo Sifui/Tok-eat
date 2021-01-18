@@ -111,7 +111,6 @@ export default {
 
         this.computedPrice =
           Math.round((this.computedPrice + Number.EPSILON) * 100) / 100;
-        console.log("price:", this.computedPrice);
       }, 0);
     },
   },

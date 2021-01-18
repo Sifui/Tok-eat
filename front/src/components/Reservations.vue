@@ -45,7 +45,6 @@
 
 <script>
 import axios from "axios";
-import userServices from "../services/userServices";
 export default {
   name: "Reservations",
   props: {},
@@ -69,8 +68,6 @@ export default {
     async refreshData(){
     this.reservations = [[]]
 
-    this.user = await userServices.me();
-    this.user = this.user.data;
     let result = await axios.get(
       `http://localhost:8081/ordered_products/restaurant/${this.user.id}`
     );
@@ -89,8 +86,8 @@ export default {
     }
   },
   async created() {
+    this.user = this.$store.state.user
     this.refreshData()
-    console.log(this.reservations)
   },
   sockets:{
     notification(){
@@ -106,15 +103,11 @@ export default {
     },
     cancel(id){
       //this.refreshData()
-      console.log(id)
-      console.log('r',this.reservations)
       for ( let i = 0 ; i < this.reservations.length;i++)
       {
-        console.log('r',this.reservations[i])
         if ( this.reservations[i][0].id_client == id)
         {
           this.reservations[i].validated = 'cancel'
-          console.log('prout')
           this.$forceUpdate();
           this.cancellations.push(this.reservations[i])
           this.reservations.splice(i,1)
@@ -125,7 +118,6 @@ export default {
         }
         
       }
-      console.log('reserv',this.reservations)
     }
   }
 };

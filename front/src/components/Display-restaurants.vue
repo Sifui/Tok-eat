@@ -105,7 +105,6 @@ import axios from "axios";
 import one from "../assets/1.jpg";
 import two from "../assets/2.jpg";
 import three from "../assets/3.jpg";
-import UserServices from '../services/userServices'
 export default {
   name: "Display-restaurants",
   props: {},
@@ -118,6 +117,7 @@ export default {
     };
   },
   created() {
+    this.user = this.$store.state.user
     let images =  [one, two, three]
     setInterval(() => {
       const firstImage = images.shift();
@@ -131,9 +131,7 @@ export default {
         this.restaurants = data;
       })
       
-    UserServices.me()
-      .then((user) => {
-        this.user = user.data;
+   if (this.user){
         axios
           .get(
             `http://localhost:8081/client-restaurant/favorites/${this.user.id}`
@@ -141,7 +139,10 @@ export default {
           .then((response) => {
             this.favoritesRestaurants = response.data;
           });
-      }).catch(()=>{console.log('not connected...')})
+      }
+      else{
+        console.log('not connected...')
+        }
   },
 
   methods: {},

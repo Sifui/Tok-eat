@@ -29,7 +29,6 @@
 
 <script>
 import axios from 'axios'
-import UserServices from '../../services/userServices'
 var stripe = window.Stripe('pk_test_51HvkwYLjW8CJv9Axomn1cYBMLuvJ6hVBb002isuzWJTJ7beBM347sA1AZhVi4skpiiHmrl3wL1OPQ2J0InSSSF01004lSOoVFE');
 
 export default {
@@ -51,6 +50,7 @@ export default {
     }
   },
   async created() {
+    this.user = this.$store.state.user
     const urlParams = new URLSearchParams(window.location.search);
     const myParam = urlParams.get('session_id');
     if (myParam)
@@ -63,13 +63,12 @@ export default {
         }
       })
     }
-      this.user = await UserServices.me()
-      this.user = this.user.data
+    if ( !this.user)
+    return
       let currentBasket = await axios.get(`http://localhost:8081/basket/${this.user.id}`)
       currentBasket = currentBasket.data
       if (currentBasket.validation)
         this.pending = false
-      console.log(currentBasket)
       const infosKeys = Object.keys(this.infos)
       for ( let i = 0 ; i < infosKeys.length;i++)
       {
