@@ -5,7 +5,9 @@
 
       <div class="modal__dialog">
         <div class="modal__header">
-          <slot name="header" />
+          <slot name="header">
+            <!-- <h3>validation</h3> -->
+          </slot>
         </div>
 
         <div class="modal__body">
@@ -17,10 +19,14 @@
 
         <div class="modal__footer">
           <slot name="footer" />
-          <md-button v-on:click="closeModal">Retour</md-button>
-          <md-button class="rightCentredButton" @click="validate">
-            Confirmer
-          </md-button>
+          <div class="but-1">
+            <button class="but-cancel" v-on:click="closeModal">Retour</button>
+          </div>
+          <div class="but-2">
+            <button class="but-validation" @click="validate">
+              Confirmer
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -29,7 +35,7 @@
 
 <script>
 export default {
-  name: "validateProfilModification",
+  name: "ProfilModalValidateModification",
   props: {
     me: Object,
     modals: Object,
@@ -52,6 +58,47 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.but-1 {
+  width: 50%;
+}
+.but-2 {
+  width: 50%;
+}
+.but-validation {
+  margin-left: 10%;
+  width: 90%;
+  height: 40px;
+  border-radius: 10px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  background-color: #6db672;
+  color: aliceblue;
+  border: none;
+}
+
+.but-validation:hover {
+  cursor: pointer;
+  background-color: #57915b;
+  width: 88%;
+  height: 38px;
+}
+
+.but-cancel {
+  width: 90%;
+  height: 40px;
+  border-radius: 10px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  background-color: #b94d45;
+  color: aliceblue;
+  border: none;
+}
+.but-cancel:hover {
+  cursor: pointer;
+  background-color: #a82b22;
+  width: 88%;
+  height: 38px;
+}
 .modal {
   position: fixed;
   top: 0;
@@ -88,20 +135,27 @@ export default {
     height: 30px;
   }
   &__header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    padding: 20px 20px 10px;
+    // display: flex;
+    // align-items: flex-start;
+    // justify-content: space-between;
+    padding: 10px 0px 10px 20px;
+    // background-color: aqua;
+    text-align: center;
+    text-transform: uppercase;
+    margin-bottom: 10px;
   }
   &__body {
-    padding: 10px 20px 10px;
-    overflow: auto;
+    padding: 10px 50px 10px 50px;
     display: flex;
     flex-direction: column;
-    align-items: stretch;
+    text-align: center;
+    // align-items: stretch;
+    overflow: auto;
+    // background-color: #5589cc;
   }
   &__footer {
-    padding: 10px 20px 20px;
+    padding: 10px 50px 40px 50px;
+    display: flex;
   }
 }
 .fade-enter-active,

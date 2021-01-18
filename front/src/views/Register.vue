@@ -5,6 +5,7 @@
         <img
           class="logo"
           src="../assets/logo.png"
+          v-on:click="$router.push('/').catch(() => {})"
           v-show="!this.register.type"
         />
         <!-- <div class="md-title font-title">Tok' eat</div> -->
@@ -190,6 +191,7 @@
             <md-file
               type="file"
               id="restaurantImage"
+              ref="restaurantImage"
               name="restaurantImage"
               accept="image/x-png,image/gif,image/jpeg,image/tiff"
               v-model="restaurant.image"
@@ -511,12 +513,14 @@ export default {
     isRestaurantImageValid() {
       if (
         regImage.test(
-          document.getElementById("restaurantImage").value.substr(12)
+          this.$refs.restaurantImage.$data.localValue.target.files[0].name
         )
       ) {
         this.errorRestaurantImage = false;
+        // console.log("Ratesh is caca");
       } else {
         this.errorRestaurantImage = true;
+        // console.log("Ratesh is pipi");
       }
     },
     isPasswordTheSame() {
@@ -569,6 +573,7 @@ md-input {
   }
   .logo {
     border-radius: 2px;
+    cursor: pointer;
   }
   .actions {
     .md-button {

@@ -1,63 +1,9 @@
 <template>
   <div class="footer">
-    <!-- <p>pipi</p> -->
-    <div class="container">
-      <div class="item-1">
-        <div class="logo">
-          <h2 class="title">TOK' EAT</h2>
-          <img src="../assets/logo-no-text.png" alt="missing" />
-        </div>
-
-        <p>
-          <span>
-            Aenean semper sapien arcu, ut sodales dolor elementum ut. Vivamus at
-            neque elit. Nulla vel lorem vitae odio ullamcorper accumsan ac non
-            risus. Sed mollis, nisl nec placerat blandit, erat urna blandit dui,
-            in hendrerit tellus quam id arcu. Aenean lobortis bibendum nulla,
-            nec tincidunt mi accumsan ultricies. Vivamus posuere tincidunt nisi
-          </span>
-          <span>
-            Aenean semper sapien arcu, ut sodales dolor elementum ut. Vivamus at
-            neque elit. Nulla vel lorem vitae odio ullamcorper accumsan ac non
-            risus. Sed mollis, nisl nec placerat blandit, erat urna blandit dui,
-            in hendrerit tellus quam id arcu. Aenean lobortis bibendum nulla,
-            nec tincidunt mi accumsan ultricies. Vivamus posuere tincidunt nisi
-          </span>
-        </p>
-      </div>
-      <div class="item-2">
-        <h3 class="newsletter">NEWSLETTER</h3>
-        <div>
-          <input type="email" name="email" id="email" />
-        </div>
-        <div>
-          <button type="submit">ENVOYER</button>
-        </div>
-        <h3 class="download">Téléchargez notre application</h3>
-        <div class="download-image">
-          <a href="#"><img src="../assets/playstore.svg" alt="image" /></a>
-          <a href="#"><img src="../assets/applestore.svg" alt="image" /></a>
-        </div>
-      </div>
-      <div class="item-3">
-        <h3>SUPPORTS</h3>
-        <div class="links">
-          <a href="#">À PROPOS DE NOUS</a>
-          <a href="#">CONTACT</a>
-          <a href="#">AIDES</a>
-          <a href="#"> COOKIES </a>
-          <a href="#">F A Q</a>
-        </div>
-      </div>
-    </div>
-
     <div class="footer-ends">
-      <div>
-        <div></div>
         <div>
           <p>copyrights 2020</p>
         </div>
-      </div>
     </div>
   </div>
 </template>
@@ -147,7 +93,7 @@ button:hover {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #ffffff;
-  padding: 50px 0 4px 0;
+  padding: 5px 0 5px 0;
 }
 .container {
   /* background-color: aquamarine; */

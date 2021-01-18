@@ -1,5 +1,6 @@
 const router = require("express").Router()
 const bcrypt = require('bcrypt')
+const fs = require('fs')
 const Client = require("../model/client.model")
 const Restaurant = require("../model/restaurant.model")
 const hasToBeAuthenticated = require('../middlewares/has-to-be-authenticated.middleware')
@@ -28,6 +29,17 @@ router.post('/login', async (req, res) => {
     }
     else {
         res.json({ user: false })
+    }
+})
+
+router.post('/check_password', hasToBeAuthenticated, async (req, res) => {
+    // console.log('HERE ===> ' + req.body);
+    const client = await Client.findByEmail(req.body.email)
+    if (client && (await bcrypt.compare(req.body.password, client.password))) {
+        res.json({ password: true })
+    }
+    else {
+        res.json({ password: false })
     }
 })
 
@@ -152,6 +164,7 @@ router.put('/edit_email', hasToBeAuthenticated, async (req, res) => {
     }
 })
 
+
 router.put('/edit_description', hasToBeAuthenticated, async (req, res) => {
     if (req.session.type == "restaurant") {
         const result = await Restaurant.editDescription(req.body)
@@ -182,6 +195,59 @@ router.put('/edit_address', hasToBeAuthenticated, async (req, res) => {
         res.json(result)
     }
 })
+
+
+/////////////// Setra code début ////////////////////////////////////////
+
+router.put('/edit_password', hasToBeAuthenticated, async (req, res) => {
+    await Client.editPassword(req.body)
+    res.json({ password: true })
+})
+
+router.put('/update_client_data', hasToBeAuthenticated, async (req, res) => {
+    let mail = await Client.findByEmail(req.body.email)
+    if (mail) {
+        if (mail.id === req.body.id) {
+            const result = Client.updateClientDataExceptPassword(req.body)
+            res.json(result)
+        } else {
+            res.json({ message: " Erreur - email déjà utilisé " })
+        }
+    }
+    else {
+        const result = Client.updateClientDataExceptPassword(req.body)
+        res.json(result)
+    }
+})
+
+router.post('/upload_profil_image', hasToBeAuthenticated, async (req, res) => {
+    // console.log(req.body.client);
+    let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
+    let randomChars = ''
+    for (var i = 0; i < 15; i++) {
+        randomChars += chars.charAt(Math.floor(Math.random() * randomChars.length));
+    }
+    // let path = `./assets/profil-images/${req.body.client.toBeDeletedImage}.png`
+    // console.log(path);
+    // fs.unlink(path, (err) => {
+    //     if (err) {
+    //         console.error(err)
+    //     }
+    //     //file removed
+    // })
+
+    let randomNumber = (Math.floor(Math.random() * 999999999999999) + 11).toString();
+    let imageName = randomChars.concat(randomNumber)
+    console.log(imageName);
+    let result = await Client.editImage(imageName, req.body.client)
+
+    let base64Data = req.body.url.replace(/^data:image\/(png|jpeg);base64,/, "");
+    fs.writeFile(`./assets/profil-images/${imageName}.png`, base64Data, 'base64', function (err) {
+        console.log(err);
+    });
+    res.status(200).json(result)
+})
+
 router.post('/payement',async(req,res)=>{
 
     let items = []
@@ -210,7 +276,6 @@ router.post('/payement',async(req,res)=>{
     success_url: `http://localhost:8080?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: 'http://localhost:8080',
   });
-
   res.json({ id: session.id });
 })
 router.post('/session-id',async(req,res)=>{

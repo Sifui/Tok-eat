@@ -1,7 +1,11 @@
 <template>
-  <div id="cartModal" v-bind:style="{right:right}">
-    <h1 class="title">Vos réservations ({{formatPrice(totalPrice)}} €)</h1>
-    <div v-for="item in infos" v-bind:key="item.restaurantId" style="margin-bottom:40px;padding:20px;box-shadow: 0 0 4px 0 silver">
+  <div id="cartModal" v-bind:style="{ right: right }">
+    <h1 class="title">Vos réservations ({{ formatPrice(totalPrice) }} €)</h1>
+    <div
+      v-for="item in infos"
+      v-bind:key="item.restaurantId"
+      style="margin-bottom: 40px; padding: 20px; box-shadow: 0 0 4px 0 silver"
+    >
       <h2 class="subheading">{{ item.name }}</h2>
       <div class="item-description flex-container" v-for="offer in item.articles" v-bind:key="offer.id">
            <select disabled class="quantity-picker" v-on:change="updateCartInfos($event.target.value,item.id,item.articles.indexOf(offer))" v-if="render">
@@ -11,8 +15,8 @@
                 <option v-else :value="index" v-bind:key="index">{{ index }}</option>
             </template>
         </select>
-          <span class="offer-name"> {{ offer.name }}</span>  
-          <span class="offer-price"> {{offer.price}}€</span>
+        <span class="offer-name"> {{ offer.name }}</span>
+        <span class="offer-price"> {{ offer.price }}€</span>
       </div>
          <span align="center" v-if="pending" style="color:red">En attente</span> 
          <span align="center" v-else style="color:green">Validé</span>
@@ -36,7 +40,7 @@ export default {
   props: {
     display: Number,
     infos: Array,
-    price:Number,
+    price: Number,
   },
   data() {
     return {
@@ -79,6 +83,7 @@ export default {
       }
       this.totalPrice = Math.round((this.totalPrice + Number.EPSILON) * 100) / 100
   },
+    
   methods:{
    async goToPayement(){
       if ( !this.totalPrice)
@@ -115,17 +120,16 @@ export default {
         this.$socket.emit('cancel',{clientId:this.user.id,restaurantId:this.infos[Object.keys(this.infos)[0]].id})
       }
   },
-  watch:{
-    display(){
-      if ( this.display){
-        this.right = '0px'
-      }
-      else{
-          this.right = '-520px'
+  watch: {
+    display() {
+      if (this.display) {
+        this.right = "0px";
+      } else {
+        this.right = "-520px";
       }
     },
-    price(){
-      this.totalPrice = this.price
+    price() {
+      this.totalPrice = this.price;
     },
     infos(){
             this.pending = true
@@ -159,17 +163,17 @@ export default {
   background-color: white;
   transition: right 0.5s ease;
   overflow: auto;
-  max-height:85vh;
+  max-height: 85vh;
 }
-.item-description{
+.item-description {
   font-family: UberMoveText-Medium;
-  font-size:1.18em;
+  font-size: 1.18em;
   margin: 10px 5px 10px 0;
 }
-.offer-name{
-  margin-left:10px
+.offer-name {
+  margin-left: 10px;
 }
-.offer-price{
-  margin-left:auto
+.offer-price {
+  margin-left: auto;
 }
 </style>

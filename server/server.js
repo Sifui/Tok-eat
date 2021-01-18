@@ -6,8 +6,9 @@ PostgresStore.init()
 let express = require("express")
 let bodyParser = require("body-parser")
 let logger = require('morgan')
-let session = require('express-session')
+const session = require('express-session')
 let cors = require("cors")
+let app = express()
 let port = 8081
 
 let userRouter = require('./route/user.route')
@@ -16,9 +17,12 @@ let offerRouter = require('./route/offer.route')
 let clientRestaurantRouter = require('./route/client-restaurant.route')
 let basketRouter = require('./route/basket.route')
 let categoryRouter = require('./route/category.route')
-let orderedProduct = require('./route/ordered_product.route')
 
-let app = express()
+
+app.use(express.static(__dirname + '/assets'));
+
+
+let orderedProduct = require('./route/ordered_product.route')
 
 app.use(session({
     secret: 'ZSW58:]kn/=c9Xp&',
@@ -27,7 +31,10 @@ app.use(session({
 }))
 
 
-app.use(bodyParser.json())
+app.use(bodyParser.json({
+    limit: '50mb',
+    extended: true
+}));
 app.use(cors({
     credentials: true,
     origin: 'http://localhost:8080' // si votre port est différent, changez cette valeur !
@@ -36,7 +43,7 @@ app.use(express.urlencoded({ extended: true }))
 app.use(logger('dev'))
 
 let server = app.listen(port, () => {
-    console.log('Server is listening')
+    console.log('Server is listening on port '+port)
 });
 let io = require("socket.io")(server,{
     cors: {

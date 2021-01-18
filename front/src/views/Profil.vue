@@ -7,10 +7,43 @@
             <div class="profil-picture">
               <img
                 class="profil-image"
-                src="../assets/profil.jpg"
+                v-bind:src="user.image"
                 alt="profil-image"
               />
-              <input type="file" />
+              <md-field>
+                <label class="profil-input-image-label" for="profil-input-image"
+                  >Photo du profil</label
+                >
+                <md-file
+                  type="file"
+                  id="profil-input-image"
+                  ref="file"
+                  name="profil-input-image"
+                  accept="image/x-png,image/gif,image/jpeg,image/tiff"
+                  @change="onFileSelected"
+                />
+              </md-field>
+              <!-- <input
+                type="file"
+                name="profil-input-image"
+                id="profil-input-image"
+                accept="image/x-png,image/gif,image/jpeg,image/tiff"
+                @change="isImageValid"
+              /> -->
+              <div class="profil-picture-button-div">
+                <button
+                  class="profil-picture-button-validate"
+                  @click="edit_profil_image"
+                >
+                  modifier
+                </button>
+                <button
+                  class="profil-picture-button-cancel"
+                  @click="cancel_edit_profil_image"
+                >
+                  annuler
+                </button>
+              </div>
             </div>
             <div class="profil-content">
               <div class="profil-label-div">
@@ -77,11 +110,12 @@
               <div class="profil-label-div">
                 <label for="email"
                   >E-mail
-                  <span class="error-input" v-show="this.errorClientMail"
+                  <span class="error" v-show="this.errorClientMail"
                     >Email non valide</span
-                  ></label
-                >
+                  >
+                </label>
               </div>
+
               <div class="profil-input-div">
                 <input
                   type="email"
@@ -89,13 +123,33 @@
                   @change="isClientMailValid"
                 />
               </div>
+              <div
+                class="profil-label-div-error"
+                v-show="this.errorAlreadyUsedEmail"
+              >
+                <span class="error-input">{{
+                  errorAlreadyUsedEmailMessage
+                }}</span>
+              </div>
               <div class="profil-label-div">
                 <label for="password">Mot de passe</label>
               </div>
               <div class="profil-but-div-password">
-                <button class="profil-but-password">
-                  Modification du mot de passe
+                <button
+                  class="profil-but-password"
+                  @click="displayModalPasswordModification"
+                >
+                  <i class="fas fa-cog"></i>
+                   Modification du mot de passe
                 </button>
+              </div>
+              <div
+                class="profil-label-div-success"
+                v-show="this.successMessage"
+              >
+                <span class="success">
+                  Vos données ont été modifier avec succès
+                </span>
               </div>
               <div class="profil-but-div-validate">
                 <button
@@ -215,10 +269,12 @@
     </div>
     <validateProfilModification
       :modals="modals"
-      @validate="edit_name"
+      @validate="update_client_data"
       @reload="reloadPage"
       @close="closeModal"
     />
+    <ProfilModalPassword :user="user" :modals="modals" @close="closeModal" />
+    <footerTokEat />
   </div>
 </template>
 
@@ -227,7 +283,8 @@
 import Tab from "@/components/Tab";
 import Tabs from "@/components/Tabs";
 import UserServices from "../services/userServices";
-import validateProfilModification from "@/components/modals/validateProfilModification";
+import validateProfilModification from "@/components/modals/ProfilModalValidateModification";
+import ProfilModalPassword from "@/components/modals/ProfilModalPasswordModification";
 const regName = /^[^~"#{([|`^\])}=+-/*$£¤%µ!:;,?.§]*$/;
 const regAddress = /^[^~"#{([`^\])}=+-/*$£¤%µ!:;,?.§]*$/;
 const regMail = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,24}))$/;
@@ -238,19 +295,25 @@ export default {
     Tab,
     Tabs,
     validateProfilModification,
+    ProfilModalPassword,
   },
   data() {
     return {
       user: null,
       maxH: "0",
       isA: false,
+      image: null,
       errorClientName: false,
       errorClientFirstName: false,
       errorClientAddress: false,
       errorClientPhoneNumber: false,
       errorClientMail: false,
+      errorAlreadyUsedEmail: false,
+      errorAlreadyUsedEmailMessage: null,
+      successMessage: false,
       modals: {
         displayModalModification: null,
+        displayProfilModalPassword: null,
       },
     };
   },
@@ -264,18 +327,33 @@ export default {
         this.isA = false;
       }
     },
-    edit_name() {
-      UserServices.edit_name(this.user).then((response) => {
-        // this.user=response.data;
-        console.log("VITAAAAA" + response.data);
+    update_client_data() {
+      // console.log(this.user);
+      UserServices.update_client_data(this.user).then((response) => {
+        if (response.data.message) {
+          this.errorAlreadyUsedEmail = true;
+          this.errorAlreadyUsedEmailMessage = response.data.message;
+        } else {
+          this.errorAlreadyUsedEmail = false;
+          this.successMessage = true;
+          setTimeout(function () {
+            this.successMessage = false;
+            console.log(this.successMessage);
+            window.location.reload();
+          }, 2500);
+        }
       });
     },
     displayModalValidateModification() {
       this.modals.displayModalModification = true;
     },
+    displayModalPasswordModification() {
+      this.modals.displayProfilModalPassword = true;
+    },
     closeModal() {
       this.modals = {
         displayModalModification: null,
+        displayProfilModalPassword: null,
       };
     },
     reloadPage() {
@@ -318,6 +396,44 @@ export default {
         this.boxColorErrorFunction();
       }
     },
+    onFileSelected(event) {
+      // console.log(event.target.files[0])
+      this.image = event.target.files[0];
+    },
+    returnPromiseforImageURL() {
+      let image = this.image;
+      return new Promise((res) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(image);
+        reader.onload = function (e) {
+          res(e.target.result);
+        };
+      });
+    },
+    async edit_profil_image() {
+      // console.log(this.image)
+      // console.log(this.image.name)
+      let url = await this.returnPromiseforImageURL();
+      // console.log(url);
+      const data = {
+        url,
+        name: this.image.name,
+        client: this.user,
+      };
+      // console.log('name==>');
+      // console.log(data.name);
+      UserServices.upload_profil_image(data).then((response) => {
+        // console.log(response.data);
+        let url = "http://localhost:8081/profil-images/";
+        let imageName = response.data.image;
+        let format = ".png";
+        this.user.image = url.concat(imageName, format);
+        // console.log(this.user.image);
+      });
+    },
+    cancel_edit_profil_image() {
+      this.reloadPage();
+    },
   },
   computed: {
     computedHeight() {
@@ -335,8 +451,14 @@ export default {
   },
   async created() {
     const res = await UserServices.me();
+    let url = "http://localhost:8081/profil-images/";
+    let format = ".png";
+    res.data.toBeDeletedImage = res.data.image;
+    res.data.image = url.concat(res.data.image, format);
     this.user = res.data;
+    // console.log('--');
     // console.log(this.user)
+    // console.log('--');
   },
 };
 </script>
@@ -348,6 +470,7 @@ export default {
 /* #main-home{
   background-color: yellow;
 } */
+
 .error-input {
   color: red;
   text-align: right;
@@ -355,6 +478,29 @@ export default {
 }
 .md-toolbar {
   position: relative;
+}
+.profil-label-div-success {
+  width: 100%;
+  height: 45px;
+  background-color: #afc0b162;
+}
+.profil-label-div-error {
+  width: 100%;
+  height: 45px;
+  background-color: #afc0b162;
+}
+.profil-label-div-error .error {
+  color: red;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial,
+    sans-serif, Apple Color Emoji, Segoe UI Emoji;
+  font-size: large;
+}
+.profil-label-div-success .success {
+  color: #6db672;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial,
+    sans-serif, Apple Color Emoji, Segoe UI Emoji;
+  font-size: large;
+  margin-left: 25%;
 }
 #home {
   /* background-color: rgb(184, 63, 63); */
@@ -455,7 +601,7 @@ export default {
 }
 .profil-but-password:hover {
   cursor: pointer;
-  background-color: #6db672;
+  background-color: #dbd95f;
   color: #000000;
 }
 .profil-but-div-validate {
@@ -467,7 +613,7 @@ export default {
 .profil-but-validate {
   width: 100%;
   height: 40px;
-  border-radius: 29071992px;
+  border-radius: 10px;
   text-transform: uppercase;
   letter-spacing: 2px;
   background-color: #6db672;
@@ -477,7 +623,7 @@ export default {
 .profil-but-validate:disabled {
   width: 100%;
   height: 40px;
-  border-radius: 29071992px;
+  border-radius: 10px;
   text-transform: uppercase;
   letter-spacing: 2px;
   background-color: #959b96;
@@ -487,11 +633,71 @@ export default {
 .profil-but-validate:hover {
   cursor: pointer;
   background-color: #57915b;
+  width: 98%;
+  height: 38px;
 }
 .profil-but-validate:hover:disabled {
   cursor: pointer;
   background-color: #525252;
   color: #e78f8f;
+}
+
+.profil-picture-button-div {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.profil-picture-button-validate {
+  width: 25%;
+  height: 25px;
+  border-radius: 5px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  background-color: #ffffff;
+  color: #6db672;
+  border-width: thin;
+  border-color: #6db672;
+  font-size: 70%;
+  margin-right: 5%;
+}
+.profil-picture-button-validate:hover {
+  width: 28%;
+  height: 28px;
+  border-radius: 5px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  background-color: #57915b;
+  color: rgb(255, 255, 255);
+  border: none;
+  font-size: 70%;
+  margin-right: 5%;
+  cursor: pointer;
+}
+.profil-picture-button-cancel {
+  width: 25%;
+  height: 25px;
+  border-radius: 5px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  background-color: #ffffff;
+  color: #b94242;
+  border-width: thin;
+  border-color: #b94242;
+  font-size: 70%;
+  /* border-color: #0c0c0c; */
+}
+.profil-picture-button-cancel:hover {
+  width: 28%;
+  height: 28px;
+  border-radius: 5px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  background-color: #d62a2a;
+  color: rgb(255, 255, 255);
+  border: none;
+  font-size: 70%;
+  cursor: pointer;
 }
 
 .separator {
@@ -675,8 +881,8 @@ export default {
 
 .button-card-div-update button {
   width: 100%;
-  height: 90%;
-  border-radius: 29071992px;
+  height: 40px;
+  border-radius: 10px;
   text-transform: uppercase;
   letter-spacing: 2px;
   background-color: #6db672;
@@ -687,12 +893,14 @@ export default {
 .button-card-div-update button:hover {
   cursor: pointer;
   background-color: #57915b;
+  width: 98%;
+  height: 38px;
 }
 
 .button-card-div-delete button {
   width: 100%;
-  height: 90%;
-  border-radius: 29071992px;
+  height: 40px;
+  border-radius: 10px;
   text-transform: uppercase;
   letter-spacing: 2px;
   background-color: #b94242;
@@ -703,6 +911,8 @@ export default {
 .button-card-div-delete button:hover {
   cursor: pointer;
   background-color: #d62a2a;
+  width: 98%;
+  height: 38px;
 }
 .payement-add-card-button-div {
   width: 100%;
@@ -762,7 +972,7 @@ export default {
 .payement-add-card-button {
   width: 100%;
   height: 40px;
-  border-radius: 29071992px;
+  border-radius: 10px;
   text-transform: uppercase;
   letter-spacing: 2px;
   background-color: #6db672;

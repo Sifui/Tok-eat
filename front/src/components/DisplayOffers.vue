@@ -1,55 +1,31 @@
 <template>
-    <div >
-        <displayOffer :modals="modals" :me="me" @close="closeModal"/>
-        <addOffer :modals="modals" :me="me"  @close="closeModal"/>
-
-        <check :modals="modals" :me="me"  @close="closeModal" @delete="deleteOffer"/>
-        <div class="addOfferButton"><button  v-on:click="checkAddOffer()">Ajouter une offre</button></div>
-
-        <!--<div v-for="category in categories" :key="category.id" class="flex">
-            name: {{category.name}}     id: {{category.id}}
-            <div v-for="offer in offersByCategory(category)" :key="offer.id"  class='border'>
-                <div v-on:click="displayOffer(offer)" class='offer'>
-                    {{offer.name}}<br>
-                    {{offer.price}} €<br>
-                    {{offer.description}}<br>
-                </div>
-                <div class='buttons'>
-                    <button class="buttonDeletAndUpdate">Modifier</button>
-                    <button v-on:click="checkDelete(offer)" class="buttonDeletAndUpdate">Supprimer</button>
-                </div>
-            </div>
-        </div>-->
+    <div>
+        <createCategory @createCategory="createCategory"/> 
         <draggable v-model="listCategories" ghost-class="ghost" >
             <transition-group type ="transition" name="flip-list">
-                <div class="sortable" :id="category.id" v-for="category in categories" :key="category.id">
-                    name: {{category.name}}<br>
-                    priority: {{category.priority}}
-                    <!--<draggable v-model="offers" ghost-class="ghost" >
-                        <transition-group type ="transition" name="flip-list">
-                            <div class="sortable" :id="offer.id" v-for="offer in offersByCategory(category)" :key="offer.id">
-                                name: {{offer.name}}<br>
-                                priority: {{offer.priority}}
-                            </div>
-                        </transition-group>
-                    </draggable>-->
-                    <offersInDisplay :offers="offersByCategory(category)"/>  
+                <div class="sortable" :id="category.id" v-for="category in listCategories" :key="category.id">
+                    <h2  class="flex">
+                        <div class="text">{{category.name}} </div> 
+                        <updateCategory :oldCategory="category" @updateCategory="updateCategory"/>
+                        <deleteCategory :data="category" :deleteType="'category'" @deleteCategory="deleteCategory"/>
+                    </h2>
+                    <offersInDisplay :offers="offersByCategory(category)" :category="category" @orderOffer="orderOffer" @deleteOffer="deleteOffer" @updateOffer="updateOffer"/>
+                    <createOffer :category="category" @createOffer="createOffer"/>
                 </div>
             </transition-group>
         </draggable>
-
-        <addCategory :modals="modals" :me="me" @close="closeModal" @createCategory="createCategory" />
-        <div class="addCategoryButton"><button  v-on:click="checkAddCategory()">Ajouter une catégorie</button></div>
 
     </div>
 </template>
 
 <script>
 import draggable from 'vuedraggable'
-import displayOffer from "./modals/DisplayOffer";
-import addOffer from "./modals/AddOffer";
-import check from "./modals/Check";
-import addCategory from "./modals/AddCategory";
+
+import createCategory from './modals/CreateCategory.vue';
+import createOffer from './modals/CreateOffer.vue';
+import deleteCategory from './modals/DeleteConfirm.vue';
+import updateCategory from './modals/UpdateCategory.vue';
+
 import offersInDisplay from './offersInDisplay';
 
 export default {
@@ -61,29 +37,17 @@ export default {
     },
     components: {
         draggable,
-        displayOffer,
-        check,
-        addOffer,
-        addCategory,
-        offersInDisplay
+        offersInDisplay,
+        createCategory,
+        createOffer,
+        deleteCategory,
+        updateCategory
     },
     data(){
         return {
-            modals:{
-                displayOffer:null,
-                addOffer:null,
-                deleteOffer:null,
-                updateOffer:null,
-                addCategory:null,
-                deleteCategory:null,
-                updateCategory:null,
-                check:{
-                    action:null
-                }
-            }
         }
     },
-     computed: {
+    computed: {
         listCategories: {
             get () {
                 return this.categories 
@@ -106,55 +70,56 @@ export default {
             }
             return offers
         },
-        onEnd(evt)
+        offersByIdCategory(id)
         {
-            console.log(evt)
+            let offers = []
+            for(let offer of this.offers)
+            {
+                if(offer.idcategory === id)
+                {
+                    offers.push(offer)
+                }
+            }
+            return offers
         },
-        displayOffer(offer)
+        orderOffer(data){
+            this.$emit("orderOffer",data)
+        },
+        createOffer(offer)
         {
-            this.modals.displayOffer = offer
+            offer.priority = (this.offersByIdCategory(offer.idCategory).length)+1
+            this.$emit("createOffer",offer)
         },
-        checkAddOffer()
-        {
-            this.modals.addOffer = true
-        },
-        checkAddCategory()
-        {
-            this.modals.addCategory = true
-        },
-        checkDelete(offer)
-        {
-            this.modals.deleteOffer = offer
-            this.modals.check.action = "delete"
-        },
-        checkUpdate(offer)
-        {
-            this.modals.updateOffer = offer
-            this.modals.check.action = "update"
-        },
-        async deleteOffer(offer)
+        deleteOffer(offer)
         {
             this.$emit("deleteOffer",offer)
         },
+        updateOffer(offer)
+        {
+            this.$emit('updateOffer',offer)
+        },
         createCategory(category)
         {
-            category.priority = this.categories[this.categories.length-1].priority + 1
+            category.idRestaurant = this.me.id
+            if(this.categories.length === 0)
+            {
+                category.priority = 0
+            }
+            else
+            {
+                category.priority = this.categories[this.categories.length-1].priority + 1
+            }
+
             this.$emit('createCategory',category)
         },
-        closeModal(){
-            this.modals = {
-                displayOffer:null,
-                addOffer:null,
-                deletOffer:null,
-                updateOffer:null,
-                addCategory:null,
-                deleteCategory:null,
-                updateCategory:null,
-                check:{
-                    action:null
-                }
-            }
-        }
+        deleteCategory(category)
+        {
+            this.$emit("deleteCategory",category)
+        },
+        updateCategory(category)
+        {
+            this.$emit('updateCategory',category)
+        },
     }
 }
 </script>
@@ -211,7 +176,16 @@ export default {
     border-left: 6px solid rgb(0, 183, 255);
     box-shadow: 10px 10px 5px -1px rgba(0,0,0,0.14);
     opacity: .7;
-    
+}
+.flex{
+    display:flex
+}
+.text{
+    text-align: center;
+    line-height: 40px;
+}
+.margin{
+    margin-top: 250px;
 }
 
 </style>

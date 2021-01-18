@@ -2,7 +2,7 @@
   <div class="centered-container" v-on:keyup.enter="onEnter">
     <md-content class="md-elevation-3">
       <div class="title">
-        <img class="logo" src="../assets/logo.png" />
+        <img class="logo" src="../assets/logo.png" v-on:click="$router.push('/').catch(() => {})"/>
         <!-- <div class="md-title font-title">Tok' eat</div> -->
         <div class="md-body-1"></div>
       </div>
@@ -195,6 +195,7 @@ md-input {
   }
   .logo {
     border-radius: 2px;
+    cursor: pointer;
   }
   .actions {
     .md-button {

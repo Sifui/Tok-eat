@@ -12,7 +12,7 @@ class Client {
                 email TEXT,
                 phone_number TEXT,
                 address TEXT,
-                image BYTEA,
+                image TEXT,
                 is_admin BOOLEAN,
                 password TEXT
             )
@@ -63,6 +63,16 @@ class Client {
         return result.rows[0]
     }
 
+//////////////////  SETRA code début ///////////////////////////////////////////////////
+    static async updateClientDataExceptPassword(client){
+        const result = await PostgresStore.client.query({
+            text: `UPDATE ${Client.tableName}
+            SET first_name=$1, last_name=$2 , address=$3, phone_number=$4 , email=$5
+            WHERE id=$6 RETURNING *`,
+            values: [client.first_name, client.last_name, client.address,client.phone_number,client.email, Number(client.id)]
+        })
+        return result.rows[0]
+    }
     static async editName(client){
         const result = await PostgresStore.client.query({
             text: `UPDATE ${Client.tableName}
@@ -73,12 +83,34 @@ class Client {
         return result.rows[0]
     }
 
+    static async editImage(imageName,client){
+        const result = await PostgresStore.client.query({
+            text: `UPDATE ${Client.tableName}
+            SET image=$1
+            WHERE id=$2 RETURNING *`,
+            values: [imageName, Number(client.id)]
+        })
+        return result.rows[0]
+    }
+//////////////////  Setra code fin //////////////////////////////////////////////////////
+
     static async editEmail(client){
         const result = await PostgresStore.client.query({
             text: `UPDATE ${Client.tableName}
             SET email=$1
             WHERE id=$2`,
             values: [client.email, Number(client.id)]
+        })
+        return result.rows[0]
+    }
+
+    static async editPassword(client){
+        const hashedPw = await bcrypt.hash(client.password,10)
+        const result = await PostgresStore.client.query({
+            text: `UPDATE ${Client.tableName}
+            SET password=$1
+            WHERE id=$2`,
+            values: [hashedPw, Number(client.id)]
         })
         return result.rows[0]
     }
