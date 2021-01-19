@@ -22,14 +22,26 @@ export default {
   async update_client_data(data) {
     return http.put("/update_client_data", data);
   },
+  async update_restaurant_data(data) {
+    return http.put("/update_restaurant_data", data);
+  },
   async check_password(data) {
     return http.post("/check_password", data);
+  },
+  async check_restaurant_password(data) {
+    return http.post("/check_restaurant_password", data);
   },
   async edit_password(data) {
     return http.put("/edit_password", data);
   },
+  async edit_restaurant_password(data) {
+    return http.put("/edit_restaurant_password", data);
+  },
   async upload_profil_image(data) {
     return http.post("/upload_profil_image", data);
+  },
+  async upload_restaurant_profil_image(data) {
+    return http.post("/upload_restaurant_profil_image", data);
   },
 
 }
