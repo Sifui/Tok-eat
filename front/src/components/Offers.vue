@@ -96,7 +96,7 @@ export default {
       this.offersClone.forEach((element) => {
         let temp = element
           .filter((e) => e.quantity != 0)
-          .map((e) => ({ ...e, quantity: parseInt(e.quantity) }));
+          .map((e) => ({ ...e,image:null, quantity: parseInt(e.quantity) }));
         filteredArticles = filteredArticles.concat(temp);
       });
 
@@ -122,12 +122,9 @@ export default {
           idBasket:currentBasket.id
         },
       });
-      
+
       this.$emit("updatecart");
       }
-
-      
-      
     },
   },
   created() {
@@ -165,6 +162,6 @@ export default {
 <style scoped>
 .md-card {
   margin: 10px;
-  flex: 1 1 16%;
+  flex: 1 1 32%;
 }
 </style>

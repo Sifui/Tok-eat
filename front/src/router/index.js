@@ -1,22 +1,31 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import userServices from '../services/userServices'
 // import Home from '../views/Home.vue'
-import store from '../store'
 Vue.use(VueRouter)
-function isAuthenticated() {
-  return store.state.user != null ? store.state.user : false
+async function isAuthenticated() {
+  try{
+  let res = await userServices.me()
+  res = res.data
+
+  return res 
+  }catch(e){
+    console.log(e)
+    return false 
+  }
 }
 const routes = [
   {
     path: '/',
     name: 'Index',
     component: () => import(/* webpackChunkName: "about" */ '../views/Index.vue'),
-    async beforeEnter(to, from, next) {
+     async beforeEnter(to, from, next) {
       let isAuth = await isAuthenticated()
+      console.log(isAuth)
       if ((isAuth && isAuth.type != 'restaurant') || !isAuth) {
         next();
       } else {
-        next(false);
+        next({ path:'/Index2'});
       }
     },
     children: [
@@ -46,6 +55,7 @@ const routes = [
         name: 'profil',
         component:()=> import('../views/Profil.vue'),
       },
+      
     ]
   },
   {
@@ -57,7 +67,7 @@ const routes = [
           if (isAuth && isAuth.type == 'restaurant') {
             next();
           } else {
-            next(false);
+            next( {path:'/'});
           }
     },
     children:[
@@ -122,12 +132,12 @@ const routes = [
         next(false);
       }
     }
-  },
-  {
+  },{
     path: '/logout',
     name: 'Logout',
     component: () => import(/* webpackChunkName: "about" */ '../views/Logout.vue')
   },
+  
   
 ]
 

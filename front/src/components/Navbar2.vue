@@ -16,6 +16,13 @@
 
       <md-speed-dial-content>
         <md-button
+                  class="md-icon-button"
+                  v-on:click="$router.push({path:'/reservations'})"
+
+                >
+                  <md-icon>book_online</md-icon>
+                </md-button>
+        <md-button
           class="md-icon-button"
           v-on:click="$router.push('/ProfilRestaurant')"
         >
@@ -55,7 +62,6 @@ nav {
   border-bottom: 1px solid silver;
   width: 100%;
   display: flex;
-  flex-direction: row;
 }
 img {
   margin-right: auto;
@@ -82,15 +88,14 @@ img {
   margin: 20px 0px 10px 0px;
 }
 .md-speed-dial {
+  position:relative;
   /* background-color: blue; */
-  width: 5%;
-  margin-left: 70%;
   /* margin-right: 20px; */
-  position: relative;
   /* top: 10px; */
   /* margin: 5px 0px 5px 0px; */
-  padding: 15px 5px 5px 5px;
+  padding: 15px 15px 5px 5px;
   /* background-color: bisque; */
+  margin-left:auto
 }
 .md-speed-dial-content {
   position: absolute;

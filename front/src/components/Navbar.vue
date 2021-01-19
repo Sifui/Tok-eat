@@ -4,12 +4,12 @@
       <div class="flex-container" id="parent">
         <img
           id="logo"
-          src="../assets/logo.png"
+        v-bind:src="require('../assets/' + logo)"
           width="100"
           v-on:click="$router.push('/').catch(() => {})"
         />
         <div class="nav-elements" v-bind:style="{ display: collapse }">
-          <div style="flex: 0.45" id="navbar-search">
+          <div id="navbar-search" style="flex:0.5">
             <md-field v-if="showSearchField">
               <label>Chercher un restaurant</label>
               <md-input
@@ -32,8 +32,19 @@
                 </p>
               </div>
             </md-field>
+            
           </div>
-          <div  v-if="!user" style="flex: 0.55; padding: 10px 0 0 0">
+            <!--<div style="flex:0.3">
+             <md-field v-if="showSearchField">
+              <label>Ville</label>
+              <md-input
+                autocomplete="off" 
+              ></md-input>
+             
+             
+            </md-field>
+          </div>-->
+          <div id="navbar-icons" v-if="!user">
             <md-button v-bind:class="{'text-white':!showSearchField}" class="nav-button" v-on:click="$router.push('/login')">Connexion</md-button>
 
             <md-button v-bind:class="{'text-white':!showSearchField}" class="nav-button" v-on:click="$router.push('/register')"
@@ -45,7 +56,7 @@
               </md-speed-dial-target>
             </md-speed-dial>
           </div>
-          <div v-else style="flex: 0.55; padding: 10px 0 0 0">
+          <div id="navbar-icons" v-else>
             <md-speed-dial v-if="user.type=='restaurant'" md-event="hover" md-direction="bottom">
               <md-speed-dial-target v-on:click="$router.push({path:'/reservations'})">
                 <md-icon>book_online</md-icon>
@@ -71,7 +82,7 @@
 
                 <md-button
                   class="md-icon-button"
-                  v-on:click="$store.commit('disconnectUser');$router.push('/logout');$cookies.set('cart',{})"
+                  v-on:click="$router.push('/logout');$cookies.set('cart',{})"
                 >
                   <md-icon>exit_to_app</md-icon>
                 </md-button>
@@ -112,7 +123,8 @@ export default {
       collapse: "flex",
       hamburgerState: "unset",
       windowWidth: window.innerWidth,
-      transparent:'transparent !important'
+      transparent:'transparent !important',
+      logo:'logo.png'
     };
   },
   methods: {
@@ -168,8 +180,13 @@ export default {
     this.user = this.$store.state.user
      if (window.scrollY < 800 && this.$route.name == "display-restaurants") {
         this.transparent = 'transparent !important';
+                                this.logo = 'logo_min8.png'
+
+
       } else {
         this.transparent = '';
+                                this.logo = 'logo_min6.png'
+
       }
     window.onresize = () => {
       if (window.innerWidth > 900) {
@@ -188,10 +205,14 @@ export default {
   },
   watch: {
     showSearchField(){
-      if ( this.showSearchField)
+      if ( this.showSearchField){
         this.transparent = ''
+                        this.logo = 'logo_min6.png'
+
+    }
       else{
                 this.transparent = 'transparent !important'
+                    this.logo = 'logo_min8.png'
 
       }
     },
@@ -216,6 +237,17 @@ export default {
 #logo:hover {
   cursor: pointer;
 }
+#logo {
+  margin-right: auto;
+  /* background-color: aquamarine; */
+  padding: 5px 5px 5px 5px;
+  margin: 5px 40px 5px 5px;
+  width: 170px;
+  height: auto;
+  /* width: 6% ; */
+  /* height: 50%; */
+  cursor: pointer;
+}
 .nav-button {
   margin-top: 15px;
   margin-bottom: 15px;
@@ -229,6 +261,10 @@ export default {
   margin-left: 10%;
   flex: 1;
 }
+#navbar-icons{
+  padding: 10px 0 0 0;margin-left:auto
+}
+
 p.search-result:hover {
   background-color: lightgrey;
   color: white;
@@ -296,6 +332,11 @@ p.search-result {
   #search-result-container {
     position: fixed;
     left: 60%;
+  }
+  #navbar-icons
+  {
+    margin-left:0;
+    margin-right:auto
   }
 }
 </style>

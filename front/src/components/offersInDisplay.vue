@@ -35,7 +35,6 @@
 </template>
 
 <script>
-
 import deleteOffer from './modals/DeleteConfirm.vue';
 import updateOffer from './modals/UpdateOffer.vue';
 import draggable from 'vuedraggable';
@@ -52,9 +51,35 @@ export default {
         deleteOffer,
         updateOffer
     },
-    data()
-    {
-        return {}
+    data() {
+        return {
+            categorieStart:null
+        };
+    },
+    computed: {
+        listOffers: {
+            get () {
+                
+                return this.offers 
+            },
+            set (offers) {
+                let data = {
+                    offers:offers,
+                    category:this.category,
+                }
+                this.$emit("orderOffer",data)
+            },
+        }
+    },
+    methods:{
+        deleteOffer(offer)
+        {
+            this.$emit("deleteOffer",offer)
+        },
+        updateOffer(offer)
+        {
+            this.$emit("updateOffer",offer)
+        }
     }
 }
 </script>

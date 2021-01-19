@@ -14,6 +14,7 @@ export default {
         logout:  async function(){
             await userServices.logout();
             this.$router.push({ path: "/" });
+            this.$store.commit('disconnectUser');
         }
     },
    async created()

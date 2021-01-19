@@ -11,7 +11,7 @@ class Ordered_Product {
                 id SERIAL PRIMARY KEY,
                 quantity INT,
                 id_basket INTEGER REFERENCES ${Basket.tableName}(id),
-                id_offer INTEGER REFERENCES ${Offer.tableName}(id)
+                id_offer INTEGER REFERENCES ${Offer.tableName}(id) ON DELETE CASCADE
             )
         `
     }
