@@ -140,6 +140,37 @@ class Restaurant {
         return result.rows[0]
     }
 
+    static async updateRestaurantDataExceptPassword(restaurant){
+        const result = await PostgresStore.client.query({
+            text: `UPDATE ${Restaurant.tableName}
+            SET name=$1, description=$2 , address=$3, phone_number=$4 , email=$5
+            WHERE id=$6 RETURNING *`,
+            values: [restaurant.name, restaurant.description, restaurant.address,restaurant.phone_number,restaurant.email, Number(restaurant.id)]
+        })
+        return result.rows[0]
+    }
+
+    static async editPassword(restaurant){
+        const hashedPw = await bcrypt.hash(restaurant.password,10)
+        const result = await PostgresStore.client.query({
+            text: `UPDATE ${Restaurant.tableName}
+            SET password=$1
+            WHERE id=$2`,
+            values: [hashedPw, Number(restaurant.id)]
+        })
+        return result.rows[0]
+    }
+
+    static async editImage(imageName,restaurant){
+        const result = await PostgresStore.client.query({
+            text: `UPDATE ${Restaurant.tableName}
+            SET image=$1
+            WHERE id=$2 RETURNING *`,
+            values: [imageName, Number(restaurant.id)]
+        })
+        return result.rows[0]
+    }
+
 }
 
 /** @type {String} */

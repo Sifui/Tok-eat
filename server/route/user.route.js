@@ -43,6 +43,17 @@ router.post('/check_password', hasToBeAuthenticated, async (req, res) => {
     }
 })
 
+router.post('/check_restaurant_password', hasToBeAuthenticated, async (req, res) => {
+    // console.log('HERE ===> ' + req.body);
+    const restaurant = await Restaurant.findByEmail(req.body.email)
+    if (restaurant && (await bcrypt.compare(req.body.password, restaurant.password))) {
+        res.json({ password: true })
+    }
+    else {
+        res.json({ password: false })
+    }
+})
+
 router.get('/me', hasToBeAuthenticated, async (req, res) => {
 
     let user = {}
@@ -204,6 +215,11 @@ router.put('/edit_password', hasToBeAuthenticated, async (req, res) => {
     res.json({ password: true })
 })
 
+router.put('/edit_restaurant_password', hasToBeAuthenticated, async (req, res) => {
+    await Restaurant.editPassword(req.body)
+    res.json({ password: true })
+})
+
 router.put('/update_client_data', hasToBeAuthenticated, async (req, res) => {
     let mail = await Client.findByEmail(req.body.email)
     if (mail) {
@@ -243,6 +259,34 @@ router.post('/upload_profil_image', hasToBeAuthenticated, async (req, res) => {
 
     let base64Data = req.body.url.replace(/^data:image\/(png|jpeg);base64,/, "");
     fs.writeFile(`./assets/profil-images/${imageName}.png`, base64Data, 'base64', function (err) {
+        console.log(err);
+    });
+    res.status(200).json(result)
+})
+
+router.post('/upload_restaurant_profil_image', hasToBeAuthenticated, async (req, res) => {
+    // console.log(req.body.client);
+    let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
+    let randomChars = ''
+    for (var i = 0; i < 15; i++) {
+        randomChars += chars.charAt(Math.floor(Math.random() * randomChars.length));
+    }
+    // let path = `./assets/profil-images/${req.body.client.toBeDeletedImage}.png`
+    // console.log(path);
+    // fs.unlink(path, (err) => {
+    //     if (err) {
+    //         console.error(err)
+    //     }
+    //     //file removed
+    // })
+
+    let randomNumber = (Math.floor(Math.random() * 999999999999999) + 11).toString();
+    let imageName = randomChars.concat(randomNumber)
+    console.log(imageName);
+    let result = await Restaurant.editImage(imageName, req.body.restaurant)
+
+    let base64Data = req.body.url.replace(/^data:image\/(png|jpeg);base64,/, "");
+    fs.writeFile(`./assets/profil-images/restaurant/${imageName}.png`, base64Data, 'base64', function (err) {
         console.log(err);
     });
     res.status(200).json(result)
@@ -293,5 +337,22 @@ router.post('/session-id',async(req,res)=>{
         res.json({payment:'error'})
 
       }
+})
+
+router.put('/update_restaurant_data', hasToBeAuthenticated, async (req, res) => {
+    console.log(req.body);
+    let mail = await Restaurant.findByEmail(req.body.email)
+    if (mail) {
+        if (mail.id === req.body.id) {
+            const result = Restaurant.updateRestaurantDataExceptPassword(req.body)
+            res.json(result)
+        } else {
+            res.json({ message: " Erreur - email déjà utilisé " })
+        }
+    }
+    else {
+        const result = Restaurant.updateRestaurantDataExceptPassword(req.body)
+        res.json(result)
+    }
 })
 module.exports = router
