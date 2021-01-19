@@ -52,6 +52,11 @@
           <h2>Graphes - Data</h2>
         </div>
         <p>test</p>
+        <div class="chart">
+                  <line-chart :chart-data="datacollection"></line-chart>
+
+        </div>
+    <button @click="fillData()">Randomize</button>
       </div>
       <div v-if="this.tab3">
         <div class="tab-title">
@@ -69,10 +74,12 @@
 import userServices from "../services/userServices";
 import offerServices from "../services/offerServices";
 import displayOffers from "../components/DisplayOffers";
+  import LineChart from './LineChart.js'
+
 export default {
   name: "Informations",
   props: {},
-  components: { displayOffers },
+  components: { displayOffers,LineChart },
   data() {
     return {
       tab1: true,
@@ -82,12 +89,36 @@ export default {
       me: {},
       offers: [],
       categories: [],
+      datacollection: null
     };
   },
   created() {
     this.createData();
   },
+  mounted(){
+      this.fillData()
+
+  },
   methods: {
+    fillData () {
+        this.datacollection = {
+          labels: [this.getRandomInt(), this.getRandomInt()],
+          datasets: [
+            {
+              label: 'Data One',
+              backgroundColor: '#f87979',
+              data: [this.getRandomInt(), this.getRandomInt()]
+            }, {
+              label: 'Data One',
+              backgroundColor: '#f87979',
+              data: [this.getRandomInt(), this.getRandomInt()]
+            }
+          ]
+        }
+      },
+      getRandomInt () {
+        return Math.floor(Math.random() * (50 - 5 + 1)) + 5
+      },
     func1() {
       this.tab1 = true;
       this.tab2 = false;
@@ -258,5 +289,9 @@ export default {
   padding: 0px 0px 0px 5px;
   margin-bottom: 20px;
   border-bottom: 1px solid silver;
+}
+.chart{
+  width:400px !important;
+  height:auto
 }
 </style>
