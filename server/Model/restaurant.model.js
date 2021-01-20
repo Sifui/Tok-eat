@@ -1,6 +1,10 @@
 const PostgresStore = require("../PostgresStore")
 const bcrypt = require('bcrypt')
 const Schedule = require('./schedule.model')
+const Basket = require("./basket.model")
+const Ordered_Product = require("./ordered_product.model")
+const Offer = require("./offer.model")
+const Category = require("./category.model")
 
 class Restaurant {
     static toSQLTable () {
@@ -169,6 +173,44 @@ class Restaurant {
             values: [imageName, Number(restaurant.id)]
         })
         return result.rows[0]
+    }
+    static async getSales(restaurantId)
+    {
+        console.log('idResto',restaurantId)
+        const result = await PostgresStore.client.query({
+            text: `
+            SELECT o.name, 
+                    o.price, 
+                    req.total_quantity 
+            FROM (SELECT o.id, 
+                        Sum(op.quantity) AS total_quantity 
+                 FROM  ${Basket.tableName} AS b LEFT JOIN ${Ordered_Product.tableName} AS op ON b.id = op.id_basket 
+               			  LEFT JOIN ${Offer.tableName} AS o ON op.id_offer = o.id 
+               			  LEFT JOIN ${Category.tableName} AS c ON o.id_category = c.id 
+               			  LEFT JOIN ${Restaurant.tableName} AS r ON c.id_restaurant = r.id 
+                WHERE  r.id = $1 
+                AND b.validation = true 
+                GROUP  BY o.id) AS req 
+                INNER JOIN offer AS o ON o.id = req.id 
+            `,
+            values: [restaurantId]
+        })
+        return result.rows
+    }
+    static async getSalesPerMonth(restaurantId)
+    {
+        console.log('idResto',restaurantId)
+        const result = await PostgresStore.client.query({
+            text: `select o.id,o.name,order_date ,sum(quantity)
+            from basket as b left join ordered_product as op on b.id = op.id_basket 
+                             left join offer as o on op.id_offer = o.id
+                             LEFT JOIN category AS c ON o.id_category = c.id 
+                            LEFT JOIN restaurant AS r ON c.id_restaurant = r.id 
+                        WHERE  r.id = $1
+            group by o.id,o.name,order_date`,
+            values: [restaurantId]
+        })
+        return result.rows
     }
 
 }

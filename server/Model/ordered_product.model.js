@@ -26,7 +26,7 @@ class Ordered_Product {
         return result.rows[0]
     }
     static async getByRestaurantId(idRestaurant){
-
+        console.log(idRestaurant)
         const result = await PostgresStore.client.query({
             text: `SELECT op.id_basket,
                                 o.name,
@@ -42,7 +42,7 @@ class Ordered_Product {
                             ORDER BY id_client DESC, id DESC) AS req ON op.id_basket = req.id
                         LEFT JOIN ${Offer.tableName} AS o ON op.id_offer = o.id
                         LEFT JOIN ${Category.tableName} AS c ON o.id_category = c.id
-                        LEFT JOIN ${Restaurant.tableName} AS r ON c.id_restaurant = r.id
+                        LEFT JOIN restaurant AS r ON c.id_restaurant = r.id
                         WHERE r.id = $1
                         AND validation = FALSE
                         ORDER BY id_client desc`,

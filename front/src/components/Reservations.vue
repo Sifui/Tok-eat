@@ -67,11 +67,12 @@ export default {
     },
     async refreshData(){
     this.reservations = [[]]
-
+  console.log('resto',this.user.id)
     let result = await axios.get(
       `http://localhost:8081/ordered_products/restaurant/${this.user.id}`
     );
     const temp = result.data;
+    console.log('temp',temp)
     if (!temp.length)
       return
     let index = 0;

@@ -1,6 +1,11 @@
 const router = require("express").Router()
 const Restaurant = require("../model/restaurant.model")
 
+router.post('/restaurants', async (req,res)=>{
+
+    const result = await Restaurant.create(req.body)
+    res.json(result)
+})
 router.get('/restaurants', async (req,res)=>{
 
     const result = await Restaurant.getAll()
@@ -22,10 +27,17 @@ router.get('/restaurants/:id', async (req,res)=>{
     const result = await Restaurant.getById(req.params.id)
     res.json(result)
 })
+router.get('/restaurants/:id/sales', async (req,res)=>{
 
-router.post('/restaurants', async (req,res)=>{
-
-    const result = await Restaurant.create(req.body)
+    const result = await Restaurant.getSales(req.params.id)
     res.json(result)
 })
+router.get('/restaurants/:id/salesPerMonth', async (req,res)=>{
+
+    const result = await Restaurant.getSalesPerMonth(req.params.id)
+    res.json(result)
+})
+
+
+
 module.exports = router

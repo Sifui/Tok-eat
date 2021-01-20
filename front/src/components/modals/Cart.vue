@@ -19,13 +19,13 @@
         <span class="offer-price"> {{ offer.price }}€</span>
       </div>
          <span align="center" v-if="pending" style="color:red">En attente</span> 
-         <span align="center" v-else style="color:green">Validé</span>
+         <span align="center" v-else style="color:green">En cours de preparation</span>
 
     </div>
-    <div class="centered" v-if="totalPrice != 0 && !pending">
+    <div class="centered" v-if="totalPrice != 0 /*&& !pending*/">
       <md-button v-on:click="goToPayement"> Procéder au paiement</md-button>
     </div>
-     <div class="centered" v-if="totalPrice != 0">
+     <div class="centered" v-if="totalPrice != 0 /*&& pending*/">
       <md-button v-on:click="clearCart()"> Annuler la réservation</md-button>
     </div>
   </div>
