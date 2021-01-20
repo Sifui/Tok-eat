@@ -47,14 +47,19 @@
       </div>
       <div v-if="this.tab2">
         <div class="tab-title">
-          <h2>Graphes - Data</h2>
+          <h1>Statistiques</h1>
         </div>
-        <p>test</p>
+        <br>
+        <div style="display:flex;justify-content:space-around;flex-wrap:wrap">
         <div class="chart">
-          <line-chart :chart-data="datacollection"></line-chart>
-          <line-chart :chart-data="datacollection2"></line-chart>
+          <h1>Total des ventes par produit</h1>
+          <line-chart :chart-data="dataTotalSales"></line-chart>
         </div>
-        <button @click="fillData()">Randomize</button>
+        <div class="chart">
+          <h1>Total mensuel des ventes par produit</h1>
+          <line-chart :chart-data="dataTotalSalesPerMonth"></line-chart>
+        </div>
+        </div>
       </div>
       <div v-if="this.tab3">
         <div class="tab-title">
@@ -87,8 +92,8 @@ export default {
       me: {},
       offers: [],
       categories: [],
-      datacollection: null,
-      datacollection2: null,
+      dataTotalSales: null,
+      dataTotalSalesPerMonth: null,
       totalSales: null,
       salesPerMonth: null,
     };
@@ -100,7 +105,6 @@ export default {
     //await this.fillData()
     await this.createData();
 
-    console.log("koldklpzqkldzqkldùqzdz");
     this.totalSales = await axios.get(
       `http://localhost:8081/restaurants/${this.me.id}/sales`
     );
@@ -110,7 +114,7 @@ export default {
 
     this.totalSales = this.totalSales.data;
     this.salesPerMonth = this.salesPerMonth.data;
-
+    
     let labels = [];
     let datasets = [
       {
@@ -120,50 +124,31 @@ export default {
         data: [],
       },
     ];
-    console.log(this.totalSales);
 
     for (const product of this.totalSales) {
-      //const color = '#'+Math.floor(Math.random()*16777216).toString(16)
       datasets[0].data.push(product.total_quantity);
       labels.push(product.name);
     }
-    console.log("datasets", datasets);
-    console.log("labels", labels);
 
-    this.datacollection = {
+    this.dataTotalSales = {
       labels,
       datasets,
     };
-    labels = [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December",
-    ];
-
+    labels = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre",];
     datasets = [
       {
         label: this.salesPerMonth[0].name,
         backgroundColor:
           "#" + Math.floor(Math.random() * 16777216).toString(16),
-        data: [],
+        data: [0,0,0,0,0,0,0,0,0,0,0,0],
       },
     ];
     let seen = {};
     seen[this.salesPerMonth[0].name] = 0;
-    console.log("salespermonth", this.salesPerMonth);
  
     for (const sales of this.salesPerMonth) {
       if (seen[sales.name] >= 0) {
-        datasets[seen[sales.name]].data.push(sales.sum);
+        datasets[seen[sales.name]].data[parseInt(sales.order_date.substr(5,7))-1]=sales.sum;
       } else {
 
         seen[sales.name] = datasets.length;
@@ -171,41 +156,17 @@ export default {
           label: sales.name,
           backgroundColor:
             "#" + Math.floor(Math.random() * 16777216).toString(16),
-          data: [],
+          data:  [0,0,0,0,0,0,0,0,0,0,0,0],
         });
-        datasets[seen[sales.name]].data.push(sales.sum);
-
+        datasets[seen[sales.name]].data[parseInt(sales.order_date.substring(5,7))-1]=sales.sum;
       }
     }
-    console.log("seen", seen);
-
-    console.log("wesh", datasets);
-    this.datacollection2 = {
+    this.dataTotalSalesPerMonth = {
       labels,
       datasets,
     };
   },
   methods: {
-    fillData() {
-      this.datacollection = {
-        labels: [this.getRandomInt(), this.getRandomInt()],
-        datasets: [
-          {
-            label: "Data One",
-            backgroundColor: "#fafc5f",
-            data: [this.getRandomInt(), this.getRandomInt()],
-          },
-          {
-            label: "Data Two",
-            backgroundColor: "#f87979",
-            data: [this.getRandomInt(), this.getRandomInt()],
-          },
-        ],
-      };
-    },
-    getRandomInt() {
-      return Math.floor(Math.random() * (50 - 5 + 1)) + 5;
-    },
     func1() {
       this.tab1 = true;
       this.tab2 = false;
@@ -378,7 +339,6 @@ export default {
   border-bottom: 1px solid silver;
 }
 .chart {
-  width: 400px !important;
-  height: auto;
+  width: 550px !important;
 }
 </style>
