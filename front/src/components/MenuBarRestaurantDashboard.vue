@@ -49,16 +49,18 @@
         <div class="tab-title">
           <h1>Statistiques</h1>
         </div>
-        <br>
-        <div style="display:flex;justify-content:space-around;flex-wrap:wrap">
-        <div class="chart">
-          <h1>Total des ventes par produit</h1>
-          <line-chart :chart-data="dataTotalSales"></line-chart>
-        </div>
-        <div class="chart">
-          <h1>Total mensuel des ventes par produit</h1>
-          <line-chart :chart-data="dataTotalSalesPerMonth"></line-chart>
-        </div>
+        <br />
+        <div
+          style="display: flex; justify-content: space-around; flex-wrap: wrap"
+        >
+          <div class="chart">
+            <h1>Total des ventes par produit</h1>
+            <line-chart :chart-data="dataTotalSales"></line-chart>
+          </div>
+          <div class="chart">
+            <h1>Total mensuel des ventes par produit</h1>
+            <line-chart :chart-data="dataTotalSalesPerMonth"></line-chart>
+          </div>
         </div>
       </div>
       <div v-if="this.tab3">
@@ -114,59 +116,81 @@ export default {
 
     this.totalSales = this.totalSales.data;
     this.salesPerMonth = this.salesPerMonth.data;
-    
-    let labels = [];
-    let datasets = [
-      {
-        label: "product totalSales",
-        backgroundColor:
-          "#" + Math.floor(Math.random() * 16777216).toString(16),
-        data: [],
-      },
-    ];
 
-    for (const product of this.totalSales) {
-      datasets[0].data.push(product.total_quantity);
-      labels.push(product.name);
-    }
-
-    this.dataTotalSales = {
-      labels,
-      datasets,
-    };
-    labels = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre",];
-    datasets = [
-      {
-        label: this.salesPerMonth[0].name,
-        backgroundColor:
-          "#" + Math.floor(Math.random() * 16777216).toString(16),
-        data: [0,0,0,0,0,0,0,0,0,0,0,0],
-      },
-    ];
-    let seen = {};
-    seen[this.salesPerMonth[0].name] = 0;
- 
-    for (const sales of this.salesPerMonth) {
-      if (seen[sales.name] >= 0) {
-        datasets[seen[sales.name]].data[parseInt(sales.order_date.substr(5,7))-1]=sales.sum;
-      } else {
-
-        seen[sales.name] = datasets.length;
-        datasets.push({
-          label: sales.name,
-          backgroundColor:
-            "#" + Math.floor(Math.random() * 16777216).toString(16),
-          data:  [0,0,0,0,0,0,0,0,0,0,0,0],
-        });
-        datasets[seen[sales.name]].data[parseInt(sales.order_date.substring(5,7))-1]=sales.sum;
-      }
-    }
-    this.dataTotalSalesPerMonth = {
-      labels,
-      datasets,
-    };
+    this.fillTotalSales();
+    this.fillTotalSalesPerMonth();
   },
   methods: {
+    fillTotalSales() {
+      let labels = [];
+      let datasets = [
+        {
+          label: "Ventes",
+          backgroundColor:
+            "#" + Math.floor(Math.random() * 16777216).toString(16),
+          data: [],
+        },
+      ];
+    
+      for (const product of this.totalSales) {
+        datasets[0].data.push(product.total_quantity);
+        labels.push(product.name);
+      }
+
+      this.dataTotalSales = {
+        labels,
+        datasets,
+      };
+    },
+    fillTotalSalesPerMonth() {
+      let labels = [
+        "Janvier",
+        "Février",
+        "Mars",
+        "Avril",
+        "Mai",
+        "Juin",
+        "Juillet",
+        "Août",
+        "Septembre",
+        "Octobre",
+        "Novembre",
+        "Décembre",
+      ];
+      let datasets = [
+        {
+          label: this.salesPerMonth[0].name,
+          backgroundColor:
+            "#" + Math.floor(Math.random() * 16777216).toString(16),
+          data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        },
+      ];
+      let seen = {};
+      seen[this.salesPerMonth[0].name] = 0;
+
+      for (const sales of this.salesPerMonth) {
+        if (seen[sales.name] >= 0) {
+          datasets[seen[sales.name]].data[
+            parseInt(sales.order_date.substr(5, 7)) - 1
+          ] = sales.sum;
+        } else {
+          seen[sales.name] = datasets.length;
+          datasets.push({
+            label: sales.name,
+            backgroundColor:
+              "#" + Math.floor(Math.random() * 16777216).toString(16),
+            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          });
+          datasets[seen[sales.name]].data[
+            parseInt(sales.order_date.substring(5, 7)) - 1
+          ] = sales.sum;
+        }
+      }
+      this.dataTotalSalesPerMonth = {
+        labels,
+        datasets,
+      };
+    },
     func1() {
       this.tab1 = true;
       this.tab2 = false;
