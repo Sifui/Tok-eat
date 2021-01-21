@@ -10,10 +10,12 @@ import VueSocketIO from 'vue-socket.io'
 import SocketIO from 'socket.io-client'
 import 'es6-promise/auto'
 import store from './store'
+import VueScrollTo from 'vue-scrollto'
 
 Vue.use(VueRouter)
 Vue.use(VueCookies)
 Vue.$cookies.config('7d')
+Vue.use(VueScrollTo)
 
 Vue.use(VueMaterial)
 Vue.use(new VueSocketIO({

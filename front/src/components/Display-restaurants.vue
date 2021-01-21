@@ -8,11 +8,13 @@
         <div id="slogan">
           Decouvrez et reservez le meilleur restaurant grâce à Tok'eat
         </div>
+        <div id="cta-button-div">
+          <button id="cta-button" v-scroll-to="'#selections'" >commencer</button>
+        </div>
       </div>
     </div>
     <section>
-      <h2 class="md-display-1 centered">Les sélections Tok'eat</h2>
-
+      <h2 id="selections" class="md-display-1 centered">Les sélections Tok'eat</h2>
       <div class="container flex-container">
         <md-card
           v-for="(item, index) in restaurants"
@@ -165,6 +167,26 @@ export default {
   position: relative;
   max-width: 1200px;
   text-align: center;
+}
+#cta-button-div{
+  text-align: center;
+  margin-top: 20px;
+}
+#cta-button{
+  height: 40px;
+  width: 200px;
+  text-transform: uppercase;
+  background: #5c9e6a;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+}
+#cta-button:hover {
+  cursor: pointer;
+  background-color: #74da7b;
 }
 .restaurant:hover {
   cursor: pointer;

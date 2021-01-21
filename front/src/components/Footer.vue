@@ -4,8 +4,8 @@
     <div class="container">
       <div class="item-1">
         <div class="logo">
-          <h2 class="title">TOK' EAT</h2>
-          <img src="../assets/logo-no-text.png" alt="missing" />
+          <!-- <h2 class="title">TOK' EAT</h2> -->
+          <img src="../assets/logo_min8.png" alt="missing" />
         </div>
 
         <p>
@@ -100,8 +100,8 @@ h3 {
   font-weight: 300;
 }
 .logo img {
-  width: 8%;
-  margin-left: 15px;
+  width: 35%;
+  margin-left: 25px;
   padding-bottom: 10px;
 }
 .logo {
