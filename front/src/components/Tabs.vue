@@ -58,7 +58,7 @@ ul {
   line-height: 50px;
 }
 ul li {
-  width: 33%;
+  width: 50%;
   text-align: center;
   padding-top: 10px;
 }

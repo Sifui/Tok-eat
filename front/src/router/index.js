@@ -74,7 +74,7 @@ const routes = [
       {
         path: '/Index2',
         name: 'test',
-        component: () => import('../views/Test.vue'),
+        component: () => import('../views/Dash.vue'),
       },
       {
         path: '/Dashboard',

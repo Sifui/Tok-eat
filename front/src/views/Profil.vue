@@ -140,7 +140,7 @@
                   @click="displayModalPasswordModification"
                 >
                   <i class="fas fa-cog"></i>
-                   Modification du mot de passe
+                  Modification du mot de passe
                 </button>
               </div>
               <div
@@ -163,7 +163,7 @@
             </div>
           </div>
         </Tab>
-        <Tab name="payement">
+        <!-- <Tab name="payement">
           <div class="payement">
             <div class="payement-add-card-div">
               <div class="payement-add-card-button-div">
@@ -262,8 +262,16 @@
               </div>
             </div>
           </div>
-        </Tab>
+        </Tab> -->
         <Tab name="token">
+          <div class="main-div-token">
+            <div>
+              <p>test</p>
+            </div>
+            <div>
+              <p>2</p>
+            </div>
+          </div>
         </Tab>
       </Tabs>
     </div>
@@ -983,6 +991,17 @@ export default {
   cursor: pointer;
   background-color: #57915b;
 }
+
+/******************************************************************************************************* */
+/*************************************** TOKEN CSS *************************************************** */
+/******************************************************************************************************* */
+
+.main-div-token{
+  display: flex;
+  background-color: #555;
+  width: 100%;
+}
+
 /******************************************************************************************************* */
 /*************************************** AUTRES CSS *************************************************** */
 /******************************************************************************************************* */
@@ -992,4 +1011,6 @@ export default {
   width: 100%;
   height: 100%;
 }
+
+
 </style>

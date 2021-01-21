@@ -211,6 +211,9 @@ router.put('/edit_address', hasToBeAuthenticated, async (req, res) => {
 /////////////// Setra code début ////////////////////////////////////////
 
 router.put('/edit_password', hasToBeAuthenticated, async (req, res) => {
+    console.log('*************************');
+    console.log(req.body);
+    console.log('*************************');
     await Client.editPassword(req.body)
     res.json({ password: true })
 })

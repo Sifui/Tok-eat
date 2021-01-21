@@ -164,7 +164,7 @@ export default {
     },
     edit_password() {
       this.user.password = this.newPassword;
-      console.log(this.user);
+      // console.log(this.user);
       UserServices.edit_password(this.user).then((response) => {
         this.passwordChangedSuccess = response.data.password;
       });

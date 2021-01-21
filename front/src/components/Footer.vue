@@ -9,14 +9,14 @@
         </div>
 
         <p>
-          <span>
+          <span class="description1">
             Aenean semper sapien arcu, ut sodales dolor elementum ut. Vivamus at
             neque elit. Nulla vel lorem vitae odio ullamcorper accumsan ac non
             risus. Sed mollis, nisl nec placerat blandit, erat urna blandit dui,
             in hendrerit tellus quam id arcu. Aenean lobortis bibendum nulla,
             nec tincidunt mi accumsan ultricies. Vivamus posuere tincidunt nisi
           </span>
-          <span>
+          <span class="description2">
             Aenean semper sapien arcu, ut sodales dolor elementum ut. Vivamus at
             neque elit. Nulla vel lorem vitae odio ullamcorper accumsan ac non
             risus. Sed mollis, nisl nec placerat blandit, erat urna blandit dui,
@@ -208,5 +208,28 @@ button:hover {
 .links a {
   margin-top: 10px;
   color: #918f8f;
+}
+
+@media screen and (max-width: 1200px) {
+  .description1 {
+    display: none;
+    visibility: hidden;
+  }
+  .item-1 {
+    display: none;
+    visibility: hidden;
+  }
+  .item-2{
+    flex-grow: 2;
+  }
+  .item-3{
+    flex-grow: 2;
+  }
+}
+@media screen and (max-width: 1500px) {
+  .description2 {
+    display: none;
+    visibility: hidden;
+  }
 }
 </style>

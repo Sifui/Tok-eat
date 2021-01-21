@@ -1,15 +1,18 @@
 <template>
-  <md-toolbar v-bind:style='{background:transparent}' v-bind:md-elevation="Number(this.showSearchField)">
+  <md-toolbar
+    v-bind:style="{ background: transparent }"
+    v-bind:md-elevation="Number(this.showSearchField)"
+  >
     <div class="flex-container" style="width: 100%; flex-wrap: no-wrap">
       <div class="flex-container" id="parent">
         <img
           id="logo"
-        v-bind:src="require('../assets/' + logo)"
+          v-bind:src="require('../assets/' + logo)"
           width="100"
           v-on:click="$router.push('/').catch(() => {})"
         />
         <div class="nav-elements" v-bind:style="{ display: collapse }">
-          <div id="navbar-search" style="flex:0.5">
+          <div id="navbar-search" style="flex: 0.5">
             <md-field v-if="showSearchField">
               <label>Chercher un restaurant</label>
               <md-input
@@ -32,9 +35,8 @@
                 </p>
               </div>
             </md-field>
-            
           </div>
-            <!--<div style="flex:0.3">
+          <!--<div style="flex:0.3">
              <md-field v-if="showSearchField">
               <label>Ville</label>
               <md-input
@@ -45,9 +47,17 @@
             </md-field>
           </div>-->
           <div id="navbar-icons" v-if="!user">
-            <md-button v-bind:class="{'text-white':!showSearchField}" class="nav-button" v-on:click="$router.push('/login')">Connexion</md-button>
+            <md-button
+              v-bind:class="{ 'text-white': !showSearchField }"
+              class="nav-button"
+              v-on:click="$router.push('/login')"
+              >Connexion</md-button
+            >
 
-            <md-button v-bind:class="{'text-white':!showSearchField}" class="nav-button" v-on:click="$router.push('/register')"
+            <md-button
+              v-bind:class="{ 'text-white': !showSearchField }"
+              class="nav-button"
+              v-on:click="$router.push('/register')"
               >Inscription</md-button
             >
             <md-speed-dial md-event="hover" md-direction="bottom">
@@ -57,8 +67,14 @@
             </md-speed-dial>
           </div>
           <div id="navbar-icons" v-else>
-            <md-speed-dial v-if="user.type=='restaurant'" md-event="hover" md-direction="bottom">
-              <md-speed-dial-target v-on:click="$router.push({path:'/reservations'})">
+            <md-speed-dial
+              v-if="user.type == 'restaurant'"
+              md-event="hover"
+              md-direction="bottom"
+            >
+              <md-speed-dial-target
+                v-on:click="$router.push({ path: '/reservations' })"
+              >
                 <md-icon>book_online</md-icon>
               </md-speed-dial-target>
             </md-speed-dial>
@@ -82,7 +98,10 @@
 
                 <md-button
                   class="md-icon-button"
-                  v-on:click="$router.push('/logout');$cookies.set('cart',{})"
+                  v-on:click="
+                    $router.push('/logout');
+                    $cookies.set('cart', {});
+                  "
                 >
                   <md-icon>exit_to_app</md-icon>
                 </md-button>
@@ -112,7 +131,6 @@ export default {
     restaurants: Array,
     display: Number,
     showSearchField: Boolean,
-
   },
   data() {
     return {
@@ -123,8 +141,8 @@ export default {
       collapse: "flex",
       hamburgerState: "unset",
       windowWidth: window.innerWidth,
-      transparent:'transparent !important',
-      logo:'logo.png'
+      transparent: "transparent !important",
+      logo: "logo.png",
     };
   },
   methods: {
@@ -177,17 +195,14 @@ export default {
     },
   },
   created() {
-    this.user = this.$store.state.user
-     if (window.scrollY < 800 && this.$route.name == "display-restaurants") {
-        this.transparent = 'transparent !important';
-                                this.logo = 'logo_min8.png'
-
-
-      } else {
-        this.transparent = '';
-                                this.logo = 'logo_min6.png'
-
-      }
+    this.user = this.$store.state.user;
+    if (window.scrollY < 800 && this.$route.name == "display-restaurants") {
+      this.transparent = "transparent !important";
+      this.logo = "logo_min8.png";
+    } else {
+      this.transparent = "";
+      this.logo = "logo_min6.png";
+    }
     window.onresize = () => {
       if (window.innerWidth > 900) {
         this.collapse = "flex";
@@ -201,23 +216,17 @@ export default {
       }
       this.windowWidth = window.innerWidth;
     };
-   
   },
   watch: {
-    showSearchField(){
-      if ( this.showSearchField){
-        this.transparent = ''
-                        this.logo = 'logo_min6.png'
-
-    }
-      else{
-                this.transparent = 'transparent !important'
-                    this.logo = 'logo_min8.png'
-
+    showSearchField() {
+      if (this.showSearchField) {
+        this.transparent = "";
+        this.logo = "logo_min6.png";
+      } else {
+        this.transparent = "transparent !important";
+        this.logo = "logo_min8.png";
       }
     },
-    
-   
   },
 };
 </script>
@@ -252,17 +261,17 @@ export default {
   margin-top: 15px;
   margin-bottom: 15px;
 }
-.text-white
-{
-  color:white !important
+.text-white {
+  color: white !important;
 }
 .nav-elements {
   text-align: right;
   margin-left: 10%;
   flex: 1;
 }
-#navbar-icons{
-  padding: 10px 0 0 0;margin-left:auto
+#navbar-icons {
+  padding: 10px 0 0 0;
+  margin-left: auto;
 }
 
 p.search-result:hover {
@@ -324,7 +333,7 @@ p.search-result {
   button[type="button"],
   .md-speed-dial {
     display: block;
-    color:black !important
+    color: black !important;
   }
   #navbar-search {
     max-width: 300px;
@@ -333,10 +342,9 @@ p.search-result {
     position: fixed;
     left: 60%;
   }
-  #navbar-icons
-  {
-    margin-left:0;
-    margin-right:auto
+  #navbar-icons {
+    margin-left: 0;
+    margin-right: auto;
   }
 }
 </style>

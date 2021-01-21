@@ -92,7 +92,7 @@ class Client {
         })
         return result.rows[0]
     }
-//////////////////  Setra code fin //////////////////////////////////////////////////////
+
 
     static async editEmail(client){
         const result = await PostgresStore.client.query({
@@ -134,6 +134,8 @@ class Client {
         })
         return result.rows[0]
     }
+
+    //////////////////  Setra code fin //////////////////////////////////////////////////////
 }
 /** @type {String} */
 Client.tableName = 'client'

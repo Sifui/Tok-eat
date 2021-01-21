@@ -4,7 +4,7 @@
       <div class="title">
         <img
           class="logo"
-          src="../assets/logo.png"
+          src="../assets/logo_min6.png"
           v-on:click="$router.push('/').catch(() => {})"
           v-show="!this.register.type"
         />

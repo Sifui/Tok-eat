@@ -164,7 +164,7 @@ export default {
     },
     edit_password() {
       this.restaurant.password = this.newPassword;
-      console.log(this.restaurant);
+      // console.log(this.restaurant);
       UserServices.edit_restaurant_password(this.restaurant).then((response) => {
         this.passwordChangedSuccess = response.data.password;
       });
