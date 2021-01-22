@@ -59,7 +59,7 @@ export default {
   },
   methods: {
     async validateReservation(item){
-        await axios.put(`http://localhost:8081/basket/${item[0].id_basket}`)
+        //await axios.put(`http://localhost:8081/basket/validate`)
         this.$socket.emit('validation',{clientId:item[0].id_client,restaurantId:this.user.id})
         this.$forceUpdate();
         //this.reservations.splice(this.reservations.indexOf(item),1)
@@ -69,7 +69,7 @@ export default {
     this.reservations = [[]]
   console.log('resto',this.user.id)
     let result = await axios.get(
-      `http://localhost:8081/ordered_products/restaurant/${this.user.id}`
+      `http://localhost:8081/ordered_products/restaurant`
     );
     const temp = result.data;
     console.log('temp',temp)
@@ -102,7 +102,7 @@ export default {
         });
 
     },
-    cancel(id){
+    cancelled(id){
       //this.refreshData()
       for ( let i = 0 ; i < this.reservations.length;i++)
       {

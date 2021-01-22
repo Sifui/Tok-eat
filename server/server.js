@@ -68,10 +68,14 @@ io.on('connection',(socket)=>{
     socket.on('validation',(basket)=>{
         io.to(basket.restaurantId).emit('validation',basket.clientId)
     }) 
-    socket.on('cancel',(basket)=>{
-        io.to(basket.restaurantId).emit('cancel',basket.clientId)
+    socket.on('cancelled',(basket)=>{
+        io.to(basket.restaurantId).emit('cancelled',basket.clientId)
 
     })
+    /*socket.on('restaurantCancelledReservation',(basket)=>{
+        io.to(basket.restaurantId).emit('restaurantCancelledReservation',{clientId:basket.clientId,message:basket.message})
+    }) */
+    
 })
 
 app.use('/', userRouter);

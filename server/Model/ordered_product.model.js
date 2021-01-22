@@ -16,16 +16,15 @@ class Ordered_Product {
         `
     }
      static async create(product){
-
         const result = await PostgresStore.client.query({
             text: `INSERT INTO ${Ordered_Product.tableName}
                     (quantity, id_basket, id_offer)
                     VALUES ($1, $2, $3) RETURNING *`,
-                    values : [product.quantity,product.idBasket,product.idOffer]
+                    values : [product.quantity,product.basketId,product.idOffer]
         })
         return result.rows[0]
     }
-    static async getByRestaurantId(idRestaurant){
+    static async getByMe(idRestaurant){
         console.log(idRestaurant)
         const result = await PostgresStore.client.query({
             text: `SELECT op.id_basket,

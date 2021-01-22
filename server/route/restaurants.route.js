@@ -1,8 +1,16 @@
 const router = require("express").Router()
+const hasToBeAuthenticated = require("../middlewares/has-to-be-authenticated.middleware")
 const Restaurant = require("../model/restaurant.model")
 
-router.post('/restaurants', async (req,res)=>{
-
+router.post('/restaurants',hasToBeAuthenticated, async (req,res)=>{
+    if ( req.session.type != 'restaurant')
+    {
+        res.status(401)
+        res.send({
+            message: 'Vous n\'êtes pas un restaurant'
+        })
+        return
+    }
     const result = await Restaurant.create(req.body)
     res.json(result)
 })
@@ -27,14 +35,14 @@ router.get('/restaurants/:id', async (req,res)=>{
     const result = await Restaurant.getById(req.params.id)
     res.json(result)
 })
-router.get('/restaurants/:id/sales', async (req,res)=>{
+router.get('/restaurants/:id/sales',hasToBeAuthenticated, async (req,res)=>{
 
-    const result = await Restaurant.getSales(req.params.id)
+    const result = await Restaurant.getSales(req.session.userId)
     res.json(result)
 })
-router.get('/restaurants/:id/salesPerMonth', async (req,res)=>{
+router.get('/restaurants/:id/salesPerMonth',hasToBeAuthenticated, async (req,res)=>{
 
-    const result = await Restaurant.getSalesPerMonth(req.params.id)
+    const result = await Restaurant.getSalesPerMonth(req.session.userId)
     res.json(result)
 })
 

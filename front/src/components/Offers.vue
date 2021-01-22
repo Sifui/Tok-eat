@@ -108,7 +108,6 @@ export default {
         for (let i = 0; i < filteredArticles.length; i++) {
           await axios.post("http://localhost:8081/ordered_product", {
             quantity: filteredArticles[i].quantity,
-            idBasket: currentBasket.id,
             idOffer: filteredArticles[i].id,
           });
         }

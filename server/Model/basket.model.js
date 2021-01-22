@@ -14,7 +14,7 @@ class Basket {
             )
         `
     }
-     static async create(basket)
+     static async create(clientId)
     {
         const result = await PostgresStore.client.query({
             text: `INSERT INTO ${Basket.tableName}
@@ -22,7 +22,7 @@ class Basket {
                     VALUES (false, true, CURRENT_DATE,CURRENT_DATE,$1)
                      RETURNING *`,
                     values : [
-                        basket.clientId
+                        clientId
                     ]
         })
         return result.rows[0]
@@ -39,7 +39,7 @@ class Basket {
         })
         return result.rows[0]
     }
-    static async validateById(id)
+    static async validate(id)
     {
         const result = await PostgresStore.client.query({
             text: `UPDATE ${Basket.tableName} SET validation = true WHERE id = $1 RETURNING *`,

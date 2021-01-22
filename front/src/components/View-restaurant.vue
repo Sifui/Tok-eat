@@ -38,19 +38,17 @@
         >
       </div>
       <div id="form" v-if="showForm">
-        <select
-          name="notes"
-          id="selection-note"
-          v-on:change="grade = $event.target.value"
-        >
-          <option value="">Choisir une note</option>
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-          <option value="5">5</option>
-        </select>
-
+        <md-field>
+          <md-select v-model="grade"  placeholder="Choisir une note">
+          <md-option value="0">Choisir une note</md-option>
+          <md-option value="1">1</md-option>
+          <md-option value="2">2</md-option>
+          <md-option value="3">3</md-option>
+          <md-option value="4">4</md-option>
+          <md-option value="5">5</md-option>
+          </md-select>
+        </md-field>
+        
         <br />
         <md-field>
           <label>Commentaire</label>
@@ -113,15 +111,12 @@
           <div class="subheading" id="phone">{{ restaurant.phone }}</div>
           <br />
           <div id="addFavorite" v-if="user">
-            <label for="favorite">
-              Ajouter à vos favoris
-              <input
+             
+              <md-checkbox
                 v-model="favorite"
-                type="checkbox"
-                id="favorite"
+                class="md-primary"
                 v-on:change="setFavorite()"
-              />
-            </label>
+              > Ajouter à vos favoris</md-checkbox>
           </div>
         </md-card-content>
       </md-card>
@@ -140,7 +135,7 @@ export default {
     return {
       showForm: true,
       user: null,
-      grade: 1,
+      grade: 0,
       feedback: "",
       feedbacks: [],
       favorite: false,
@@ -198,7 +193,6 @@ export default {
             .put(
               `http://localhost:8081/client-restaurant/${this.$route.query.id}`,
               {
-                clientId: this.user.id,
                 restaurantId: idRestaurant,
                 grade: this.grade,
                 feedback: this.feedback,
@@ -244,7 +238,6 @@ export default {
             `http://localhost:8081/client-restaurant/${this.$route.query.id}`,
             {
               favorite: this.favorite,
-              clientId: this.user.id,
               restaurantId: idRestaurant,
             }
           )
@@ -253,7 +246,6 @@ export default {
           });
       } else {
         axios.post("http://localhost:8081/client-restaurant", {
-          clientId: this.user.id,
           restaurantId: idRestaurant,
           favorite: this.favorite,
         });

@@ -28,18 +28,22 @@ class Client_Restaurant {
         })
         return result.rows[0]
     }
-    static async get(restaurant_id) {
+    static async get(restaurantId) {
+        console.log('IIIIIID2',restaurantId)
+
         const result = await PostgresStore.client.query({
-            text: `SELECT id_client,first_name,last_name,feedback,grade,grade_date,favorite  from ${Client_Restaurant.tableName} as cl,${Restaurant.tableName} as r,client as c  
+            text: `SELECT id_client,first_name,last_name,feedback,grade,grade_date,favorite  
+            from ${Client_Restaurant.tableName} as cl,${Restaurant.tableName} as r,client as c  
             WHERE r.id = cl.id_restaurant
             AND cl.id_client = c.id
                 AND r.id = $1
                 `,
-            values: [restaurant_id]
+            values: [restaurantId]
         })
         return result.rows
     }
-    static async getFavorites(id) {
+    static async getFavoritesByClientId(id) {
+        console.log('IIIIIID',id)
         const result = await PostgresStore.client.query({
             text: `SELECT DISTINCT r.id,r.name,r.phone_number,r.address  from ${Client_Restaurant.tableName} as cl,${Restaurant.tableName} as r,client as c  
                 WHERE r.id = cl.id_restaurant
@@ -67,6 +71,7 @@ class Client_Restaurant {
             values = [ f.grade, f.feedback, f.clientId, f.restaurantId]
         }
         else {
+            
             query = `UPDATE ${Client_Restaurant.tableName}
             set favorite = $1
             WHERE id_client = $2
@@ -74,6 +79,7 @@ class Client_Restaurant {
             RETURNING *
                 `
             values = [f.favorite, f.clientId, f.restaurantId]
+            console.log('update done')
         }
         result = await PostgresStore.client.query({
             text: query,
