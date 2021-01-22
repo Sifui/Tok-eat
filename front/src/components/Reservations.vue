@@ -94,8 +94,10 @@ export default {
         index++;
         this.reservations.push([]);
       }
+    }
     },
   },
+
   async created() {
     this.user = this.$store.state.user;
     this.refreshData();
