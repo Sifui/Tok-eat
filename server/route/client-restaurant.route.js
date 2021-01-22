@@ -1,8 +1,11 @@
 const router = require("express").Router()
+const hasToBeAuthenticated = require("../middlewares/has-to-be-authenticated.middleware")
 const ClientRestaurant= require("../model/client_restaurant.model")
 
-router.post('/client-restaurant',async(req,res)=>{
-    const result = await ClientRestaurant.create(req.body)
+router.post('/client-restaurant',hasToBeAuthenticated,async(req,res)=>{
+    let feedback = req.body
+    feedback.clientId = req.session.userId
+    const result = await ClientRestaurant.create(feedback)
     res.json(result)
 })
 router.get('/client-restaurant/top-rated', async (req,res)=>{
@@ -11,17 +14,20 @@ router.get('/client-restaurant/top-rated', async (req,res)=>{
     res.json(result)
 })
 router.get('/client-restaurant/:id',async(req,res)=>{
+    console.log('req.params',req.params)
     const result = await ClientRestaurant.get(req.params.id)
     res.json(result)
 })
 
-
-router.get('/client-restaurant/favorites/:id',async(req,res)=>{
-    const result = await ClientRestaurant.getFavorites(req.params.id)
+router.get('/client-restaurant/client/favorites',hasToBeAuthenticated,async(req,res)=>{
+    const result = await ClientRestaurant.getFavoritesByClientId(req.session.userId)
     res.json(result)
 })
-router.put('/client-restaurant/:id',async(req,res)=>{
-   const result = await ClientRestaurant.set(req.body)
+
+router.put('/client-restaurant/:id',hasToBeAuthenticated,async(req,res)=>{
+   let feedback = req.body
+   feedback.clientId = req.session.userId
+   const result = await ClientRestaurant.set(feedback)
     
     res.json(result)
 })

@@ -70,32 +70,29 @@ export default {
     };
   },
   methods: {
-    async validateReservation(item) {
-      await axios.put(`http://localhost:8081/basket/${item[0].id_basket}`);
-      this.$socket.emit("validation", {
-        clientId: item[0].id_client,
-        restaurantId: this.user.id,
-      });
-      this.$forceUpdate();
-      //this.reservations.splice(this.reservations.indexOf(item),1)
-      //this.reservations.push([])
+    async validateReservation(item){
+        //await axios.put(`http://localhost:8081/basket/validate`)
+        this.$socket.emit('validation',{clientId:item[0].id_client,restaurantId:this.user.id})
+        this.$forceUpdate();
+        //this.reservations.splice(this.reservations.indexOf(item),1)
+        //this.reservations.push([])
     },
-    async refreshData() {
-      this.reservations = [[]];
-
-      let result = await axios.get(
-        `http://localhost:8081/ordered_products/restaurant/${this.user.id}`
-      );
-      const temp = result.data;
-      if (!temp.length) return;
-      let index = 0;
-      this.reservations[index].push(temp[0]);
-      for (let i = 1; i < temp.length; i++) {
-        if (temp[i].id_basket != temp[i - 1].id_basket) {
-          index++;
-          this.reservations.push([]);
-        }
-        this.reservations[index].push(temp[i]);
+    async refreshData(){
+    this.reservations = [[]]
+  console.log('resto',this.user.id)
+    let result = await axios.get(
+      `http://localhost:8081/ordered_products/restaurant`
+    );
+    const temp = result.data;
+    console.log('temp',temp)
+    if (!temp.length)
+      return
+    let index = 0;
+    this.reservations[index].push(temp[0]);
+    for (let i = 1; i < temp.length; i++) {
+      if (temp[i].id_basket != temp[i - 1].id_basket) {
+        index++;
+        this.reservations.push([]);
       }
     },
   },
@@ -114,7 +111,7 @@ export default {
         //  this.render = true;
       });
     },
-    cancel(id) {
+    cancelled(id){
       //this.refreshData()
       for (let i = 0; i < this.reservations.length; i++) {
         if (this.reservations[i][0].id_client == id) {

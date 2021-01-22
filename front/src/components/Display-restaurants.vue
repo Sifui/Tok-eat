@@ -136,7 +136,7 @@ export default {
    if (this.user){
         axios
           .get(
-            `http://localhost:8081/client-restaurant/favorites/${this.user.id}`
+            `http://localhost:8081/client-restaurant/client/favorites`
           )
           .then((response) => {
             this.favoritesRestaurants = response.data;

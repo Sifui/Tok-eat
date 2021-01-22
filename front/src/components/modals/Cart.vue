@@ -19,13 +19,13 @@
         <span class="offer-price"> {{ offer.price }}€</span>
       </div>
          <span align="center" v-if="pending" style="color:red">En attente</span> 
-         <span align="center" v-else style="color:green">Validé</span>
+         <span align="center" v-else style="color:green">En cours de preparation</span>
 
     </div>
     <div class="centered" v-if="totalPrice != 0 && !pending">
       <md-button v-on:click="goToPayement"> Procéder au paiement</md-button>
     </div>
-     <div class="centered" v-if="totalPrice != 0">
+     <div class="centered" v-if="totalPrice != 0 && pending">
       <md-button v-on:click="clearCart()"> Annuler la réservation</md-button>
     </div>
   </div>
@@ -69,7 +69,7 @@ export default {
     }
     if ( !this.user)
     return
-      let currentBasket = await axios.get(`http://localhost:8081/basket/${this.user.id}`)
+      let currentBasket = await axios.get(`http://localhost:8081/basket`)
       currentBasket = currentBasket.data
       if (currentBasket.validation)
         this.pending = false
@@ -93,7 +93,7 @@ export default {
         this.$router.push({ path: "/login" });
         return
       }
-        axios.post('http://localhost:8081/payement',{cart:this.infos})
+        axios.post('http://localhost:8081/payement',{cart:this.infos,price:this.totalPrice})
         .then((session) => stripe.redirectToCheckout({ sessionId: session.data.id }))
         .catch(()=>{
           console.log('error lors de la creation de la session de paiement')
@@ -117,7 +117,7 @@ export default {
         this.$emit('clearcookie');
         this.totalPrice=0;
         this.pending = true
-        this.$socket.emit('cancel',{clientId:this.user.id,restaurantId:this.infos[Object.keys(this.infos)[0]].id})
+        this.$socket.emit('cancelled',{clientId:this.user.id,restaurantId:this.infos[Object.keys(this.infos)[0]].id})
       }
   },
   watch: {
@@ -143,12 +143,14 @@ export default {
    
   },
   sockets:{
-    validation(id){
+    async validation(id){
       if ( this.user.id != id)
         return
       console.log('votre panier a été validé')
       this.pending = false
-    }
+      await axios.put(`http://localhost:8081/basket/validate`)
+    },
+    
   }
   
 };

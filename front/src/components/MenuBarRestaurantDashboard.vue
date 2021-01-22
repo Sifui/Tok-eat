@@ -4,9 +4,7 @@
       <div class="menu-content">
         <div class="menu-restaurant-info">
           <!-- <img src="../assets/resto.png" alt=""> -->
-          <h4>
-            Restaurant les guignols
-          </h4>
+          <h4>Restaurant les guignols</h4>
         </div>
         <div class="menu-buttons-div">
           <div class="menu-button">
@@ -49,14 +47,21 @@
       </div>
       <div v-if="this.tab2">
         <div class="tab-title">
-          <h2>Graphes - Data</h2>
+          <h1>Statistiques</h1>
         </div>
-        <p>test</p>
-        <div class="chart">
-                  <line-chart :chart-data="datacollection"></line-chart>
-
+        <br />
+        <div
+          style="display: flex; justify-content: space-around; flex-wrap: wrap"
+        >
+          <div class="chart">
+            <h1>Total des ventes par produit</h1>
+            <line-chart :chart-data="dataTotalSales"></line-chart>
+          </div>
+          <div class="chart">
+            <h1>Total mensuel des ventes par produit</h1>
+            <line-chart :chart-data="dataTotalSalesPerMonth"></line-chart>
+          </div>
         </div>
-    <button @click="fillData()">Randomize</button>
       </div>
       <div v-if="this.tab3">
         <div class="tab-title">
@@ -74,12 +79,12 @@
 import userServices from "../services/userServices";
 import offerServices from "../services/offerServices";
 import displayOffers from "../components/DisplayOffers";
-  import LineChart from './LineChart.js'
-
+import LineChart from "./LineChart.js";
+import axios from "axios";
 export default {
   name: "Informations",
   props: {},
-  components: { displayOffers,LineChart },
+  components: { displayOffers, LineChart },
   data() {
     return {
       tab1: true,
@@ -89,36 +94,103 @@ export default {
       me: {},
       offers: [],
       categories: [],
-      datacollection: null
+      dataTotalSales: null,
+      dataTotalSalesPerMonth: null,
+      totalSales: null,
+      salesPerMonth: null,
     };
   },
-  created() {
-    this.createData();
+  async created() {
+    await this.createData();
   },
-  mounted(){
-      this.fillData()
+  async mounted() {
+    //await this.fillData()
+    await this.createData();
 
+    this.totalSales = await axios.get(
+      `http://localhost:8081/restaurants/${this.me.id}/sales`
+    );
+    this.salesPerMonth = await axios.get(
+      `http://localhost:8081/restaurants/${this.me.id}/salesPerMonth`
+    );
+
+    this.totalSales = this.totalSales.data;
+    this.salesPerMonth = this.salesPerMonth.data;
+
+    this.fillTotalSales();
+    this.fillTotalSalesPerMonth();
   },
   methods: {
-    fillData () {
-        this.datacollection = {
-          labels: [this.getRandomInt(), this.getRandomInt()],
-          datasets: [
-            {
-              label: 'Data One',
-              backgroundColor: '#f87979',
-              data: [this.getRandomInt(), this.getRandomInt()]
-            }, {
-              label: 'Data One',
-              backgroundColor: '#f87979',
-              data: [this.getRandomInt(), this.getRandomInt()]
-            }
-          ]
+    fillTotalSales() {
+      let labels = [];
+      let datasets = [
+        {
+          label: "Ventes",
+          backgroundColor:
+            "#" + Math.floor(Math.random() * 16777216).toString(16),
+          data: [],
+        },
+      ];
+    
+      for (const product of this.totalSales) {
+        datasets[0].data.push(product.total_quantity);
+        labels.push(product.name);
+      }
+
+      this.dataTotalSales = {
+        labels,
+        datasets,
+      };
+    },
+    fillTotalSalesPerMonth() {
+      let labels = [
+        "Janvier",
+        "Février",
+        "Mars",
+        "Avril",
+        "Mai",
+        "Juin",
+        "Juillet",
+        "Août",
+        "Septembre",
+        "Octobre",
+        "Novembre",
+        "Décembre",
+      ];
+      let datasets = [
+        {
+          label: this.salesPerMonth[0].name,
+          backgroundColor:
+            "#" + Math.floor(Math.random() * 16777216).toString(16),
+          data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        },
+      ];
+      let seen = {};
+      seen[this.salesPerMonth[0].name] = 0;
+
+      for (const sales of this.salesPerMonth) {
+        if (seen[sales.name] >= 0) {
+          datasets[seen[sales.name]].data[
+            parseInt(sales.order_date.substr(5, 7)) - 1
+          ] = sales.sum;
+        } else {
+          seen[sales.name] = datasets.length;
+          datasets.push({
+            label: sales.name,
+            backgroundColor:
+              "#" + Math.floor(Math.random() * 16777216).toString(16),
+            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          });
+          datasets[seen[sales.name]].data[
+            parseInt(sales.order_date.substring(5, 7)) - 1
+          ] = sales.sum;
         }
-      },
-      getRandomInt () {
-        return Math.floor(Math.random() * (50 - 5 + 1)) + 5
-      },
+      }
+      this.dataTotalSalesPerMonth = {
+        labels,
+        datasets,
+      };
+    },
     func1() {
       this.tab1 = true;
       this.tab2 = false;
@@ -290,8 +362,7 @@ export default {
   margin-bottom: 20px;
   border-bottom: 1px solid silver;
 }
-.chart{
-  width:400px !important;
-  height:auto
+.chart {
+  width: 550px !important;
 }
 </style>
