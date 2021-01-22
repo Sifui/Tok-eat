@@ -4,10 +4,12 @@ const fs = require('fs')
 const Client = require("../model/client.model")
 const Restaurant = require("../model/restaurant.model")
 const hasToBeAuthenticated = require('../middlewares/has-to-be-authenticated.middleware')
+const ifAlreadyAuthenticated = require('../middlewares/if-already-connected.middleware')
 const Offer = require('../model/offer.model')
 const {private_key} = require('../server.config').stripe
 const stripe = require('stripe')(private_key)
-router.post('/login', async (req, res) => {
+
+router.post('/login', ifAlreadyAuthenticated , async (req, res) => {
     const client = await Client.findByEmail(req.body.email)
 
     const restaurant = await Restaurant.findByEmail(req.body.email)
