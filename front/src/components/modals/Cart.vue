@@ -18,14 +18,14 @@
         <span class="offer-name"> {{ offer.name }}</span>
         <span class="offer-price"> {{ offer.price }}€</span>
       </div>
-         <span align="center" v-if="pending" style="color:red">En attente</span> 
+         <span align="center" v-if="pending" style="color:red">{{message}}</span> 
          <span align="center" v-else style="color:green">En cours de preparation</span>
 
     </div>
     <div class="centered" v-if="totalPrice != 0 && !pending">
       <md-button v-on:click="goToPayement"> Procéder au paiement</md-button>
     </div>
-     <div class="centered" v-if="totalPrice != 0 && pending">
+     <div class="centered" v-if="totalPrice != 0 /*&& pending*/">
       <md-button v-on:click="clearCart()"> Annuler la réservation</md-button>
     </div>
   </div>
@@ -50,9 +50,11 @@ export default {
         render:true,
         pending:true,
         user:null,
-        basket:null
+        basket:null,
+        message:'En attente'
     }
   },
+  
   async created() {
     this.user = this.$store.state.user
     const urlParams = new URLSearchParams(window.location.search);
@@ -73,6 +75,10 @@ export default {
       currentBasket = currentBasket.data
       if (currentBasket.validation)
         this.pending = false
+      if (currentBasket.cancel === true)
+      {
+        this.message = 'reservation annulé'
+      }
       const infosKeys = Object.keys(this.infos)
       for ( let i = 0 ; i < infosKeys.length;i++)
       {
@@ -113,11 +119,13 @@ export default {
       {
         return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1 ')
       },
-      clearCart(){
+      async clearCart(){
         this.$emit('clearcookie');
         this.totalPrice=0;
         this.pending = true
+        this.message = 'En attente'
         this.$socket.emit('cancelled',{clientId:this.user.id,restaurantId:this.infos[Object.keys(this.infos)[0]].id})
+        await axios.put('http://localhost:8081/basket/cancel')
       }
   },
   watch: {
@@ -150,6 +158,14 @@ export default {
       this.pending = false
       await axios.put(`http://localhost:8081/basket/validate`)
     },
+    async currentReservationCancelled(response)
+    {
+      if ( this.user.id != response.clientId)
+        return
+      console.log('votre panier a été refusé')
+      await axios.put(`http://localhost:8081/basket/cancel`)
+    this.message = response.message
+    }
     
   }
   

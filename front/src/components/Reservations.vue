@@ -22,6 +22,17 @@
               {{ article.name }}
               {{ article.price }}€
             </div>
+            <input type="text" v-model="message" v-if="!item.validated"/>
+            <button
+              v-if="!item.validated"
+              type="button"
+              v-on:click="
+                cancelReservation(item);
+                item.validated = 'cancel';
+              "
+            >
+              Annuler
+            </button>
             <button
               v-if="!item.validated"
               type="button"
@@ -32,6 +43,7 @@
             >
               Valider
             </button>
+            
           </div>
         </div>
       </div>
@@ -67,15 +79,23 @@ export default {
       reservations: [[]],
       render: true,
       cancellations: [],
+      message:''
     };
   },
   methods: {
     async validateReservation(item){
         //await axios.put(`http://localhost:8081/basket/validate`)
+        
         this.$socket.emit('validation',{clientId:item[0].id_client,restaurantId:this.user.id})
         this.$forceUpdate();
         //this.reservations.splice(this.reservations.indexOf(item),1)
         //this.reservations.push([])
+    },
+    async cancelReservation(item){
+        if (!this.message)
+        this.message = 'reservation annulée'
+        this.$socket.emit('restaurantCancelledReservation',{clientId:item[0].id_client,restaurantId:this.user.id,message:this.message})
+        this.$forceUpdate();
     },
     async refreshData(){
     this.reservations = [[]]
@@ -94,6 +114,8 @@ export default {
         index++;
         this.reservations.push([]);
       }
+            this.reservations[index].push(temp[i]);
+
     }
     },
   },
@@ -102,8 +124,10 @@ export default {
     this.user = this.$store.state.user;
     this.refreshData();
   },
+  
   sockets: {
     notification() {
+      console.log('reservation passé !!!')
       //alert('une reservation a été passé chez vous !')
       this.refreshData();
       //  this.render = false;

@@ -207,6 +207,7 @@ class Restaurant {
                              LEFT JOIN category AS c ON o.id_category = c.id 
                             LEFT JOIN restaurant AS r ON c.id_restaurant = r.id 
                         WHERE  r.id = $1
+                        and validation = true
             group by o.id,o.name,order_date`,
             values: [restaurantId]
         })

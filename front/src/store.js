@@ -8,19 +8,25 @@ const store =  new Vuex.Store({
     state: {
       user: null
     },
-    mutations: {
-       update (state) {
+    actions:{
+      async fetchUser (state) {
         console.log('update called')
-         UserServices.me().then((res)=>{
-          state.user = res.data
-         })
+        const res = await UserServices.me()
+        state.commit('update', res.data)
+      },
+    },
+    mutations: {
+      update(state, user){
+        state.user = user
       },
       disconnectUser(state){
         state.user = null
       }
     }
 })
-store.commit('update')
+
+store.dispatch('fetchUser')
+
 
 export default store
 

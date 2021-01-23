@@ -7,6 +7,7 @@ const hasToBeAuthenticated = require('../middlewares/has-to-be-authenticated.mid
 const ifAlreadyAuthenticated = require('../middlewares/if-already-connected.middleware')
 const Offer = require('../model/offer.model')
 const {private_key} = require('../server.config').stripe
+const Basket = require("../model/basket.model")
 const stripe = require('stripe')(private_key)
 
 router.post('/login', ifAlreadyAuthenticated , async (req, res) => {
@@ -297,8 +298,25 @@ router.post('/upload_restaurant_profil_image', hasToBeAuthenticated, async (req,
     res.status(200).json(result)
 })
 
-router.post('/payement',async(req,res)=>{
+router.post('/payement',hasToBeAuthenticated,async(req,res)=>{
 
+    const currentBasket = await Basket.getById(req.session.userId)
+    if ( !req.body.cart || !req.body.price || !currentBasket.validation || !req.session.basketId )
+    {
+        console.log(req.body.cart)
+        console.log(req.body.price) 
+        console.log(currentBasket.validation )
+        console.log(req.session.basketId)
+        res.status(401)
+        res.send({
+            message: 'Vous n\'avez pas de panier courant'
+        })
+        return
+    }
+    
+    //req.cookies.cart = {}
+    res.clearCookie('cart')
+    console.log('cart',req.cookies.cart)
     let items = []
     for ( let i = 0 ; i < req.body.cart.length;i++)
     {
@@ -325,6 +343,8 @@ router.post('/payement',async(req,res)=>{
     success_url: `http://localhost:8080?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: 'http://localhost:8080',
   });
+  req.session.basketId = null
+
   res.json({ id: session.id });
 })
 router.post('/session-id',async(req,res)=>{
@@ -337,6 +357,7 @@ router.post('/session-id',async(req,res)=>{
       }
       else
       {
+        res.status(401)
         res.json({payment:'error'})
 
       }

@@ -101,9 +101,7 @@ export default {
       });
 
     if (this.user) {
-        let currentBasket = await axios.post("http://localhost:8081/basket", {
-          clientId: this.user.id,
-        });
+        let currentBasket = await axios.post("http://localhost:8081/basket");
         currentBasket = currentBasket.data
         for (let i = 0; i < filteredArticles.length; i++) {
           await axios.post("http://localhost:8081/ordered_product", {
@@ -111,6 +109,7 @@ export default {
             idOffer: filteredArticles[i].id,
           });
         }
+        console.log('reservation emise au restaurant:',this.restaurant.id)
         this.$socket.emit('reservation',this.restaurant.id)
         this.$cookies.set("cart", {
         ...this.$cookies.get("cart"),

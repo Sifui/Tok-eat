@@ -8,7 +8,7 @@ class Category {
                 id SERIAL PRIMARY KEY,
                 name TEXT,
                 priority INTEGER,
-                id_restaurant INTEGER REFERENCES ${Restaurant.tableName}(id) ON DELETE CASCADE
+                id_restaurant INTEGER REFERENCES restaurant(id) ON DELETE CASCADE
             )
         `
     }
