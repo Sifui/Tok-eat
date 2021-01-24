@@ -192,12 +192,12 @@
                 </md-table-toolbar>
 
                 <md-table-empty-state
-                  md-label="No users found"
-                  :md-description="`No user found for this '${search}' query. Try a different search term or create a new user.`"
+                  md-label="Aucun résultat"
+                  :md-description="`Nous n' avons pas trouver de token pour le restaurant '${search}' `"
                 >
-                  <md-button class="md-primary md-raised" @click="newUser"
+                  <!-- <md-button class="md-primary md-raised" @click="newUser"
                     >Create New User</md-button
-                  >
+                  > -->
                 </md-table-empty-state>
 
                 <md-table-row slot="md-table-row" slot-scope="{ item }">
@@ -240,11 +240,10 @@ const toLower = (text) => {
   return text.toString().toLowerCase();
 };
 
-const searchByName = (items, term) => {
+const searchByRestaurantName = (items, term) => {
   if (term) {
     return items.filter((item) => toLower(item.restaurant).includes(toLower(term)));
   }
-
   return items;
 };
 export default {
@@ -275,7 +274,7 @@ export default {
       },
       search: null,
       searched: [],
-      users: [
+      tokens: [
         {
           restaurant: "Ratesh food",
           token: "4",
@@ -440,7 +439,7 @@ export default {
       window.alert("Noop");
     },
     searchOnTable() {
-      this.searched = searchByName(this.users, this.search);
+      this.searched = searchByRestaurantName(this.tokens, this.search);
     },
   },
   computed: {
@@ -467,7 +466,7 @@ export default {
     // console.log('--');
     // console.log(this.user)
     // console.log('--');
-    this.searched = this.users;
+    this.searched = this.tokens;
   },
 };
 </script>
