@@ -7,6 +7,7 @@ class Basket {
             CREATE TABLE ${Basket.tableName} (
                 id SERIAL PRIMARY KEY,
                 validation BOOLEAN,
+                cancel BOOLEAN,
                 on_site BOOLEAN,
                 order_date TIMESTAMP,
                 meal_date TIMESTAMP,
@@ -18,8 +19,8 @@ class Basket {
     {
         const result = await PostgresStore.client.query({
             text: `INSERT INTO ${Basket.tableName}
-                    (validation, on_site, order_date,meal_date,id_client)
-                    VALUES (false, true, CURRENT_DATE,CURRENT_DATE,$1)
+                    (validation,cancel, on_site, order_date,meal_date,id_client)
+                    VALUES (false,false, true, CURRENT_DATE,CURRENT_DATE,$1)
                      RETURNING *`,
                     values : [
                         clientId
@@ -43,6 +44,14 @@ class Basket {
     {
         const result = await PostgresStore.client.query({
             text: `UPDATE ${Basket.tableName} SET validation = true WHERE id = $1 RETURNING *`,
+                    values : [id]
+        })
+        return result.rows
+    }
+    static async cancel(id)
+    {
+        const result = await PostgresStore.client.query({
+            text: `UPDATE ${Basket.tableName} SET cancel = true WHERE id = $1 RETURNING *`,
                     values : [id]
         })
         return result.rows

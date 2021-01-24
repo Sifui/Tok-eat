@@ -7,33 +7,60 @@
       style="margin-bottom: 40px; padding: 20px; box-shadow: 0 0 4px 0 silver"
     >
       <h2 class="subheading">{{ item.name }}</h2>
-      <div class="item-description flex-container" v-for="offer in item.articles" v-bind:key="offer.id">
-           <select disabled class="quantity-picker" v-on:change="updateCartInfos($event.target.value,item.id,item.articles.indexOf(offer))" v-if="render">
-          <option  value="0">0</option>
-            <template v-for="index in 100"> 
-                <option v-if="index==offer.quantity" selected :value="index" v-bind:key="index">{{ index }}</option>
-                <option v-else :value="index" v-bind:key="index">{{ index }}</option>
-            </template>
+      <div
+        class="item-description flex-container"
+        v-for="offer in item.articles"
+        v-bind:key="offer.id"
+      >
+        <select
+          disabled
+          class="quantity-picker"
+          v-on:change="
+            updateCartInfos(
+              $event.target.value,
+              item.id,
+              item.articles.indexOf(offer)
+            )
+          "
+          v-if="render"
+        >
+          <option value="0">0</option>
+          <template v-for="index in 100">
+            <option
+              v-if="index == offer.quantity"
+              selected
+              :value="index"
+              v-bind:key="index"
+            >
+              {{ index }}
+            </option>
+            <option v-else :value="index" v-bind:key="index">
+              {{ index }}
+            </option>
+          </template>
         </select>
         <span class="offer-name"> {{ offer.name }}</span>
         <span class="offer-price"> {{ offer.price }}€</span>
       </div>
-         <span align="center" v-if="pending" style="color:red">En attente</span> 
-         <span align="center" v-else style="color:green">En cours de preparation</span>
-
+      <span align="center" v-if="pending" style="color: red">{{
+        message
+      }}</span>
+      <span align="center" v-else style="color: green"
+        >En cours de preparation</span
+      >
     </div>
     <div class="centered" v-if="totalPrice != 0 && !pending">
       <md-button v-on:click="goToPayement"> Procéder au paiement</md-button>
     </div>
-     <div class="centered" v-if="totalPrice != 0 && pending">
+    <div class="centered" v-if="totalPrice != 0 /*&& pending*/">
       <md-button v-on:click="clearCart()"> Annuler la réservation</md-button>
     </div>
   </div>
 </template>
 
 <script>
-import axios from 'axios'
-var stripe = window.Stripe('pk_test_51HvkwYLjW8CJv9Axomn1cYBMLuvJ6hVBb002isuzWJTJ7beBM347sA1AZhVi4skpiiHmrl3wL1OPQ2J0InSSSF01004lSOoVFE');
+import axios from "axios";
+//var stripe = window.Stripe('pk_test_51HvkwYLjW8CJv9Axomn1cYBMLuvJ6hVBb002isuzWJTJ7beBM347sA1AZhVi4skpiiHmrl3wL1OPQ2J0InSSSF01004lSOoVFE');
 
 export default {
   name: "Cart",
@@ -44,81 +71,102 @@ export default {
   },
   data() {
     return {
-        totalPrice:0,
-        zIndex:-1,
-        right:'-520px',
-        render:true,
-        pending:true,
-        user:null,
-        basket:null
-    }
+      totalPrice: 0,
+      zIndex: -1,
+      right: "-520px",
+      render: true,
+      pending: true,
+      user: null,
+      basket: null,
+      message: null,
+      tokens: 0,
+    };
   },
-  async created() {
-    this.user = this.$store.state.user
-    const urlParams = new URLSearchParams(window.location.search);
-    const myParam = urlParams.get('session_id');
-    if (myParam)
-    {
-      axios.post('http://localhost:8081/session-id',{sessionId:myParam}).then((response)=>{
-        if (response.data.payment=="success")
-        {
-          this.$emit('clearcookie');
-          window.location.href = "http://localhost:8080";
-        }
-      })
-    }
-    if ( !this.user)
-    return
-      let currentBasket = await axios.get(`http://localhost:8081/basket`)
-      currentBasket = currentBasket.data
-      if (currentBasket.validation)
-        this.pending = false
-      const infosKeys = Object.keys(this.infos)
-      for ( let i = 0 ; i < infosKeys.length;i++)
-      {
-        this.$socket.emit('submitId',this.infos[i].id)
-          const currentRestaurantArticles = this.infos[infosKeys[i]].articles
-          for ( let j = 0; j < currentRestaurantArticles.length;j++)
-              this.totalPrice += currentRestaurantArticles[j].quantity * currentRestaurantArticles[j].price
-      }
-      this.totalPrice = Math.round((this.totalPrice + Number.EPSILON) * 100) / 100
-  },
-    
-  methods:{
-   async goToPayement(){
-      if ( !this.totalPrice)
-        return
 
-      if(!this.user){
+  async created() {
+    this.user = this.$store.state.user;
+    this.message = "En attente";
+
+    /*const urlParams = new URLSearchParams(window.location.search);
+    const myParam = urlParams.get("session_id");
+    if (myParam) {
+      axios
+        .post("http://localhost:8081/session-id", { sessionId: myParam })
+        .then((response) => {
+          if (response.data.payment == "success") {
+            this.$emit("clearcookie");
+            window.location.href = "http://localhost:8080";
+          }
+        });
+    }*/
+    if (!this.user) return;
+    let currentBasket = await axios.get(`http://localhost:8081/basket`);
+    currentBasket = currentBasket.data;
+    if (currentBasket.validation) this.pending = false;
+    if (currentBasket.cancel === true) {
+      this.message = "reservation annulé";
+    }
+    const infosKeys = Object.keys(this.infos);
+    for (let i = 0; i < infosKeys.length; i++) {
+      this.$socket.emit("submitId", this.infos[i].id);
+      const currentRestaurantArticles = this.infos[infosKeys[i]].articles;
+      for (let j = 0; j < currentRestaurantArticles.length; j++)
+        this.totalPrice +=
+          currentRestaurantArticles[j].quantity *
+          currentRestaurantArticles[j].price;
+    }
+    this.totalPrice =
+      Math.round((this.totalPrice + Number.EPSILON) * 100) / 100;
+  },
+
+  methods: {
+    async goToPayement() {
+      if (!this.totalPrice) return;
+
+      if (!this.user) {
         this.$router.push({ path: "/login" });
-        return
+        return;
       }
+      this.$router.push({
+        name: "Payment",
+        params: {
+          price: this.totalPrice,
+          tokens: Math.floor(this.totalPrice / 10),
+        },
+      });
+      /*
         axios.post('http://localhost:8081/payement',{cart:this.infos,price:this.totalPrice})
         .then((session) => stripe.redirectToCheckout({ sessionId: session.data.id }))
         .catch(()=>{
           console.log('error lors de la creation de la session de paiement')
-        })
+        })*/
     },
-      updateCartInfos(valeur,restaurant,offre)
-      {
-        let cart = this.$cookies.get('cart')
-        this.totalPrice -= cart[restaurant]['articles'][offre]['price'] * cart[restaurant]['articles'][offre]['quantity']
-        this.totalPrice += valeur * cart[restaurant]['articles'][offre]['price'] 
-        this.totalPrice = Math.round((this.totalPrice + Number.EPSILON) * 100) / 100
-        cart[restaurant]['articles'][offre]['quantity'] = valeur
-        this.$cookies.set('cart',cart)
-        this.$emit('updatecartinfos')
-      },
-      formatPrice(num)
-      {
-        return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1 ')
-      },
-      clearCart(){
-        this.$emit('clearcookie');
-        this.totalPrice=0;
-        this.pending = true
-        this.$socket.emit('cancelled',{clientId:this.user.id,restaurantId:this.infos[Object.keys(this.infos)[0]].id})
-      }
+    updateCartInfos(valeur, restaurant, offre) {
+      let cart = this.$cookies.get("cart");
+      this.totalPrice -=
+        cart[restaurant]["articles"][offre]["price"] *
+        cart[restaurant]["articles"][offre]["quantity"];
+      this.totalPrice += valeur * cart[restaurant]["articles"][offre]["price"];
+      this.totalPrice =
+        Math.round((this.totalPrice + Number.EPSILON) * 100) / 100;
+      cart[restaurant]["articles"][offre]["quantity"] = valeur;
+      this.$cookies.set("cart", cart);
+      this.$emit("updatecartinfos");
+    },
+    formatPrice(num) {
+      return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 ");
+    },
+    async clearCart() {
+      this.$emit("clearcookie");
+      this.totalPrice = 0;
+      this.pending = true;
+      this.message = "En attente";
+      this.$socket.emit("cancelled", {
+        clientId: this.user.id,
+        restaurantId: this.infos[Object.keys(this.infos)[0]].id,
+      });
+      await axios.put("http://localhost:8081/basket/cancel");
+    },
   },
   watch: {
     display() {
@@ -131,28 +179,30 @@ export default {
     price() {
       this.totalPrice = this.price;
     },
-    infos(){
-            this.pending = true
+    infos() {
+      this.pending = true;
 
-      this.render = false
-         this.$nextTick(() => {
+      this.render = false;
+      this.$nextTick(() => {
         this.render = true;
       });
       //this.updateCartInfos()
     },
-   
   },
-  sockets:{
-    async validation(id){
-      if ( this.user.id != id)
-        return
-      console.log('votre panier a été validé')
-      this.pending = false
-      await axios.put(`http://localhost:8081/basket/validate`)
+  sockets: {
+    async validation(id) {
+      if (this.user.id != id) return;
+      console.log("votre panier a été validé");
+      this.pending = false;
+      await axios.put(`http://localhost:8081/basket/validate`);
     },
-    
-  }
-  
+    async currentReservationCancelled(response) {
+      if (this.user.id != response.clientId) return;
+      console.log("votre panier a été refusé");
+      await axios.put(`http://localhost:8081/basket/cancel`);
+      this.message = response.message;
+    },
+  },
 };
 </script>
 

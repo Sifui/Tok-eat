@@ -2,7 +2,11 @@
   <div class="centered-container" v-on:keyup.enter="onEnter">
     <md-content class="md-elevation-3">
       <div class="title">
-        <img class="logo" src="../assets/logo_min6.png" v-on:click="$router.push('/').catch(() => {})"/>
+        <img
+          class="logo"
+          src="../assets/logo_min6.png"
+          v-on:click="$router.push('/').catch(() => {})"
+        />
         <!-- <div class="md-title font-title">Tok' eat</div> -->
         <div class="md-body-1"></div>
       </div>
@@ -60,7 +64,6 @@
     </md-content>
     <div class="background" />
     <div class="background2" />
-  
   </div>
 </template>
 
@@ -93,40 +96,41 @@ export default {
     },
   },
   methods: {
-    async auth() {  
-      this.loading = true;      
-      userServices.findByEmail(this.login)
-        .then(async(response) => {
-          this.person = response.data;
-          if (this.person.user === false) {
-            setTimeout(() => {
-              this.loading = false;
-            }, 1000);
-            this.errorLog = true;
-          } else {
-            setTimeout(() => {
-              this.loading = false;
-            }, 1000);
-                            this.$store.commit('update')
+    async auth() {
+      try {
+        this.loading = true;
+        const response = await userServices.findByEmail(this.login);
 
-            const user = await userServices.me()
+        this.person = response.data;
+        if (this.person.user === false) {
+          setTimeout(() => {
+            this.loading = false;
+          }, 1000);
+          this.errorLog = true;
+        } else {
+          setTimeout(() => {
+            this.loading = false;
+          }, 1000);
 
-            if(user.data.type === "client")
-            {
-              this.$router.push({ path: "/" });
-            } else if (user.data.type === "restaurant") {
-              this.$router.push({ path: "/Index2" });
-            }
+          const user = await userServices.me();
+          await this.$store.dispatch("fetchUser");
+          //this.$socket.open();
+          console.log('TEST socket.open()')
+          if (user.data.type === "client") {
+            this.$router.push({ path: "/" });
+          } else if (user.data.type === "restaurant") {
+            this.$router.push({ path: "/Index2" });
           }
-        })
-        .catch(() => {
-          this.loading = false;
-        });
+        }
+      } catch (err) {
+        this.loading = false;
+      }
     },
     onEnter: function () {
-      this.loading = true;      
-      userServices.findByEmail(this.login)
-        .then(async(response) => {
+      this.loading = true;
+      userServices
+        .findByEmail(this.login)
+        .then(async (response) => {
           this.person = response.data;
           if (this.person.user === false) {
             setTimeout(() => {
@@ -137,9 +141,8 @@ export default {
             setTimeout(() => {
               this.loading = false;
             }, 1000);
-            const user = await userServices.me()
-            if(user.data.type === "client")
-            {
+            const user = await userServices.me();
+            if (user.data.type === "client") {
               this.$router.push({ path: "/" });
             } else if (user.data.type === "restaurant") {
               this.$router.push({ path: "/RestaurantDashBoard" });
@@ -222,7 +225,7 @@ md-input {
       rgba(90, 132, 167, 1) 28%,
       rgba(63, 158, 109, 1) 62%
     );
-    
+
     position: absolute;
     height: 100%;
     width: 100%;

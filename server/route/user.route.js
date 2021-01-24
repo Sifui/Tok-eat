@@ -6,10 +6,11 @@ const Restaurant = require("../model/restaurant.model")
 const hasToBeAuthenticated = require('../middlewares/has-to-be-authenticated.middleware')
 const ifAlreadyAuthenticated = require('../middlewares/if-already-connected.middleware')
 const Offer = require('../model/offer.model')
-const {private_key} = require('../server.config').stripe
+const { public_key, private_key } = require('../server.config').stripe
+const Basket = require("../model/basket.model")
 const stripe = require('stripe')(private_key)
 
-router.post('/login', ifAlreadyAuthenticated , async (req, res) => {
+router.post('/login', ifAlreadyAuthenticated, async (req, res) => {
     const client = await Client.findByEmail(req.body.email)
 
     const restaurant = await Restaurant.findByEmail(req.body.email)
@@ -64,8 +65,7 @@ router.get('/me', hasToBeAuthenticated, async (req, res) => {
         user = await Client.getById(req.session.userId)
         user.type = "client"
     }
-    else if(req.session.type === "restaurant")
-    {
+    else if (req.session.type === "restaurant") {
         user = await Restaurant.getById(req.session.userId)
         user.type = "restaurant"
     }
@@ -297,49 +297,104 @@ router.post('/upload_restaurant_profil_image', hasToBeAuthenticated, async (req,
     res.status(200).json(result)
 })
 
-router.post('/payement',async(req,res)=>{
+router.post('/payement', hasToBeAuthenticated, async (req, res) => {
 
+    const currentBasket = await Basket.getById(req.session.userId)
+    if (!req.body.cart || !req.body.price || !currentBasket.validation || !req.session.basketId) {
+        res.status(401)
+        res.send({
+            message: 'Vous n\'avez pas de panier courant'
+        })
+        return
+    }
+
+    //req.cookies.cart = {}
+    res.clearCookie('cart')
     let items = []
-    for ( let i = 0 ; i < req.body.cart.length;i++)
-    {
+    for (let i = 0; i < req.body.cart.length; i++) {
         let restaurant = req.body.cart[i]
-        for ( let j = 0 ; j < restaurant.articles.length;j++)
-        {
-            if (parseInt(restaurant.articles[j].quantity)>0)
+        for (let j = 0; j < restaurant.articles.length; j++) {
+            if (parseInt(restaurant.articles[j].quantity) > 0)
                 items.push({
                     price_data: {
                         currency: 'eur',
                         product_data: {
-                        name: restaurant.articles[j].name,
+                            name: restaurant.articles[j].name,
                         },
-                        unit_amount_decimal: Math.ceil((restaurant.articles[j].price)*100),
+                        unit_amount_decimal: Math.ceil((restaurant.articles[j].price) * 100),
                     },
                     quantity: restaurant.articles[j].quantity,
                 })
         }
     }
-  const session = await stripe.checkout.sessions.create({
-    payment_method_types: ['card'],
-    line_items: items,
-    mode: 'payment',
-    success_url: `http://localhost:8080?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: 'http://localhost:8080',
-  });
-  res.json({ id: session.id });
+    const session = await stripe.checkout.sessions.create({
+        payment_method_types: ['card'],
+        line_items: items,
+        mode: 'payment',
+        success_url: `http://localhost:8080?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: 'http://localhost:8080',
+    });
+    req.session.basketId = null
+
+    res.json({ id: session.id });
 })
-router.post('/session-id',async(req,res)=>{
+
+router.post("/secret", hasToBeAuthenticated,async (req, res, next) => {
+    const currentBasket = await Basket.getById(req.session.userId)
+    if (!req.body.amount|| !currentBasket.validation || !req.session.basketId) {
+        res.status(401)
+        res.send({
+            message: 'Vous n\'avez pas de panier courant'
+        })
+        return
+    }
+    const paymentIntent = await stripe.paymentIntents.create({
+        amount: req.body.amount,
+        currency: 'eur'
+    });
+  
+    // Send publishable key and PaymentIntent details to client
+    res.send({
+        paymentId:paymentIntent.id,
+        clientSecret: paymentIntent.client_secret,
+        publicKey: public_key
+    });
+});
+router.post('/session-id', async (req, res) => {
     const session = await stripe.checkout.sessions.retrieve(
         req.body.sessionId
-      );
-      if (session)
-      {
-          res.json({payment:'success'})
-      }
-      else
-      {
-        res.json({payment:'error'})
+    );
+    if (session) {
+        res.json({ payment: 'success' })
+    }
+    else {
+        res.status(401)
+        res.json({ payment: 'error' })
 
-      }
+    }
+})
+router.post('/token',hasToBeAuthenticated, async (req, res) => {
+    let Token = require('../Model/token.model')
+    if (!req.body.paymentId || !req.body.restaurantId || !req.body.tokens){
+        res.status(401)
+        res.send({
+            message: 'requête incorrecte'
+        })
+        return
+    }
+    const currentPaymentIntent = await stripe.paymentIntents.retrieve(
+        req.body.paymentId
+    )
+    if (!currentPaymentIntent) {
+        res.status(401)
+        res.send({
+            message: 'requête incorrecte'
+        })
+        return
+    }
+     
+    const result = await Token.create(req.body.tokens, req.session.userId, req.body.restaurantId)
+    res.json(result)
 })
 
 router.put('/update_restaurant_data', hasToBeAuthenticated, async (req, res) => {

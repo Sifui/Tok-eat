@@ -51,7 +51,15 @@ export default {
       showSearchField: false,
     };
   },
-  created() {
+  async created() {
+   try{
+         console.log(this.$cookies.get('cart')[Object.keys(this.$cookies.get('cart'))[0]].id)
+
+    await this.$store.dispatch("fetchUser")
+      //.then(() => this.$socket.open())
+   } catch(err){
+     console.log(err)
+   }
     if (
       window.scrollY < (window.innerHeight * 100) / 100 &&
       this.$route.name == "display-restaurants"
@@ -79,12 +87,13 @@ export default {
         }, 1300);
       }
     });
-    if (!this.$cookies.get("cart")) return
-    const reservations = this.$cookies.get("cart")
+    if (!this.$cookies.get("cart")) return;
+    const reservations = this.$cookies.get("cart");
     for (const item in reservations) {
-      const currentReservation = this.$cookies.get("cart")[item]
-      this.cartInfos.push(currentReservation)
+      const currentReservation = this.$cookies.get("cart")[item];
+      this.cartInfos.push(currentReservation);
     }
+    
   },
   methods: {
     showCart(i) {
@@ -94,19 +103,15 @@ export default {
       this.cartInfos = [];
       this.computedPrice = 0;
       setTimeout(() => {
-        const reservations = Object.keys(this.$cookies.get("cart"))
-        for (let i = 0;i < reservations.length;i++) {
-          let currentRestaurant = this.$cookies.get("cart")[
-            reservations[i]
-          ];
+        const reservations = Object.keys(this.$cookies.get("cart"));
+        for (let i = 0; i < reservations.length; i++) {
+          let currentRestaurant = this.$cookies.get("cart")[reservations[i]];
 
           for (let article of currentRestaurant.articles) {
             this.computedPrice += article.price * article.quantity;
           }
 
-          this.cartInfos.push(
-            this.$cookies.get("cart")[reservations[i]]
-          );
+          this.cartInfos.push(this.$cookies.get("cart")[reservations[i]]);
         }
 
         this.computedPrice =

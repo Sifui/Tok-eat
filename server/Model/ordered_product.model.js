@@ -44,6 +44,7 @@ class Ordered_Product {
                         LEFT JOIN restaurant AS r ON c.id_restaurant = r.id
                         WHERE r.id = $1
                         AND validation = FALSE
+                        AND cancel = FALSE
                         ORDER BY id_client desc`,
                     values : [idRestaurant]
         })

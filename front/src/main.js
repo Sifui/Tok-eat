@@ -21,7 +21,6 @@ Vue.use(VueMaterial)
 Vue.use(new VueSocketIO({
   debug: true,
   connection: SocketIO('http://localhost:8081'),
-
 }))
 Vue.config.productionTip = false
 

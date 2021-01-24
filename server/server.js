@@ -4,6 +4,7 @@ PostgresStore.init()
 .then(() => console.log('connected'))
 
 let express = require("express")
+let cookieParser = require('cookie-parser')
 let bodyParser = require("body-parser")
 let logger = require('morgan')
 const session = require('express-session')
@@ -17,19 +18,18 @@ let offerRouter = require('./route/offer.route')
 let clientRestaurantRouter = require('./route/client-restaurant.route')
 let basketRouter = require('./route/basket.route')
 let categoryRouter = require('./route/category.route')
-
+let tokenRouter = require('./route/token.route')
 
 app.use(express.static(__dirname + '/assets'));
 
 
 let orderedProduct = require('./route/ordered_product.route')
-
-app.use(session({
+const sessionExpress = session({
     secret: 'ZSW58:]kn/=c9Xp&',
     resave: false,
     saveUninitialized: false
-}))
-
+})
+app.use(sessionExpress)
 
 app.use(bodyParser.json({
     limit: '50mb',
@@ -41,6 +41,7 @@ app.use(cors({
 }))
 app.use(express.urlencoded({ extended: true }))
 app.use(logger('dev'))
+app.use(cookieParser())
 
 let server = app.listen(port, () => {
     console.log('Server is listening on port '+port)
@@ -48,16 +49,24 @@ let server = app.listen(port, () => {
 let io = require("socket.io")(server,{
     cors: {
         origin: "*",
-      },
-     
+        /*credentials: true,
+        methods: ['GET', 'POST']*/
+    },
 })
+
 let restaurants = {}
 io.on('connection',(socket)=>{
-    console.log('user connected')
+    /*socket.use((packet,next)=>{
+        console.log('Bonjour salut')
+        sessionExpress(socket.request, {}, next)
+    })*/
+    console.log('user connected', (new Date()).toISOString())
+
     socket.on('disconnect', () => {
         console.log('user disconnected');
     });
     socket.on('reservation',(id)=>{
+        //console.log('session:',socket.request.session.userId)
         io.to(id).emit('notification')
         socket.join(id)
         console.log('notification emise !')
@@ -72,9 +81,9 @@ io.on('connection',(socket)=>{
         io.to(basket.restaurantId).emit('cancelled',basket.clientId)
 
     })
-    /*socket.on('restaurantCancelledReservation',(basket)=>{
-        io.to(basket.restaurantId).emit('restaurantCancelledReservation',{clientId:basket.clientId,message:basket.message})
-    }) */
+    socket.on('restaurantCancelledReservation',(response)=>{
+        io.to(response.restaurantId).emit('currentReservationCancelled',{clientId:response.clientId,message:response.message})
+    }) 
     
 })
 
@@ -85,3 +94,4 @@ app.use('/',clientRestaurantRouter)
 app.use('/',basketRouter)
 app.use('/',categoryRouter)
 app.use('/',orderedProduct)
+app.use('/',tokenRouter)
