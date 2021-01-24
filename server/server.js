@@ -18,6 +18,7 @@ let offerRouter = require('./route/offer.route')
 let clientRestaurantRouter = require('./route/client-restaurant.route')
 let basketRouter = require('./route/basket.route')
 let categoryRouter = require('./route/category.route')
+let tokenRouter = require('./route/token.route')
 
 app.use(express.static(__dirname + '/assets'));
 
@@ -93,3 +94,4 @@ app.use('/',clientRestaurantRouter)
 app.use('/',basketRouter)
 app.use('/',categoryRouter)
 app.use('/',orderedProduct)
+app.use('/',tokenRouter)
