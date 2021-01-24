@@ -204,7 +204,7 @@
                   <md-table-cell md-label="Nom du restaurant" md-sort-by="restaurant">{{
                     item.restaurant
                   }}</md-table-cell>
-                  <md-table-cell md-label="Nombre de token" md-sort-by="token">{{
+                  <md-table-cell md-label="Nombre de token" md-sort-by="token" md-numeric>{{
                     item.token
                   }}</md-table-cell>
                 </md-table-row>
@@ -466,6 +466,9 @@ export default {
     // console.log('--');
     // console.log(this.user)
     // console.log('--');
+    
+    // const tok = await UserServices.getTokens();
+    // this.tokens = tok.data;
     this.searched = this.tokens;
   },
 };
