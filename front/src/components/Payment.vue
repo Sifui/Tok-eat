@@ -86,6 +86,7 @@ export default {
     });
     this.clientSecret = response.data.clientSecret;
     this.stripe = Stripe(response.data.publicKey)
+    console.log(response);
     this.paymentId = response.data.paymentId
     let elements = this.stripe.elements();
     const style = {

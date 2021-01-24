@@ -274,48 +274,49 @@ export default {
       },
       search: null,
       searched: [],
-      tokens: [
-        {
-          restaurant: "Ratesh food",
-          token: "4",
-        },
-        {
-          restaurant: "Léo food",
-          token: "25",
-        },
-        {
-          restaurant: "Ibrahima food",
-          token: "1",
-        },
-        {
-          restaurant: "Setra food",
-          token: "40",
-        },
-        {
-          restaurant: "Arthur food",
-          token: "10",
-        },
-        {
-          restaurant: "Germain food",
-          token: "2",
-        },
-        {
-          restaurant: "Guiaume food",
-          token: "8",
-        },
-        {
-          restaurant: "Hugo food",
-          token: "1",
-        },
-        {
-          restaurant: "José food",
-          token: "2",
-        },
-        {
-          restaurant: "Lucas food",
-          token: "6",
-        },
-      ],
+      tokens:null,
+      // tokens: [
+      //   {
+      //     restaurant: "Ratesh food",
+      //     token: "4",
+      //   },
+      //   {
+      //     restaurant: "Léo food",
+      //     token: "25",
+      //   },
+      //   {
+      //     restaurant: "Ibrahima food",
+      //     token: "1",
+      //   },
+      //   {
+      //     restaurant: "Setra food",
+      //     token: "40",
+      //   },
+      //   {
+      //     restaurant: "Arthur food",
+      //     token: "10",
+      //   },
+      //   {
+      //     restaurant: "Germain food",
+      //     token: "2",
+      //   },
+      //   {
+      //     restaurant: "Guiaume food",
+      //     token: "8",
+      //   },
+      //   {
+      //     restaurant: "Hugo food",
+      //     token: "1",
+      //   },
+      //   {
+      //     restaurant: "José food",
+      //     token: "2",
+      //   },
+      //   {
+      //     restaurant: "Lucas food",
+      //     token: "6",
+      //   },
+      // ],
     };
   },
   methods: {
@@ -466,9 +467,9 @@ export default {
     // console.log('--');
     // console.log(this.user)
     // console.log('--');
-    
-    // const tok = await UserServices.getTokens();
-    // this.tokens = tok.data;
+    let tok = await UserServices.getTokens();
+    console.log(tok.data);
+    this.tokens = tok.data;
     this.searched = this.tokens;
   },
 };

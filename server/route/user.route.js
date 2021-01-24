@@ -341,6 +341,9 @@ router.post('/payement', hasToBeAuthenticated, async (req, res) => {
 
 router.post("/secret", hasToBeAuthenticated,async (req, res, next) => {
     const currentBasket = await Basket.getById(req.session.userId)
+    // console.log(currentBasket);
+    // console.log(req.body.amount);
+    // console.log(currentBasket.validation);
     if (!req.body.amount|| !currentBasket.validation || !req.session.basketId) {
         res.status(401)
         res.send({
@@ -395,6 +398,13 @@ router.post('/token',hasToBeAuthenticated, async (req, res) => {
      
     const result = await Token.create(req.body.tokens, req.session.userId, req.body.restaurantId)
     res.json(result)
+})
+
+router.get('/getTokens', hasToBeAuthenticated, async (req, res)=> {
+    let Token = require('../Model/token.model')
+    let tokens = await Token.getAllByClientId(req.session.userId)
+    console.log(tokens);
+    res.json(tokens)
 })
 
 router.put('/update_restaurant_data', hasToBeAuthenticated, async (req, res) => {

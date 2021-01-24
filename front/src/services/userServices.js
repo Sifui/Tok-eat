@@ -43,5 +43,8 @@ export default {
   async upload_restaurant_profil_image(data) {
     return http.post("/upload_restaurant_profil_image", data);
   },
+  async getTokens(){
+    return http.get("/getTokens")
+  }
 
 }

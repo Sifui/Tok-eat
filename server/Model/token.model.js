@@ -39,10 +39,10 @@ class Token {
     }
     static async getAllByClientId(id) {
         const result = await PostgresStore.client.query({
-            text: `select id_client,id_restaurant, sum(tokens) as tokens
-            from ${Token.tableName} 
+            text: `select id_client, token.id_restaurant , restaurant.name as restaurant , sum(token.tokens) as token
+            from ${Token.tableName} join ${Restaurant.tableName} on ${Restaurant.tableName}.id = ${Token.tableName}.id_restaurant
             where id_client = $1 
-            group by id_client, id_restaurant
+            group by id_client, id_restaurant , restaurant.name
             order by id_restaurant`,
             values: [id]
         })
