@@ -19,12 +19,13 @@
                         </div>
                         <div class="flexText">
                             <h2>{{offer.name}}</h2>
-                            {{offer.description}}<br>
+                            Description: {{offer.description}}<br><br>
+                            Promo: {{findPromo(offer.idPromo)}}
                             <h3>{{offer.price}}€</h3>
                         </div>
                     </div>
                     <div class="flex">
-                        <updateOffer :oldOffer="offer" @updateOffer="updateOffer"/>
+                        <updateOffer :oldOffer="offer" :promos="promos" @updateOffer="updateOffer"/>
                         <deleteOffer :data="offer" :deleteType="'offer'" @deleteOffer="deleteOffer"/>
                     </div>
                 </div>
@@ -44,7 +45,8 @@ export default {
     props:
     {
         offers:Array,
-        category:Object
+        category:Object,
+        promos:Array
     },
     components: 
     {
@@ -80,6 +82,15 @@ export default {
         updateOffer(offer)
         {
             this.$emit("updateOffer",offer)
+        },
+        findPromo(idPromo)
+        {
+            for(let promo of this.promos) {
+                if(idPromo == promo.id)
+                {
+                    return promo.name
+                }
+            }
         }
     }
 }

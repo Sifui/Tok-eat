@@ -3,8 +3,8 @@
     <md-dialog :md-active.sync="active">
         <md-dialog-title>Ajouter une offre</md-dialog-title>
 
-        <md-dialog-content>
-            <div v-if="offer.image">
+        <md-dialog-content style="width:375px" >
+            <div v-if="offer.image" >
                 <img
                     class="offer-image"
                     v-bind:src="offer.image"
@@ -45,6 +45,15 @@
                 <md-textarea v-model="offer.description" @change="isDescriptionValid" type="text"></md-textarea>
             </md-field>
             <span class="error" v-show="this.offerError.description">3 à 500 caractères</span>
+            
+            <div v-if="promos.length != 0">
+            <md-field>
+                <label for="promos">Promotions</label>
+                <md-select v-model="offer.idPromo" name="promos" id="promos">
+                    <md-option v-for="promo in promos" :key="promo.id" v-bind:value="promo.id">{{promo.name}}</md-option>
+                </md-select>
+            </md-field>
+            </div>
 
         </md-dialog-content>
 
@@ -66,7 +75,8 @@
     name: 'CreateOffer',
     props:
     {
-        category:Object
+        category:Object,
+        promos:Array
     },
     data(){
         return{
@@ -162,7 +172,8 @@
                 price:false,
                 description:false,
                 image:false,
-                idPromo:false
+                idPromo:false,
+                idCategory:null
             }
         }
     } 

@@ -25,6 +25,19 @@
         <md-button class="md-primary md-raised" @click="active=true">Supprimer</md-button>
     </div>
 
+    <div v-if="deleteType==='promo'">
+        <md-dialog-confirm
+            :md-active.sync="active"
+            md-title="Supprimer une promotion"
+            :md-content= "mdContent"
+            md-confirm-text="Confirmer"
+            md-cancel-text="Retour"
+            @md-cancel="active=false"
+            @md-confirm="deletePromo" 
+        />
+        <md-button class="md-primary md-raised" @click="active=true">Supprimer</md-button>
+    </div>
+
   </div>
 </template>
 
@@ -52,15 +65,14 @@
           this.$emit('deleteOffer',this.data)
           this.reset()
         },
+        deletePromo()
+        {
+          this.$emit('deletePromo',this.data)
+          this.reset()
+        },
         reset()
         {
-            this.active = false,
-            this.category = {
-                name:null
-            },
-            this.categoryError = {
-                name:false,
-            }
+            this.active = false
         }
     },
     computed: {
@@ -73,6 +85,10 @@
                 else if(this.deleteType === "offer")
                 {
                     return `Voulez-vous vraiment retirer ${this.data.name} de vos offres?`
+                }
+                else if(this.deleteType === "promo")
+                {
+                    return `Voulez-vous vraiment retirer ${this.data.name} de vos promotions?`
                 }
                 else
                 {

@@ -3,7 +3,31 @@
     <md-dialog :md-active.sync="active">
         <md-dialog-title>Ajouter une offre</md-dialog-title>
 
-        <md-dialog-content>
+        <md-dialog-content style="width:375px">
+            <div v-if="offer.image" >
+                <img
+                    class="offer-image"
+                    v-bind:src="offer.image"
+                    alt="offer-image"
+                />
+            </div>
+
+            <div v-else>
+                <img class="offer-image" src="./../../assets/defaultOffer.png">
+            </div>
+
+            <md-field>
+                <label class="profil-input-image-label" for="profil-input-image">Photo du profil</label>
+                <md-file
+                    type="file"
+                    id="offer-input-image"
+                    ref="file"
+                    name="offer-input-image"
+                    accept="image/x-png,image/gif,image/jpeg,image/tiff"
+                    @change="onFileChange(offer, $event)"
+                />
+            </md-field>
+
             <md-field>
                 <label>Nom de l'offre</label>
                 <md-input v-model="offer.name" @change="isNameValid" type="text"></md-input>
@@ -21,7 +45,18 @@
                 <md-textarea v-model="offer.description" @change="isDescriptionValid" type="text"></md-textarea>
             </md-field>
             <span class="error" v-show="this.offerError.description">3 à 500 caractères</span>
+
+            <div v-if="promos.length != 0">
+            <md-field>
+                <label for="promos">Promotions</label>
+                <md-select v-model="offer.idPromo" name="promos" id="promos">
+                    <md-option v-for="promo in promos" :key="promo.id" v-bind:value="promo.id">{{promo.name}}</md-option>
+                </md-select>
+            </md-field>
+            </div>
+
         </md-dialog-content>
+        
 
         <md-dialog-actions>
             <md-button class="md-primary" @click="reset">Retour</md-button>
@@ -39,7 +74,8 @@
     name: 'updateOffer',
     props:
     {
-        oldOffer:Object
+        oldOffer:Object,
+        promos:Array
     },
     data(){
         return{
@@ -103,7 +139,34 @@
         open()
         {
             this.offer = JSON.parse(JSON.stringify(this.oldOffer))
+            //console.log(this.promos)
+            for(let promo in this.promos)
+            {
+                if(promo.id === this.offer.idPromo)
+                {
+                    this.offer.idPromo = promo
+                }
+            }
+            console.log(this.offer)
             this.active = true
+        },
+        onFileChange(offer, event)
+        {
+            var file = event.target.files[0];
+            if(!file)
+            {
+                return
+            }
+            this.createImage(offer, file)
+        },
+        createImage(offer, file)
+        {
+            var reader = new FileReader();
+
+            reader.onload = (e) => {
+                offer.image = e.target.result;
+            };
+            reader.readAsDataURL(file);
         },
         reset()
         {
@@ -129,7 +192,12 @@
 </script>
 
 <style lang="scss" scoped>
-  .error {
-    color: red;
-  }
+    .error {
+        color: red;
+    }
+    .offer-image{
+        display:     block;
+        width:       225px;
+        height:      225px;
+    }
 </style>

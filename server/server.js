@@ -17,6 +17,7 @@ var offerRouter = require('./route/offer.route')
 var clientRestaurantRouter = require('./route/client-restaurant.route')
 var basketRouter = require('./route/basket.route')
 var categoryRouter = require('./route/category.route')
+var promotionRouter = require('./route/promotion.route')
 
 var app = express()
 app.use(express.static(__dirname + '/assets'));
@@ -48,3 +49,4 @@ app.use('/', offerRouter);
 app.use('/',clientRestaurantRouter)
 app.use('/',basketRouter)
 app.use('/',categoryRouter)
+app.use('/',promotionRouter)

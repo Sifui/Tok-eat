@@ -43,17 +43,17 @@ class Offer {
     static async modif(offer){
         const result = await PostgresStore.client.query({
             text:`UPDATE ${Offer.tableName}
-            SET name=$1, price=$2, description=$3, id_category=$4, priority=$5
-            WHERE id=$6
+            SET name=$1, price=$2, description=$3, id_category=$4, priority=$5, image=$6, id_promo=$7
+            WHERE id=$8
             RETURNING *`,
-            values : [offer.name, offer.price, offer.description, offer.idcategory, offer.priority, offer.id]
+            values : [offer.name, offer.price, offer.description, offer.idcategory, offer.priority, offer.image, offer.idPromo, offer.id]
         })
         return result.rows[0]
     }
 
         static async getByIdRestaurant (restaurantId) {
         const result = await PostgresStore.client.query({
-            text: `SELECT ${Offer.tableName}.id, ${Offer.tableName}.name, ${Offer.tableName}.price, ${Offer.tableName}.description, ${Offer.tableName}.image, ${Offer.tableName}.priority,
+            text: `SELECT ${Offer.tableName}.id, ${Offer.tableName}.name, ${Offer.tableName}.price, ${Offer.tableName}.description, ${Offer.tableName}.image, ${Offer.tableName}.priority,${Offer.tableName}.id_promo,
             ${Category.tableName}.id as idCategory,${Category.tableName}.name as categoryName,${Category.tableName}.priority as categoryPriority
             FROM ${Offer.tableName} 
             JOIN ${Category.tableName}
