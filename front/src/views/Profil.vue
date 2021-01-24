@@ -163,113 +163,52 @@
             </div>
           </div>
         </Tab>
-        <!-- <Tab name="payement">
-          <div class="payement">
-            <div class="payement-add-card-div">
-              <div class="payement-add-card-button-div">
-                <button
-                  class="collapse"
-                  v-bind:class="{ active: isA }"
-                  @click="collapse"
-                >
-                  Ajouter un moyen de payement
-                </button>
-              </div>
-              <div
-                class="payement-add-card-content-form"
-                v-bind:style="{ maxHeight: computedHeight }"
-              >
-                <hr class="payement-separation-one" />
-                <div class="payement-add-label-div">
-                  <label for="payement-type-carte"
-                    >Choisissez votre moyen de payement</label
-                  >
-                </div>
-                <div class="payement-add-input-div">
-                  <select name="payement-type-carte">
-                    <option class="payement-opt" value="">
-                      --Type de carte--
-                    </option>
-                    <option class="payement-opt" value="VISA">VISA</option>
-                    <option class="payement-opt" value="MASTER CARD">
-                      MASTER CARD
-                    </option>
-                  </select>
-                </div>
-                <hr />
-                <div class="payement-add-label-div">
-                  <label for="payement-add-numero-card">Numéro de carte</label>
-                </div>
-                <div class="payement-add-input-div">
-                  <input type="text" />
-                </div>
-                <div class="payement-add-label-div">
-                  <label for="payement-add-date"
-                    >Date d' expiration de la carte</label
-                  >
-                </div>
-                <div class="payement-add-input-div">
-                  <input name="payement-add-date" type="month" />
-                </div>
-                <div class="payement-add-label-div">
-                  <label for="payement-add-numero-card">Numéro CVV</label>
-                </div>
-                <div class="payement-add-input-div">
-                  <input type="number" />
-                </div>
-                <div class="payement-add-button-div">
-                  <button class="payement-add-card-button">ajouter</button>
-                </div>
-              </div>
-            </div>
-            <div class="payement-cards-div">
-              <div class="all-card-div">
-                <div class="card-div">
-                  <div class="card-div-part-one">
-                    <div class="card-puce">
-                      <img src="../assets/puce.png" alt="puce-image" />
-                    </div>
-                    <div class="input-puce">
-                      <input type="text" value="XXXX-XXXX-XXXX-1234" />
-                    </div>
-                  </div>
-                  <div class="card-div-part-two">
-                    <div class="card-type">
-                      <img src="../assets/visa.jpg" alt="" />
-                    </div>
-                    <div class="card-label">
-                      <label for="">CVV</label>
-                    </div>
-                    <div class="card-input-number">
-                      <input type="number" value="230" />
-                    </div>
-                    <div class="card-label">
-                      <label for="">expire</label>
-                    </div>
-                    <div class="card-input-date">
-                      <input type="month" name="" id="" value="2023-08" />
-                    </div>
-                  </div>
-                </div>
-                <div class="buttons-card-div">
-                  <div class="button-card-div-delete">
-                    <button>Supprimer</button>
-                  </div>
-                  <div class="button-card-div-update">
-                    <button>Modifier</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </Tab> -->
+
         <Tab name="token">
           <div class="main-div-token">
-            <div>
-              <p>test</p>
+            <div class="token-title">
+              <h3>Liste des tokens par restaurants</h3>
             </div>
-            <div>
-              <p>2</p>
+            <div class="table-div">
+              <md-table
+                v-model="searched"
+                md-sort="name"
+                md-sort-order="asc"
+                md-card
+                md-fixed-header
+              >
+                <md-table-toolbar>
+                  <div class="md-toolbar-section-start">
+                    <h1 class="md-title">Consulter vos tokens sur le tableau ci dessous</h1>
+                  </div>
+
+                  <md-field md-clearable class="md-toolbar-section-end">
+                    <md-input
+                      placeholder="rechercher le nom du restaurant"
+                      v-model="search"
+                      @input="searchOnTable"
+                    />
+                  </md-field>
+                </md-table-toolbar>
+
+                <md-table-empty-state
+                  md-label="No users found"
+                  :md-description="`No user found for this '${search}' query. Try a different search term or create a new user.`"
+                >
+                  <md-button class="md-primary md-raised" @click="newUser"
+                    >Create New User</md-button
+                  >
+                </md-table-empty-state>
+
+                <md-table-row slot="md-table-row" slot-scope="{ item }">
+                  <md-table-cell md-label="Nom du restaurant" md-sort-by="restaurant">{{
+                    item.restaurant
+                  }}</md-table-cell>
+                  <md-table-cell md-label="Nombre de token" md-sort-by="token">{{
+                    item.token
+                  }}</md-table-cell>
+                </md-table-row>
+              </md-table>
             </div>
           </div>
         </Tab>
@@ -297,6 +236,17 @@ const regName = /^[^~"#{([|`^\])}=+-/*$£¤%µ!:;,?.§]*$/;
 const regAddress = /^[^~"#{([`^\])}=+-/*$£¤%µ!:;,?.§]*$/;
 const regMail = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,24}))$/;
 const regPhoneNumber = /^(\+33|0|\+33 )[1-9]([-. ]?[0-9]{2}){4}( )*$/;
+const toLower = (text) => {
+  return text.toString().toLowerCase();
+};
+
+const searchByName = (items, term) => {
+  if (term) {
+    return items.filter((item) => toLower(item.restaurant).includes(toLower(term)));
+  }
+
+  return items;
+};
 export default {
   name: "Home",
   components: {
@@ -323,6 +273,50 @@ export default {
         displayModalModification: null,
         displayProfilModalPassword: null,
       },
+      search: null,
+      searched: [],
+      users: [
+        {
+          restaurant: "Ratesh food",
+          token: "4",
+        },
+        {
+          restaurant: "Léo food",
+          token: "25",
+        },
+        {
+          restaurant: "Ibrahima food",
+          token: "1",
+        },
+        {
+          restaurant: "Setra food",
+          token: "40",
+        },
+        {
+          restaurant: "Arthur food",
+          token: "10",
+        },
+        {
+          restaurant: "Germain food",
+          token: "2",
+        },
+        {
+          restaurant: "Guiaume food",
+          token: "8",
+        },
+        {
+          restaurant: "Hugo food",
+          token: "1",
+        },
+        {
+          restaurant: "José food",
+          token: "2",
+        },
+        {
+          restaurant: "Lucas food",
+          token: "6",
+        },
+      ],
     };
   },
   methods: {
@@ -442,6 +436,12 @@ export default {
     cancel_edit_profil_image() {
       this.reloadPage();
     },
+    newUser() {
+      window.alert("Noop");
+    },
+    searchOnTable() {
+      this.searched = searchByName(this.users, this.search);
+    },
   },
   computed: {
     computedHeight() {
@@ -467,6 +467,7 @@ export default {
     // console.log('--');
     // console.log(this.user)
     // console.log('--');
+    this.searched = this.users;
   },
 };
 </script>
@@ -996,11 +997,21 @@ export default {
 /*************************************** TOKEN CSS *************************************************** */
 /******************************************************************************************************* */
 
-.main-div-token{
+.main-div-token {
   display: flex;
-  background-color: #555;
+  /* background-color: #555; */
+  width: 100%;
+  flex-direction: column;
+}
+.token-title {
+  text-align: center;
+  background-color: rgb(189, 189, 189);
+}
+.table-div {
+  margin-top: 50px;
   width: 100%;
 }
+
 
 /******************************************************************************************************* */
 /*************************************** AUTRES CSS *************************************************** */
@@ -1011,6 +1022,4 @@ export default {
   width: 100%;
   height: 100%;
 }
-
-
 </style>

@@ -22,6 +22,11 @@
               <i class="fas fa-folder-open"></i> Gestion des Promotions
             </button>
           </div>
+          <div class="menu-button">
+            <button v-on:click="func4">
+              <i class="fas fa-calendar"></i> Emploie du temps
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -71,6 +76,14 @@
           <p>tab3</p>
         </div>
       </div>
+      <div v-if="this.tab4">
+        <div class="tab-title">
+          <h2>Gérer vos disponnibilités</h2>
+        </div>
+        <div>
+          <p>tab4</p>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -90,6 +103,7 @@ export default {
       tab1: true,
       tab2: false,
       tab3: false,
+      tab4: false,
       action: "",
       me: {},
       offers: [],
@@ -131,7 +145,7 @@ export default {
           data: [],
         },
       ];
-    
+
       for (const product of this.totalSales) {
         datasets[0].data.push(product.total_quantity);
         labels.push(product.name);
@@ -195,16 +209,25 @@ export default {
       this.tab1 = true;
       this.tab2 = false;
       this.tab3 = false;
+      this.tab4 = false;
     },
     func2() {
       this.tab1 = false;
       this.tab2 = true;
       this.tab3 = false;
+      this.tab4 = false;
     },
     func3() {
       this.tab1 = false;
       this.tab2 = false;
       this.tab3 = true;
+      this.tab4 = false;
+    },
+    func4() {
+      this.tab1 = false;
+      this.tab2 = false;
+      this.tab3 = false;
+      this.tab4 = true;
     },
 
     async initMe() {
