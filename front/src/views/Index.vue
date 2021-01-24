@@ -53,6 +53,8 @@ export default {
   },
   async created() {
    try{
+         console.log(this.$cookies.get('cart')[Object.keys(this.$cookies.get('cart'))[0]].id)
+
     await this.$store.dispatch("fetchUser")
       //.then(() => this.$socket.open())
    } catch(err){

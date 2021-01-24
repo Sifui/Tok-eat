@@ -29,7 +29,8 @@ export default {
       card: null,
       clientSecret: null,
       error: "",
-      stripe:null
+      stripe: null,
+      paymentId: null
     };
   },
   methods: {
@@ -44,7 +45,7 @@ export default {
           },
           receipt_email: this.$store.state.user.email,
         })
-        .then( (result) => {
+        .then( async (result) => {
           if (result.error) {
             // Show error to your customer (e.g., insufficient funds)
             this.message = result.error.message
@@ -56,6 +57,8 @@ export default {
               // execution. Set up a webhook or plugin to listen for the
               // payment_intent.succeeded event that handles any business critical
               // post-payment actions.
+              const restaurantId = this.$cookies.get('cart')[Object.keys(this.$cookies.get('cart'))[0]].id
+              await axios.post('http://localhost:8081/token',{restaurantId, tokens: this.tokens, paymentId: this.paymentId})
               this.$emit('clearcookie')
               this.$forceUpdate()
               this.$router.push({name:'PaymentSuccess'})
@@ -83,6 +86,7 @@ export default {
     });
     this.clientSecret = response.data.clientSecret;
     this.stripe = Stripe(response.data.publicKey)
+    this.paymentId = response.data.paymentId
     let elements = this.stripe.elements();
     const style = {
       base: {

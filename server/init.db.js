@@ -13,6 +13,7 @@ const restaurantData = require('./utils/generateData/restaurantData')
 const generateOffer = require('./utils/generateData/offerData').generateOffer
 
 const PostgresStore = require('./PostgresStore')
+const Token = require('./Model/token.model')
 
 async function dropEverything () {
     const result = await PostgresStore.client.query(
@@ -43,7 +44,8 @@ async function createEverything () {
         Basket,
         Category,
         Offer,
-        Ordered_Product
+        Ordered_Product,
+        Token
         
     ]
 

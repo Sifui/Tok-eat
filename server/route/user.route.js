@@ -301,10 +301,6 @@ router.post('/payement', hasToBeAuthenticated, async (req, res) => {
 
     const currentBasket = await Basket.getById(req.session.userId)
     if (!req.body.cart || !req.body.price || !currentBasket.validation || !req.session.basketId) {
-        console.log(req.body.cart)
-        console.log(req.body.price)
-        console.log(currentBasket.validation)
-        console.log(req.session.basketId)
         res.status(401)
         res.send({
             message: 'Vous n\'avez pas de panier courant'
@@ -314,7 +310,6 @@ router.post('/payement', hasToBeAuthenticated, async (req, res) => {
 
     //req.cookies.cart = {}
     res.clearCookie('cart')
-    console.log('cart', req.cookies.cart)
     let items = []
     for (let i = 0; i < req.body.cart.length; i++) {
         let restaurant = req.body.cart[i]
@@ -346,7 +341,6 @@ router.post('/payement', hasToBeAuthenticated, async (req, res) => {
 
 router.post("/secret", hasToBeAuthenticated,async (req, res, next) => {
     const currentBasket = await Basket.getById(req.session.userId)
-    console.log(req.body.price ,currentBasket.validation , req.session.basketId)
     if (!req.body.amount|| !currentBasket.validation || !req.session.basketId) {
         res.status(401)
         res.send({
@@ -358,9 +352,10 @@ router.post("/secret", hasToBeAuthenticated,async (req, res, next) => {
         amount: req.body.amount,
         currency: 'eur'
     });
-
+  
     // Send publishable key and PaymentIntent details to client
     res.send({
+        paymentId:paymentIntent.id,
         clientSecret: paymentIntent.client_secret,
         publicKey: public_key
     });
@@ -377,6 +372,29 @@ router.post('/session-id', async (req, res) => {
         res.json({ payment: 'error' })
 
     }
+})
+router.post('/token',hasToBeAuthenticated, async (req, res) => {
+    let Token = require('../Model/token.model')
+    if (!req.body.paymentId || !req.body.restaurantId || !req.body.tokens){
+        res.status(401)
+        res.send({
+            message: 'requête incorrecte'
+        })
+        return
+    }
+    const currentPaymentIntent = await stripe.paymentIntents.retrieve(
+        req.body.paymentId
+    )
+    if (!currentPaymentIntent) {
+        res.status(401)
+        res.send({
+            message: 'requête incorrecte'
+        })
+        return
+    }
+     
+    const result = await Token.create(req.body.tokens, req.session.userId, req.body.restaurantId)
+    res.json(result)
 })
 
 router.put('/update_restaurant_data', hasToBeAuthenticated, async (req, res) => {
