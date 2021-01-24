@@ -7,6 +7,11 @@ const fs = require('fs')
 
 router.get('/offer/:id', async (req,res)=>{
     const result = await Offer.getByIdRestaurant(req.params.id)
+
+    result.forEach(offer => {
+        offer.idPromo = offer.id_promo
+        delete offer.id_promo
+    })
     res.json(result)
 })
 
@@ -23,13 +28,13 @@ router.post('/offer', hasToBeAuthenticated, async (req,res)=>{
     }
     let randomNumber = (Math.floor(Math.random() * 999999999999999) + 11).toString();
     let imageName = randomChars.concat(randomNumber)
-    //console.log(imageName);
-    //let result = await Client.editImage(imageName, req.body.client)
+    if(req.body.image){
+        let base64Data = req.body.image.replace(/^data:image\/(png|jpeg);base64,/, "");
+        fs.writeFile(`./assets/offerImage/${imageName}.png`, base64Data, 'base64', function (err) {
+            console.log(err);
+        });
+    }
 
-    let base64Data = req.body.image.replace(/^data:image\/(png|jpeg);base64,/, "");
-    fs.writeFile(`./assets/offerImage/${imageName}.png`, base64Data, 'base64', function (err) {
-        console.log(err);
-    });
 
     let offer = req.body
     const result = await Offer.create(offer)
@@ -98,7 +103,22 @@ router.put('/category', hasToBeAuthenticated, async (req,res)=>{
 
 router.put('/offer', hasToBeAuthenticated, async (req,res)=>{
 
-    let result = await Offer.modif(req.body.offer)
+    let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
+    let randomChars = ''
+    for (var i = 0; i < 15; i++) {
+        randomChars += chars.charAt(Math.floor(Math.random() * randomChars.length));
+    }
+    let randomNumber = (Math.floor(Math.random() * 999999999999999) + 11).toString();
+    let imageName = randomChars.concat(randomNumber)
+    if(req.body.image){
+        let base64Data = req.body.image.replace(/^data:image\/(png|jpeg);base64,/, "");
+        fs.writeFile(`./assets/offerImage/${imageName}.png`, base64Data, 'base64', function (err) {
+            console.log(err);
+        });
+    }
+    let offer = req.body.offer
+
+    let result = await Offer.modif(offer)
     res.json(result)
 })
 

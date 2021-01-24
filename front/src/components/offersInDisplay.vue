@@ -14,35 +14,32 @@
         >
           <div class="flex">
             <div class="flexImage">
-              <div v-if="offer.image">
-                <img
-                  class="offer-image"
-                  v-bind:src="offer.image"
-                  alt="offer-image"
-                />
-              </div>
+                <div v-if="offer.image">
+                    <img
+                        class="offer-image"
+                        v-bind:src="offer.image"
+                        alt="offer-image"
+                    />
+                </div>
 
-              <div v-else>
-                <img class="offer-image" src="./../assets/defaultOffer.png" />
-              </div>
+                <div v-else>
+                    <img class="offer-image" src="./../assets/defaultOffer.png">
+                </div>
             </div>
             <div class="flexText">
-              <h2>{{ offer.name }}</h2>
-              {{ offer.description }}<br />
-              <h3>{{ offer.price }}€</h3>
+                <h2>{{offer.name}}</h2>
+                Description: {{offer.description}}<br><br>
+                Promo: {{findPromo(offer.idPromo)}}
+                <h3>{{offer.price}}€</h3>
             </div>
-          </div>
-          <div class="flex">
-            <updateOffer :oldOffer="offer" @updateOffer="updateOffer" />
-            <deleteOffer
-              :data="offer"
-              :deleteType="'offer'"
-              @deleteOffer="deleteOffer"
-            />
-          </div>
         </div>
-        <p v-if="listOffers.length == 0" key="4711">Déplacer une offre ici</p>
-      </transition-group>
+        <div class="flex">
+            <updateOffer :oldOffer="offer" :promos="promos" @updateOffer="updateOffer"/>
+            <deleteOffer :data="offer" :deleteType="'offer'" @deleteOffer="deleteOffer"/>
+        </div>
+        </div>
+        <p v-if="listOffers.length==0" key="4711">Déplacer une offre ici</p>
+        </transition-group>
     </draggable>
   </div>
 </template>
@@ -52,44 +49,45 @@ import deleteOffer from "./modals/DeleteConfirm.vue";
 import updateOffer from "./modals/UpdateOffer.vue";
 import draggable from "vuedraggable";
 export default {
-  name: "offersInDisplay",
-  props: {
-    offers: Array,
-    category: Object,
-  },
-  components: {
-    draggable,
-    deleteOffer,
-    updateOffer,
-  },
-  data() {
-    return {
-      categorieStart: null,
-    };
-  },
-  computed: {
-    listOffers: {
-      get() {
-        return this.offers;
-      },
-      set(offers) {
-        let data = {
-          offers: offers,
-          category: this.category,
+    name:'offersInDisplay',
+    props:
+    {
+        offers:Array,
+        category:Object,
+        promos:Array
+    },
+    components: 
+    {
+        draggable,
+        deleteOffer,
+        updateOffer
+    },
+    data() {
+        return {
+            categorieStart:null
         };
         this.$emit("orderOffer", data);
       },
-    },
-  },
-  methods: {
-    deleteOffer(offer) {
-      this.$emit("deleteOffer", offer);
-    },
-    updateOffer(offer) {
-      this.$emit("updateOffer", offer);
-    },
-  },
-};
+    methods:{
+        deleteOffer(offer)
+        {
+            this.$emit("deleteOffer",offer)
+        },
+        updateOffer(offer)
+        {
+            this.$emit("updateOffer",offer)
+        },
+        findPromo(idPromo)
+        {
+            for(let promo of this.promos) {
+                if(idPromo == promo.id)
+                {
+                    return promo.name
+                }
+            }
+        }
+    }
+}
 </script>
 
 <style lang="scss" scoped>

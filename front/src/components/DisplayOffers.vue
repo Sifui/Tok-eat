@@ -9,8 +9,8 @@
                         <updateCategory :oldCategory="category" @updateCategory="updateCategory"/>
                         <deleteCategory :data="category" :deleteType="'category'" @deleteCategory="deleteCategory"/>
                     </h2>
-                    <offersInDisplay :offers="offersByCategory(category)" :category="category" @orderOffer="orderOffer" @deleteOffer="deleteOffer" @updateOffer="updateOffer"/>
-                    <createOffer :category="category" @createOffer="createOffer"/>
+                    <offersInDisplay :offers="offersByCategory(category)" :category="category" :promos="promos" @orderOffer="orderOffer" @deleteOffer="deleteOffer" @updateOffer="updateOffer"/>
+                    <createOffer :category="category" :promos="promos" @createOffer="createOffer"/>
                 </div>
             </transition-group>
         </draggable>
@@ -33,7 +33,8 @@ export default {
     props:{
         me:Object,
         offers:Array,
-        categories:Array
+        categories:Array,
+        promos:Array
     },
     components: {
         draggable,
