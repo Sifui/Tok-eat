@@ -99,12 +99,10 @@ export default {
     },
     async refreshData(){
     this.reservations = [[]]
-  console.log('resto',this.user.id)
     let result = await axios.get(
       `http://localhost:8081/ordered_products/restaurant`
     );
     const temp = result.data;
-    console.log('temp',temp)
     if (!temp.length)
       return
     let index = 0;
@@ -127,22 +125,13 @@ export default {
   
   sockets: {
     notification() {
-      console.log('reservation passé !!!')
-      //alert('une reservation a été passé chez vous !')
       this.refreshData();
-      //  this.render = false;
-
-      this.$nextTick(() => {
-        // Add the component back in
-        //  this.render = true;
-      });
     },
     cancelled(id){
       //this.refreshData()
       for (let i = 0; i < this.reservations.length; i++) {
         if (this.reservations[i][0].id_client == id) {
           this.reservations[i].validated = "cancel";
-          this.$forceUpdate();
           this.cancellations.push(this.reservations[i]);
           this.reservations.splice(i, 1);
           if (!this.reservations.length) this.reservations.push([]);
@@ -150,6 +139,8 @@ export default {
           break;
         }
       }
+        this.$forceUpdate();
+
     },
   },
 };

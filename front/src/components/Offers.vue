@@ -109,7 +109,6 @@ export default {
             idOffer: filteredArticles[i].id,
           });
         }
-        console.log('reservation emise au restaurant:',this.restaurant.id)
         this.$socket.emit('reservation',this.restaurant.id)
         this.$cookies.set("cart", {
         ...this.$cookies.get("cart"),

@@ -55,7 +55,18 @@ const routes = [
         name: 'profil',
         component:()=> import('../views/Profil.vue'),
       },
-      
+      {
+        path: '/payment',
+        name: 'Payment',
+        props: true,
+        component:() => import('../components/Payment.vue')
+      },
+      {
+        path: '/payment-success',
+        name: 'PaymentSuccess',
+        props: true,
+        component:() => import('../components/PaymentSuccess.vue')
+      }
     ]
   },
   {

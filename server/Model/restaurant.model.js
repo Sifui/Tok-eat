@@ -201,14 +201,15 @@ class Restaurant {
     {
         console.log('idResto',restaurantId)
         const result = await PostgresStore.client.query({
-            text: `select o.id,o.name,order_date ,sum(quantity)
-            from basket as b left join ordered_product as op on b.id = op.id_basket 
-                             left join offer as o on op.id_offer = o.id
-                             LEFT JOIN category AS c ON o.id_category = c.id 
-                            LEFT JOIN restaurant AS r ON c.id_restaurant = r.id 
-                        WHERE  r.id = $1
-                        and validation = true
-            group by o.id,o.name,order_date`,
+            text: `SELECT o.id,o.name,SUBSTRING(CAST(order_date as VARCHAR),1,7) as order_date ,SUM(quantity)
+                    FROM basket AS b LEFT JOIN ordered_product AS op ON b.id = op.id_basket 
+                        LEFT JOIN offer AS o ON op.id_offer = o.id
+                        LEFT JOIN category AS c ON o.id_category = c.id 
+                        LEFT JOIN restaurant AS r ON c.id_restaurant = r.id 
+                    WHERE  r.id = $1
+                        AND validation = true
+                    GROUP BY o.id,o.name,SUBSTRING(CAST(order_date as VARCHAR),1,7);
+`,
             values: [restaurantId]
         })
         return result.rows
