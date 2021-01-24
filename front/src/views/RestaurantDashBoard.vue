@@ -1,5 +1,6 @@
 <template>
     <div>
+        
         <md-button class="md-primary md-raised" @click="display='offers'">Offres</md-button>
         <md-button class="md-primary md-raised" @click="display='promotions'">Promotions</md-button>
         <div v-if="display=='promotions'">

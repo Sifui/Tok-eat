@@ -40,13 +40,14 @@
           </template>
         </select>
         <span class="offer-name"> {{ offer.name }}</span>
-        <span class="offer-price"> {{ offer.price }}€</span>
+        <div v-if="offer.idPromo" class="offer-price"><span class="maclasse">{{ offer.price }} €</span> <span class="red">{{promoPrice(offer)}} €</span></div>
+        <div v-else class="offer-price">{{ offer.price }} €</div>
       </div>
       <span align="center" v-if="pending" style="color: red">{{
         message
       }}</span>
       <span align="center" v-else style="color: green"
-        >En cours de preparation</span
+        >Veuillez procéder au payement</span
       >
     </div>
     <div class="centered" v-if="totalPrice != 0 && !pending">
@@ -68,6 +69,7 @@ export default {
     display: Number,
     infos: Array,
     price: Number,
+    promos: Array
   },
   data() {
     return {
@@ -79,7 +81,7 @@ export default {
       user: null,
       basket: null,
       message: null,
-      tokens: 0,
+      tokens: 0
     };
   },
 
@@ -109,17 +111,40 @@ export default {
     const infosKeys = Object.keys(this.infos);
     for (let i = 0; i < infosKeys.length; i++) {
       this.$socket.emit("submitId", this.infos[i].id);
-      const currentRestaurantArticles = this.infos[infosKeys[i]].articles;
+      /*const currentRestaurantArticles = this.infos[infosKeys[i]].articles;
       for (let j = 0; j < currentRestaurantArticles.length; j++)
-        this.totalPrice +=
+        if(currentRestaurantArticles[j].idPromo)
+        {
+          this.totalPrice +=
+          currentRestaurantArticles[j].quantity *
+          this.promoPrice(currentRestaurantArticles[j]);
+        }
+        else
+        {
+          this.totalPrice +=
           currentRestaurantArticles[j].quantity *
           currentRestaurantArticles[j].price;
+        }*/
+
     }
-    this.totalPrice =
-      Math.round((this.totalPrice + Number.EPSILON) * 100) / 100;
+    //this.totalPrice =
+    //  Math.round((this.totalPrice + Number.EPSILON) * 100) / 100;
+
   },
 
   methods: {
+    promoPrice(offer)
+    {
+      //console.log(offer)
+      for(let promo of this.promos) {
+        if(offer.idPromo == promo.id)
+        {
+          //let test = (offer.price*(100-promo.percent)/100).toFixed(2)
+          //console.log(test)
+          return (offer.price*(100-promo.percent)/100).toFixed(2)
+        }
+      }
+    },
     async goToPayement() {
       if (!this.totalPrice) return;
 
@@ -130,8 +155,8 @@ export default {
       this.$router.push({
         name: "Payment",
         params: {
-          price: this.totalPrice,
-          tokens: Math.floor(this.totalPrice / 10),
+          defaultPrice: this.totalPrice,
+          defaultTokens: Math.floor(this.totalPrice / 10),
         },
       });
       /*
@@ -227,5 +252,9 @@ export default {
 }
 .offer-price {
   margin-left: auto;
+}
+.maclasse{text-decoration:line-through;}
+.red{
+  color: red;
 }
 </style>

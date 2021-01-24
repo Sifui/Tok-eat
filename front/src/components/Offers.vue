@@ -17,7 +17,8 @@
             <md-card-header>
               <md-card-header-text>
                 <div class="md-title">{{ item.name }}</div>
-                <div class="md-subhead">{{ item.price }} €</div>
+                <div v-if="item.idPromo" class="md-subhead"><span class="maclasse">{{ item.price }} €</span><span class="red">{{promoPrice(item)}} €</span></div>
+                <div v-else class="md-subhead">{{ item.price }} €</div>
                 <input
                   type="number"
                   min="0"
@@ -51,6 +52,7 @@
 
 <script>
 import axios from "axios";
+import promotionServices from "../services/promotionServices";
 export default {
   name: "Offers",
   props: {
@@ -63,9 +65,24 @@ export default {
       offersClone: this.offers,
       articlesCount: 0,
       categories: [],
+      promos:[]
     };
   },
   methods: {
+    async initPromos()
+    {
+      let promos = await promotionServices.getPromoByIdRestaurant2(this.restaurant.id)
+      this.promos = promos.data
+    },
+    promoPrice(offer)
+    {
+      for(let promo of this.promos) {
+        if(offer.idPromo == promo.id)
+        {
+          return (offer.price*(100-promo.percent)/100).toFixed(2)
+        }
+      }
+    },
     test(event, cat, index) {
       if (event.target.value > 0 && this.offersClone[cat][index].quantity == 0)
         this.articlesCount++;
@@ -126,7 +143,7 @@ export default {
   },
   created() {
         this.user = this.$store.state.user
-
+        this.initPromos();
 
     if (!this.offers) {
       this.$router.go(-1);
@@ -134,8 +151,8 @@ export default {
     }
 
     this.offersClone = this.offersClone.map((e) => {
-      let { id, name, image, price, idcategory, categoryname } = e;
-      return { id, name, image, price, idcategory, categoryname, quantity: 0 };
+      let { id, name, image, price, idcategory, categoryname, idPromo } = e;
+      return { id, name, image, price, idcategory, categoryname, quantity: 0, idPromo };
     });
     this.offersClone.sort((a, b) => a.idcategory - b.idcategory);
 
@@ -160,5 +177,9 @@ export default {
 .md-card {
   margin: 10px;
   flex: 1 1 32%;
+}
+.maclasse{text-decoration:line-through;}
+.red{
+  color: red;
 }
 </style>

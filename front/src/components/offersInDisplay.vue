@@ -65,9 +65,23 @@ export default {
     data() {
         return {
             categorieStart:null
-        };
-        this.$emit("orderOffer", data);
+        }
       },
+      computed: {
+        listOffers: {
+            get () {
+                
+                return this.offers 
+            },
+            set (offers) {
+                let data = {
+                    offers:offers,
+                    category:this.category,
+                }
+                this.$emit("orderOffer",data)
+            },
+        }
+    },
     methods:{
         deleteOffer(offer)
         {

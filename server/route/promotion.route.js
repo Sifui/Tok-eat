@@ -4,6 +4,8 @@ const hasToBeAuthenticated = require('../middlewares/has-to-be-authenticated.mid
 const Promo = require("../model/promo.model")
 
 router.get('/promo/:id' ,async (req,res)=>{
+    console.log("test promo")
+    console.log(req.params.id)
     const result = await Promo.getByIdRestaurant(req.params.id)
     res.json(result)
 })

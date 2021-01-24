@@ -5,6 +5,9 @@ export default {
     async getPromoByIdRestaurant() {
         return http.get("/promo");
     },
+    async getPromoByIdRestaurant2(idRestaurant) {
+      return http.get("/promo/" + idRestaurant);
+    },
     async createPromo(promo) {
         return http.post("/promo", promo).res;
     },

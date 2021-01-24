@@ -4,13 +4,12 @@ const Restaurant = require('./restaurant.model')
 class Promo {
     static toSQLTable () {
         return `
-            CREATE TYPE OFFRE_ENUM AS ENUM ('case_one', 'case_two', 'case_three');
             CREATE TABLE ${Promo.tableName} (
                 id SERIAL PRIMARY KEY,
                 name TEXT,
                 percent INT,
                 date DATE,
-                id_restaurant INTEGER REFERENCES ${Restaurant.tableName}(id) ON DELETE CASCADE
+                id_restaurant INTEGER REFERENCES restaurant(id) ON DELETE CASCADE
             )
         `
     }

@@ -9,6 +9,7 @@ const Offer = require('../model/offer.model')
 const { public_key, private_key } = require('../server.config').stripe
 const Basket = require("../model/basket.model")
 const stripe = require('stripe')(private_key)
+let Token = require('../Model/token.model')
 
 router.post('/login', ifAlreadyAuthenticated, async (req, res) => {
     const client = await Client.findByEmail(req.body.email)
@@ -344,7 +345,7 @@ router.post("/secret", hasToBeAuthenticated,async (req, res, next) => {
     // console.log(currentBasket);
     // console.log(req.body.amount);
     // console.log(currentBasket.validation);
-    if (!req.body.amount|| !currentBasket.validation || !req.session.basketId) {
+    if (!req.body.amount || !currentBasket.validation || !req.session.basketId) {
         res.status(401)
         res.send({
             message: 'Vous n\'avez pas de panier courant'
@@ -377,8 +378,7 @@ router.post('/session-id', async (req, res) => {
     }
 })
 router.post('/token',hasToBeAuthenticated, async (req, res) => {
-    let Token = require('../Model/token.model')
-    if (!req.body.paymentId || !req.body.restaurantId || !req.body.tokens){
+    if (!req.body.paymentId || !req.body.restaurantId){
         res.status(401)
         res.send({
             message: 'requête incorrecte'
@@ -395,13 +395,27 @@ router.post('/token',hasToBeAuthenticated, async (req, res) => {
         })
         return
     }
+    if(await Token.getByBothId(req.session.userId,req.body.restaurantId))
+    {
+        const result = await Token.AddToken(req.body.tokens, req.session.userId, req.body.restaurantId)
+        res.json(result)
+    }
+    else
+    {
+        const result = await Token.create(req.body.tokens, req.session.userId, req.body.restaurantId)
+        res.json(result)
+    }
      
-    const result = await Token.create(req.body.tokens, req.session.userId, req.body.restaurantId)
+
+
+})
+
+router.get('/token:id',hasToBeAuthenticated, async (req, res) => {
+    result = await Token.getByBothId(req.session.userId,req.params.id)
     res.json(result)
 })
 
 router.get('/getTokens', hasToBeAuthenticated, async (req, res)=> {
-    let Token = require('../Model/token.model')
     let tokens = await Token.getAllByClientId(req.session.userId)
     console.log(tokens);
     res.json(tokens)

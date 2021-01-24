@@ -1,6 +1,7 @@
 <template>
   <div class="index" md-theme="black">
     <cart
+      :promos="promos"
       :display="display"
       :infos="cartInfos"
       :price="computedPrice"
@@ -36,6 +37,7 @@
 import navbar from "../components/Navbar";
 import footerTokEat from "../components/Footer";
 import cart from "../components/modals/Cart";
+import promotionServices from "../services/promotionServices";
 
 export default {
   name: "Index",
@@ -49,9 +51,15 @@ export default {
       computedPrice: 0,
       active: true,
       showSearchField: false,
+      promos:[]
     };
   },
   async created() {
+    if(this.$cookies.get('cart')[Object.keys(this.$cookies.get('cart'))[0]] && this.$cookies.get('cart')[Object.keys(this.$cookies.get('cart'))[0]].id)
+    {
+      await this.initPromos();
+    }
+
    try{
          console.log(this.$cookies.get('cart')[Object.keys(this.$cookies.get('cart'))[0]].id)
 
@@ -86,6 +94,7 @@ export default {
           this.scrolled = false;
         }, 1300);
       }
+
     });
     if (!this.$cookies.get("cart")) return;
     const reservations = this.$cookies.get("cart");
@@ -93,13 +102,35 @@ export default {
       const currentReservation = this.$cookies.get("cart")[item];
       this.cartInfos.push(currentReservation);
     }
-    
+    this.updateCart()
   },
   methods: {
+    async initPromos()
+    {
+      let promos = await promotionServices.getPromoByIdRestaurant2(this.$cookies.get('cart')[Object.keys(this.$cookies.get('cart'))[0]].id)
+      this.promos = promos.data
+    },
+    promoPrice(offer)
+    {
+      //console.log(offer)
+      for(let promo of this.promos) {
+        if(offer.idPromo == promo.id)
+        {
+          //let test = (offer.price*(100-promo.percent)/100).toFixed(2)
+          //console.log(test)
+          return (offer.price*(100-promo.percent)/100).toFixed(2)
+        }
+      }
+    },
     showCart(i) {
       this.display = i;
     },
-    updateCart() {
+    async updateCart() {
+    if(this.$cookies.get('cart')[Object.keys(this.$cookies.get('cart'))[0]] && this.$cookies.get('cart')[Object.keys(this.$cookies.get('cart'))[0]].id)
+    {
+      await this.initPromos();
+    }
+      console.log("fonction curst")
       this.cartInfos = [];
       this.computedPrice = 0;
       setTimeout(() => {
@@ -108,9 +139,16 @@ export default {
           let currentRestaurant = this.$cookies.get("cart")[reservations[i]];
 
           for (let article of currentRestaurant.articles) {
-            this.computedPrice += article.price * article.quantity;
+            //this.computedPrice += article.price * article.quantity;
+            if(article.idPromo)
+            {
+              this.computedPrice += this.promoPrice(article) * article.quantity;
+            }
+            else
+            {
+              this.computedPrice += article.price * article.quantity;
+            }
           }
-
           this.cartInfos.push(this.$cookies.get("cart")[reservations[i]]);
         }
 

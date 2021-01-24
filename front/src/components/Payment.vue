@@ -1,6 +1,8 @@
 <template>
   <div style="margin:auto;max-width:500px;height:80vh">
       <h1>Paiement de votre réservation</h1>
+      <h2>Prix: {{this.price}}€</h2>
+      {{tokens}}
     <form id="payment-form">
       <div id="card-element">
         <!-- Elements will create input elements here -->
@@ -20,12 +22,14 @@ import axios from "axios";
 export default {
   name: "Payment",
   props: {
-    price: Number,
-    tokens: Number,
+    defaultPrice: Number,
+    defaultTokens: Number,
   },
   components: {},
   data() {
     return {
+      price: this.defaultPrice,
+      tokens: this.defaultTokens,
       card: null,
       clientSecret: null,
       error: "",
@@ -58,6 +62,12 @@ export default {
               // payment_intent.succeeded event that handles any business critical
               // post-payment actions.
               const restaurantId = this.$cookies.get('cart')[Object.keys(this.$cookies.get('cart'))[0]].id
+              let allTokens = await axios.get('http://localhost:8081/token'+restaurantId)
+              allTokens = allTokens.data
+              if(allTokens.tokens > 20)
+              {
+                await axios.post('http://localhost:8081/token',{restaurantId, tokens: -20, paymentId: this.paymentId})
+              }
               await axios.post('http://localhost:8081/token',{restaurantId, tokens: this.tokens, paymentId: this.paymentId})
               this.$emit('clearcookie')
               this.$forceUpdate()
@@ -78,9 +88,24 @@ export default {
       this.$router.push({ path: "/" });
       return;
     }
-
+    const restaurantId = this.$cookies.get('cart')[Object.keys(this.$cookies.get('cart'))[0]].id
     if (!currentBasket.validation) this.$router.push({ path: "/" });
+      let allTokens = await axios.get('http://localhost:8081/token'+restaurantId)
+      allTokens = allTokens.data
 
+      if(allTokens.tokens > 20)
+      {
+        this.price -= 10
+        this.price = this.price.toFixed(2)
+        console.log("-------------------------------")
+        
+        this.tokens = Math.floor(this.price / 10)
+        if(this.price < 0)
+        {
+          this.price = 0
+        }
+        console.log(this.price)
+      }
     let response = await axios.post("http://localhost:8081/secret", {
       amount: Math.ceil(this.price * 100),
     });

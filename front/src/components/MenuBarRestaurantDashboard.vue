@@ -4,7 +4,7 @@
       <div class="menu-content">
         <div class="menu-restaurant-info">
           <!-- <img src="../assets/resto.png" alt=""> -->
-          <h4>Restaurant les guignols</h4>
+          <h4>{{me.name}}</h4>
         </div>
         <div class="menu-buttons-div">
           <div class="menu-button">
@@ -37,6 +37,7 @@
         </div>
         <displayOffers
           :me="me"
+          :promos="promos"
           :offers="offers"
           :categories="categories"
           @reload="createData"
@@ -72,8 +73,13 @@
         <div class="tab-title">
           <h2>Gestion des Promotions</h2>
         </div>
+        <displayPromos
+            :me="me"
+            :promos="promos"
+            @createPromo="createPromo"
+            @deletePromo="deletePromo"
+        @updatePromo="updatePromo"/>
         <div>
-          <p>tab3</p>
         </div>
       </div>
       <div v-if="this.tab4">
@@ -81,7 +87,6 @@
           <h2>Gérer vos disponnibilités</h2>
         </div>
         <div>
-          <p>tab4</p>
         </div>
       </div>
     </div>
@@ -92,12 +97,14 @@
 import userServices from "../services/userServices";
 import offerServices from "../services/offerServices";
 import displayOffers from "../components/DisplayOffers";
+import displayPromos from "../components/DisplayPromos";
+import promotionServices from "../services/promotionServices";
 import LineChart from "./LineChart.js";
 import axios from "axios";
 export default {
   name: "Informations",
   props: {},
-  components: { displayOffers, LineChart },
+  components: { displayOffers, LineChart, displayPromos },
   data() {
     return {
       tab1: true,
@@ -108,6 +115,7 @@ export default {
       me: {},
       offers: [],
       categories: [],
+      promos:[],
       dataTotalSales: null,
       dataTotalSalesPerMonth: null,
       totalSales: null,
@@ -234,6 +242,11 @@ export default {
       let me = await userServices.me();
       this.me = me.data;
     },
+    async initPromos()
+    {
+        let promos = await promotionServices.getPromoByIdRestaurant()
+        this.promos = promos.data
+    },
     async initOffers() {
       let offers = await offerServices.getOfferByIdRestaurant(this.me.id);
       this.offers = offers.data;
@@ -247,6 +260,23 @@ export default {
       await this.initMe();
       await this.initOffers();
       await this.initCategories();
+      await this.initPromos();
+    },
+    async createPromo(promo)
+    {
+        promo.id_restaurant = this.me.id
+        await promotionServices.createPromo(promo)
+        this.createData()
+    },
+    async deletePromo(promo)
+    {
+        await promotionServices.deletePromo(promo)
+        this.createData()
+    },
+    async updatePromo(promo)
+    {
+        await promotionServices.updatePromo(promo)
+        this.createData()
     },
     async createOffer(offer) {
       await offerServices.createOffer(offer);
