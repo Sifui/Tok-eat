@@ -29,7 +29,8 @@ class Promo {
     static async getByIdRestaurant (restaurantId) {
         const result = await PostgresStore.client.query({
             text: `SELECT * FROM ${Promo.tableName} 
-            WHERE id_restaurant=$1`,
+            WHERE id_restaurant=$1
+            ORDER BY name`,
             values: [restaurantId]
         })
         return result.rows
