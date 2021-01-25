@@ -99,6 +99,7 @@ export default {
                     return promo.name
                 }
             }
+            return "aucun"
         }
     }
 }

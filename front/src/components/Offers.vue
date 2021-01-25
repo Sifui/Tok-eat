@@ -189,7 +189,7 @@ export default {
       let { id, name, image, price, idcategory, categoryname, idPromo } = e;
       return { id, name, image, price, idcategory, categoryname, quantity: 0, idPromo };
     });
-    this.offersClone.sort((a, b) => a.idcategory - b.idcategory);
+    //this.offersClone.sort((a, b) => a.idcategory - b.idcategory);
 
     let clone = [...this.offersClone];
     this.offersClone = [[]];
