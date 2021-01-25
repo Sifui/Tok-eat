@@ -127,6 +127,32 @@ export default {
     showCart(i) {
       this.display = i;
     },
+    testDate(offer)
+    {
+      for(let promo of this.promos) {
+        if(offer.idPromo == promo.id)
+        {
+          let date = new Date
+          if(date.getMonth()+1 < 10)
+          {
+            date = String(date.getFullYear()) + "-0" + String(date.getMonth()+1) + "-" + String(date.getDate())
+          }
+          else{
+            date = String(date.getFullYear()) + "-" + String(date.getMonth()+1) + "-" + String(date.getDate())
+          }
+          console.log(promo.date)
+          console.log(date)
+          if(promo.date > date)
+          {
+            return true
+          }else
+          {
+            return false
+          }
+        }
+      }
+      return false
+    },
     async updateCart() {
     if(this.$cookies.get('cart')[Object.keys(this.$cookies.get('cart'))[0]] && this.$cookies.get('cart')[Object.keys(this.$cookies.get('cart'))[0]].id)
     {
@@ -142,7 +168,7 @@ export default {
 
           for (let article of currentRestaurant.articles) {
             //this.computedPrice += article.price * article.quantity;
-            if(article.idPromo)
+            if(article.idPromo && this.testDate(article))
             {
               this.computedPrice += this.promoPrice(article) * article.quantity;
             }

@@ -17,7 +17,7 @@
             <md-card-header>
               <md-card-header-text>
                 <div class="md-title">{{ item.name }}</div>
-                <div v-if="item.idPromo" class="md-subhead"><span class="maclasse">{{ item.price }} €</span><span class="red">{{promoPrice(item)}} €</span></div>
+                <div v-if="testDate(item)" class="md-subhead"><span class="maclasse">{{ item.price }} €</span><span class="red">{{promoPrice(item)}} €</span></div>
                 <div v-else class="md-subhead">{{ item.price }} €</div>
                 <input
                   type="number"
@@ -28,10 +28,19 @@
               </md-card-header-text>
 
               <md-card-media md-big>
-                <img
-                  src="https://d1ralsognjng37.cloudfront.net/5efdd7d4-0ab2-4656-9973-aa0612b1e973.png"
-                  alt="People"
-                />
+                <div class="flexImage">
+                <div v-if="item.image">
+                    <img
+                        class="offer-image"
+                        v-bind:src="item.image"
+                        alt="offer-image"
+                    />
+                </div>
+
+                <div v-else>
+                    <img class="offer-image" src="./../assets/defaultOffer.png">
+                </div>
+            </div>
               </md-card-media>
             </md-card-header>
           </md-card>
@@ -82,6 +91,32 @@ export default {
           return (offer.price*(100-promo.percent)/100).toFixed(2)
         }
       }
+    },
+    testDate(offer)
+    {
+      for(let promo of this.promos) {
+        if(offer.idPromo == promo.id)
+        {
+          let date = new Date
+          if(date.getMonth()+1 < 10)
+          {
+            date = String(date.getFullYear()) + "-0" + String(date.getMonth()+1) + "-" + String(date.getDate())
+          }
+          else{
+            date = String(date.getFullYear()) + "-" + String(date.getMonth()+1) + "-" + String(date.getDate())
+          }
+          console.log(promo.date)
+          console.log(date)
+          if(promo.date > date)
+          {
+            return true
+          }else
+          {
+            return false
+          }
+        }
+      }
+      return false
     },
     test(event, cat, index) {
       if (event.target.value > 0 && this.offersClone[cat][index].quantity == 0)

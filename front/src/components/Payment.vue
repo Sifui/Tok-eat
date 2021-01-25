@@ -2,7 +2,6 @@
   <div style="margin:auto;max-width:500px;height:80vh">
       <h1>Paiement de votre réservation</h1>
       <h2>Prix: {{this.price}}€</h2>
-      {{tokens}}
     <form id="payment-form">
       <div id="card-element">
         <!-- Elements will create input elements here -->

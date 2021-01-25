@@ -40,7 +40,7 @@
           </template>
         </select>
         <span class="offer-name"> {{ offer.name }}</span>
-        <div v-if="offer.idPromo" class="offer-price"><span class="maclasse">{{ offer.price }} €</span> <span class="red">{{promoPrice(offer)}} €</span></div>
+        <div v-if="testDate(offer)" class="offer-price"><span class="maclasse">{{ offer.price }} €</span> <span class="red">{{promoPrice(offer)}} €</span></div>
         <div v-else class="offer-price">{{ offer.price }} €</div>
       </div>
       <span align="center" v-if="pending" style="color: red">{{
@@ -144,6 +144,32 @@ export default {
           return (offer.price*(100-promo.percent)/100).toFixed(2)
         }
       }
+    },
+    testDate(offer)
+    {
+      for(let promo of this.promos) {
+        if(offer.idPromo == promo.id)
+        {
+          let date = new Date
+          if(date.getMonth()+1 < 10)
+          {
+            date = String(date.getFullYear()) + "-0" + String(date.getMonth()+1) + "-" + String(date.getDate())
+          }
+          else{
+            date = String(date.getFullYear()) + "-" + String(date.getMonth()+1) + "-" + String(date.getDate())
+          }
+          console.log(promo.date)
+          console.log(date)
+          if(promo.date > date)
+          {
+            return true
+          }else
+          {
+            return false
+          }
+        }
+      }
+      return false
     },
     async goToPayement() {
       if (!this.totalPrice) return;
