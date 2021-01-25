@@ -55,6 +55,8 @@ export default {
     };
   },
   async created() {
+    if ( !this.$cookies.get('cart'))
+      this.$cookies.set('cart',{})
     if(this.$cookies.get('cart')[Object.keys(this.$cookies.get('cart'))[0]] && this.$cookies.get('cart')[Object.keys(this.$cookies.get('cart'))[0]].id)
     {
       await this.initPromos();

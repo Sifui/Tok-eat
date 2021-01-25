@@ -221,7 +221,6 @@
       @close="closeModal"
     />
     <ProfilModalPassword :user="user" :modals="modals" @close="closeModal" />
-    <footerTokEat />
   </div>
 </template>
 
