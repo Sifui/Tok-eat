@@ -24,7 +24,7 @@
           </div>
           <div class="menu-button">
             <button v-on:click="func4">
-              <i class="fas fa-calendar"></i> Emploie du temps
+              <i class="fas fa-calendar"></i> Emploi du temps
             </button>
           </div>
         </div>
